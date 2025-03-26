@@ -217,33 +217,45 @@ export default function MainMenu({
     };
     
     const handleButtonClick = async () => {
-        try {
-            console.error('handleButtonClick clicked');
-
-            
-            const response = await fetch('http://localhost:8080/wachatputobig.zip');
-            if (!response.ok) {
-                console.error('Fetch Response Status:', response.status);
-                console.error('Fetch Response Headers:', response.headers);
-                throw new Error(`Fetch error! Status: ${response.status}`);
-            }
-            const blob = await response.blob();
-            const file = new File([blob], 'wachat_test.zip', { type: 'application/zip' });
-            dataDisplayProps.setFileToParse(file);
-
-            // Call submitData with the loaded file
-            // const result = await submitData(file, 'task-id', 'your-auth-token');
-            // console.log(result.message);
-        } catch (error) {
-            console.error('Error fetching or uploading file:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (window.location.search.includes("?import")) {
-            handleButtonClick();
-        }
-    }, []);
+		
+		try {
+			const query = window.location.search;
+			const importParam = query.startsWith('?import=') ? query.slice(8) : null;
+			console.log('Import URL:', importParam);
+			if (!importParam) {
+				throw new Error('No import URL found in query.');
+			}
+	
+			const decodedUrl = decodeURIComponent(importParam);
+			console.log('Decoded import URL:', decodedUrl);
+	
+			const response = await fetch(decodedUrl);
+			if (!response.ok) {
+				console.error('Fetch Response Status:', response.status);
+				console.error('Fetch Response Headers:', response.headers);
+				throw new Error(`Fetch error! Status: ${response.status}`);
+			}
+	
+			const blob = await response.blob();
+			const file = new File([blob], 'wachat_test.zip', { type: 'application/zip' });
+			dataDisplayProps.setFileToParse(file);
+	
+			// Optionally call submitData
+			// const result = await submitData(file, 'task-id', 'your-auth-token');
+			// console.log(result.message);
+	
+		} catch (error) {
+			console.error('Error fetching or uploading file:', error);
+		}
+	};
+	
+	useEffect(() => {
+		if (window.location.search.includes('?import=')) {
+			console.log('Import URL detected in query.');
+			handleButtonClick();
+		}
+	}, []);
+	
 
     if (!isVisible) return null;
 
