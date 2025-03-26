@@ -34,10 +34,12 @@ import SuccessModal from "./SuccessModal.jsx";
  *   Basemaps (TileLayers)
  ************************************************************************************************/
 
+
+
 function DarkTileLayer() {
 	return (
 		<TileLayer
-			url={`https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`}
+			url={`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}`}
 			minZoom={2}
 			maxZoom={21}
 			maxNativeZoom={21}
@@ -49,10 +51,14 @@ function DarkTileLayer() {
 	);
 }
 
+
+
+
+
 function SatelliteTileLayer() {
 	return (
 		<TileLayer
-			url={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/{z}/{x}/{y}?access_token=${MAPBOX_TOKEN}`}
+			url={`http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}`}
 			minZoom={2}
 			maxZoom={21}
 			maxNativeZoom={21}
@@ -289,7 +295,6 @@ function UpdateMap({ currentLocation, flyToLocation, setFlyToLocation }) {
 
 export function Map({
 	isVisible,
-	showMenu,
 	data,
 	isLoginVisible,
 	setIsLoginVisible,
@@ -343,7 +348,6 @@ export function Map({
 
 	return (
 		<>
-			{" "}
 			<SuccessModal
 				isVisible={successModalVisible}
 				setIsVisible={setSuccessModalVisible}
@@ -351,7 +355,7 @@ export function Map({
 			<UploadDialog
 				isOpen={isUploadDialogOpen}
 				setIsOpen={setIsUploadDialogOpen}
-				currentDataset={data.data}
+				currentDataset={data?.data}
 				setSuccessModalVisible={setSuccessModalVisible}
 				isLoginVisible={isLoginVisible}
 				setIsLoginVisible={setIsLoginVisible}
@@ -359,7 +363,7 @@ export function Map({
 			<ShareModal
 				isOpen={isModalOpen}
 				setIsOpen={setIsModalOpen}
-				currentDataset={data.data}
+				currentDataset={data?.data}
 				setIsUploadDialogOpen={setIsUploadDialogOpen}
 			/>
 			<div id="map">
@@ -410,9 +414,8 @@ export function Map({
 				<MapActionArea
 					setTitle={setTitleValue}
 					setPulse={setShouldPulse}
-					showMenu={showMenu}
 					setModalOpen={setIsModalOpen}
-					currentDataset={data.data}
+					currentDataset={data?.data}
 				/>
 			</div>
 		</>
