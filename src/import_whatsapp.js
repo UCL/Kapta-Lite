@@ -87,7 +87,7 @@ const processFile = (file, setDataDisplayMap) => {
 							.file(chatFilename)
 							.async("string")
 							.then(async function (fileContent) {
-								const [data, name] = await processText(fileContent);
+								const [data, name] = await processText(fileContent, zip);
 								setDataDisplayMap(data, name, zip);
 							});
 					}
@@ -314,7 +314,7 @@ const sortMessages = (messages) => {
 	return messages;
 };
 
-const processText = async (text) => {
+const processText = async (text, zipInput = null) => {
 	const groupNameRegex = /"([^"]*)"/;
 	const groupNameMatches = text.match(groupNameRegex);
 	const groupName = groupNameMatches ? groupNameMatches[1] : null;
@@ -385,5 +385,45 @@ const processText = async (text) => {
 	} else {
 		currentFeature = null;
 	}
+// Add to the end of processText, right before `return [mapdata, groupName];`
+const zip = new JSZip();
+
+// Collect all original image filenames
+const imageFilenames = new Set();
+
+mapdata.features.forEach((feature) => {
+	if (feature.properties.imgFilenames) {
+		feature.properties.imgFilenames.forEach((name) => imageFilenames.add(name));
+	}
+});
+
+// Create the GeoJSON file
+const geojsonBlob = new Blob([JSON.stringify(mapdata, null, 2)], {
+	type: "application/geo+json",
+});
+zip.file("map.geojson", geojsonBlob);
+
+// Add images from zip input
+if (zipInput) {
+	const filenames = Object.keys(zipInput.files);
+	const imgFilenames = filenames.filter((f) => imageFilenames.has(f));
+
+	for (const filename of imgFilenames) {
+		const fileData = await zipInput.file(filename).async("blob");
+		zip.file(filename, fileData);
+	}
+}
+
+// Generate zip and trigger download
+const processedChat = await zip.generateAsync({ type: "blob" });
+const url = URL.createObjectURL(processedChat);
+const a = document.createElement("a");
+a.href = url;
+a.download = `${groupName || "processed_chat"}.zip`;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+
 	return [mapdata, groupName];
 };
