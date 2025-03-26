@@ -10,6 +10,7 @@ import BurgerMenu from "./BurgerMenu.jsx";
 import { menuIcon } from "./icons.js";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 
+
 function LanguageSelector({ supportedLanguages }) {
 	// Get the saved language from localStorage or fallback to i18next language
 	const [selectedLanguage, setSelectedLanguage] = useState(() => {
