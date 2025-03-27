@@ -59,63 +59,85 @@ const updateMapdata = (data, groupName = null) => {
 export const allowedExtensions = [".zip", ".txt", ".geojson"];
 
 const processFile = (file, setDataDisplayMap) => {
-	// process the file then call setDataDisplayMap
+    if (
+        file instanceof File &&
+        allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+    ) {
+        try {
+            const reader = new FileReader();
 
-	if (
-		file instanceof File &&
-		allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
-	) {
-		try {
-			const reader = new FileReader();
+            if (file.name.endsWith(".zip")) {
+                const zip = new JSZip();
+                zip.loadAsync(file).then(function (contents) {
+                    const filenames = Object.keys(contents.files);
 
-			if (file.name.endsWith(".zip")) {
-				const zip = new JSZip();
-				zip.loadAsync(file).then(function (contents) {
-					const filenames = Object.keys(contents.files);
-					const chatFilename = filenames.filter((filename) =>
-						filename.match(/.*\.txt/)
-					)[0];
-					const imgFilenames = filenames.filter((filename) =>
-						filename.match(/.*\.(jpg|jpeg|png|gif)$/i)
-					);
-					if (imgFilenames.length > 0) {
-					}
-					// if there is a chat file, process it and any images
-					if (chatFilename) {
-						// process the chat file and pass along any images
-						zip
-							.file(chatFilename)
-							.async("string")
-							.then(async function (fileContent) {
-								const [data, name] = await processText(fileContent, zip);
-								setDataDisplayMap(data, name, zip);
-							});
-					}
-				});
-			} else {
-				// text or geojson
-				reader.readAsText(file);
-				reader.onloadend = async function (e) {
-					const content = e.target.result;
-					const geoJSONRegex = /^\s*{\s*"type"/;
-					// will process as geojson if extension is .geojson or if content starts with { "type"
-					if (file.name.endsWith(".geojson") || geoJSONRegex.test(content)) {
-						try {
-							const [data, name] = processGeoJson(content);
-							setDataDisplayMap(data, name);
-						} catch (error) {
-							console.error("Error parsing GeoJSON:", error);
-						}
-					} else {
-						const [data, name] = await processText(e.target.result);
-						setDataDisplayMap(data, name);
-					}
-				};
-			}
-		} catch (error) {
-			console.error("Unsupported file or format", error);
-		}
-	}
+                    // Detect GeoJSON file
+                    const geojsonFilename = filenames.find((filename) =>
+                        filename.match(/.*\.geojson$/i)
+                    );
+
+                    // Detect chat file
+                    const chatFilename = filenames.find((filename) =>
+                        filename.match(/.*\.txt$/i)
+                    );
+
+                    // Detect image files
+                    const imgFilenames = filenames.filter((filename) =>
+                        filename.match(/.*\.(jpg|jpeg|png|gif)$/i)
+                    );
+
+                    // Process GeoJSON file if it exists
+                    if (geojsonFilename) {
+                        zip
+                            .file(geojsonFilename)
+                            .async("string")
+                            .then(async function (geojsonContent) {
+                                try {
+                                    const [data, name] = processGeoJson(geojsonContent);
+                                    setDataDisplayMap(data, name, zip);
+                                } catch (error) {
+                                    console.error("Error processing GeoJSON file:", error);
+                                }
+                            });
+                    }
+
+                    // Process chat file if it exists
+                    if (chatFilename) {
+                        zip
+                            .file(chatFilename)
+                            .async("string")
+                            .then(async function (fileContent) {
+                                const [data, name] = await processText(fileContent, zip);
+                                setDataDisplayMap(data, name, zip);
+                            });
+                    }
+                });
+            } else {
+                // Handle text or GeoJSON files directly
+                reader.readAsText(file);
+                reader.onloadend = async function (e) {
+                    const content = e.target.result;
+                    const geoJSONRegex = /^\s*{\s*"type"/;
+
+                    // Process as GeoJSON if the file extension is .geojson or content starts with { "type"
+                    if (file.name.endsWith(".geojson") || geoJSONRegex.test(content)) {
+                        try {
+                            const [data, name] = processGeoJson(content);
+                            setDataDisplayMap(data, name);
+                        } catch (error) {
+                            console.error("Error parsing GeoJSON:", error);
+                        }
+                    } else {
+                        // Process as text
+                        const [data, name] = await processText(e.target.result);
+                        setDataDisplayMap(data, name);
+                    }
+                };
+            }
+        } catch (error) {
+            console.error("Unsupported file or format", error);
+        }
+    }
 };
 
 const getSenderColour = (senders) => {
