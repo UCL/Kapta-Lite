@@ -9,8 +9,7 @@ import { ASK_URL } from "../globals.js";
 import BurgerMenu from "./BurgerMenu.jsx";
 import { menuIcon } from "./icons.js";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
-// import { submitData } from "./data_submission.js"; // Import submitData function
-
+import Loader from "./Loader.jsx"; // Import Loader component
 
 function LanguageSelector({ supportedLanguages }) {
     // Get the saved language from localStorage or fallback to i18next language
@@ -211,56 +210,56 @@ export default function MainMenu({
     ...dataDisplayProps
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false);
+    const [isLoaderVisible, setIsLoaderVisible] = useState(false); // State for loader visibility
 
     const toggleBM = () => {
         setIsBMVisible((prevState) => !prevState);
     };
-    
+
     const handleButtonClick = async () => {
-		
-		try {
-			const query = window.location.search;
-			const importParam = query.startsWith('?import=') ? query.slice(8) : null;
-			console.log('Import URL:', importParam);
-			if (!importParam) {
-				throw new Error('No import URL found in query.');
-			}
-	
-			const decodedUrl = decodeURIComponent(importParam);
-			console.log('Decoded import URL:', decodedUrl);
-	
-			const response = await fetch(decodedUrl);
-			if (!response.ok) {
-				console.error('Fetch Response Status:', response.status);
-				console.error('Fetch Response Headers:', response.headers);
-				throw new Error(`Fetch error! Status: ${response.status}`);
-			}
-	
-			const blob = await response.blob();
-			const file = new File([blob], 'wachat_test.zip', { type: 'application/zip' });
-			dataDisplayProps.setFileToParse(file);
-	
-			// Optionally call submitData
-			// const result = await submitData(file, 'task-id', 'your-auth-token');
-			// console.log(result.message);
-	
-		} catch (error) {
-			console.error('Error fetching or uploading file:', error);
-		}
-	};
-	
-	useEffect(() => {
-		if (window.location.search.includes('?import=')) {
-			console.log('Import URL detected in query.');
-			handleButtonClick();
-		}
-	}, []);
-	
+        try {
+            setIsLoaderVisible(true); // Show loader
+            const query = window.location.search;
+            const importParam = query.startsWith('?import=') ? query.slice(8) : null;
+            console.log('Import URL:', importParam);
+            if (!importParam) {
+                throw new Error('No import URL found in query.');
+            }
+
+            const decodedUrl = decodeURIComponent(importParam);
+            console.log('Decoded import URL:', decodedUrl);
+
+            const response = await fetch(decodedUrl);
+            if (!response.ok) {
+                console.error('Fetch Response Status:', response.status);
+                console.error('Fetch Response Headers:', response.headers);
+                throw new Error(`Fetch error! Status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const file = new File([blob], 'import.zip', { type: 'application/zip' });
+            dataDisplayProps.setFileToParse(file);
+        } catch (error) {
+            console.error('Error fetching or uploading file:', error);
+        } finally {
+            setIsLoaderVisible(false); // Hide loader
+        }
+    };
+
+    useEffect(() => {
+        if (window.location.search.includes('?import=')) {
+            console.log('Import URL detected in query.');
+            handleButtonClick();
+        } else {
+            dataDisplayProps.showMap(true); // Show map if no import URL
+        }
+    }, []);
 
     if (!isVisible) return null;
 
     return (
         <>
+            <Loader isVisible={isLoaderVisible} setIsVisible={setIsLoaderVisible} /> {/* Loader component */}
             <button onClick={toggleBM} className="btn--burger-menu">
                 {menuIcon}
             </button>
