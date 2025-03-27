@@ -1,6 +1,9 @@
 import * as JSZip from "jszip";
 import { sha256, slugify } from "./utils.js";
 import React, { useEffect, useCallback } from "react";
+import { uploadProcessedChat } from "./data_submission";
+
+
 
 export const colourPalette = [
 	"#d0160f",
@@ -58,14 +61,13 @@ const updateMapdata = (data, groupName = null) => {
 
 export const allowedExtensions = [".zip", ".txt", ".geojson"];
 
+export let globalProcessedChatFile = null;
 const processFile = (file, setDataDisplayMap) => {
     if (
         file instanceof File &&
         allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
     ) {
         try {
-            const reader = new FileReader();
-
             if (file.name.endsWith(".zip")) {
                 const zip = new JSZip();
                 zip.loadAsync(file).then(function (contents) {
@@ -80,14 +82,7 @@ const processFile = (file, setDataDisplayMap) => {
                     const chatFilename = filenames.find((filename) =>
                         filename.match(/.*\.txt$/i)
                     );
-
-                    // Detect image files
-                    const imgFilenames = filenames.filter((filename) =>
-                        filename.match(/.*\.(jpg|jpeg|png|gif)$/i)
-                    );
-
-                    // Process GeoJSON file if it exists
-                    if (geojsonFilename) {
+					if (geojsonFilename) {
                         zip
                             .file(geojsonFilename)
                             .async("string")
@@ -100,16 +95,28 @@ const processFile = (file, setDataDisplayMap) => {
                                 }
                             });
                     }
-
                     // Process chat file if it exists
                     if (chatFilename) {
                         zip
                             .file(chatFilename)
                             .async("string")
                             .then(async function (fileContent) {
-                                const [data, name] = await processText(fileContent, zip);
+                                const [data, name, processedChatFile] = await processText(
+                                    fileContent,
+                                    zip
+                                );
                                 setDataDisplayMap(data, name, zip);
+								globalProcessedChatFile = processedChatFile;
+
+                                // Pass the processedChatFile to the upload function
+                                // uploadProcessedChat(processedChatFile, (text) => {
+                                //     console.log(text);
+                                // }, (disabled) => {
+                                //     console.log(disabled);
+                                // });
+								
                             });
+					
                     }
                 });
             } else {
@@ -337,115 +344,113 @@ const sortMessages = (messages) => {
 };
 
 const processText = async (text, zipInput = null) => {
-	const groupNameRegex = /"([^"]*)"/;
-	const groupNameMatches = text.match(groupNameRegex);
-	const groupName = groupNameMatches ? groupNameMatches[1] : null;
+    const groupNameRegex = /"([^"]*)"/;
+    const groupNameMatches = text.match(groupNameRegex);
+    const groupName = groupNameMatches ? groupNameMatches[1] : null;
 
-	// Check the first 3 characters to determine the format; iOS and Android
-	const fileType = text.substring(0, 3);
-	const [messageRegex, imgFileRegex] = setImgMsgRegex(fileType);
+    // Check the first 3 characters to determine the format; iOS and Android
+    const fileType = text.substring(0, 3);
+    const [messageRegex, imgFileRegex] = setImgMsgRegex(fileType);
 
-	let messageMatches = [...text.matchAll(messageRegex)];
+    let messageMatches = [...text.matchAll(messageRegex)];
 
-	// Convert messageMatches to array of JSON objects and then sort
-	let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
-	messages = sortMessages(messages);
+    // Convert messageMatches to array of JSON objects and then sort
+    let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
+    messages = sortMessages(messages);
 
-	// Now loop through messages to create geojson for each location
-	var mapdata = {
-		type: "FeatureCollection",
-		features: [],
-	};
-	let currentFeature = null;
-	let currentSender = null;
+    // Now loop through messages to create geojson for each location
+    var mapdata = {
+        type: "FeatureCollection",
+        features: [],
+    };
+    let currentFeature = null;
+    let currentSender = null;
 
-	const createFeature = (message, groupName, contribID) => {
-		return {
-			type: "Feature",
-			properties: {
-				contributionid: contribID,
-				mainattribute: groupName,
-				observations: "",
-				observer: message.sender,
-				datetime: message.datetime,
-				markerColour: senders[message.sender],
-				imgFilenames: [],
-			},
-			geometry: message.location
-				? {
-						type: "Point",
-						coordinates: [message.location.long, message.location.lat],
-				  }
-				: null,
-		};
-	};
+    const createFeature = (message, groupName, contribID) => {
+        return {
+            type: "Feature",
+            properties: {
+                contributionid: contribID,
+                mainattribute: groupName,
+                observations: "",
+                observer: message.sender,
+                datetime: message.datetime,
+                markerColour: senders[message.sender],
+                imgFilenames: [],
+            },
+            geometry: message.location
+                ? {
+                        type: "Point",
+                        coordinates: [message.location.long, message.location.lat],
+                  }
+                : null,
+        };
+    };
 
-	for (const message of messages) {
+    for (const message of messages) {
 		// if the content is valid and there is location or different sender, get the current feature or create a new one and push it to mapdata
 		// we assign it to a variable to be sure the validated content is used
 		// const contribID = await sha256(message.datetime + message.sender); // hash a unique contrib id, this is difficult under more nesting
+        const contribID = await sha256(message.datetime + message.sender);
+        if (message.location || message.sender !== currentSender) {
+            if (currentFeature && currentFeature.geometry) {
+                mapdata.features.push(currentFeature);
+            }
+            currentFeature = createFeature(message, groupName, contribID);
+            currentSender = message.sender;
+        }
 
-		if (message.location || message.sender !== currentSender) {
-			const contribID = await sha256(message.datetime + message.sender);
-			if (currentFeature && currentFeature.geometry) {
-				mapdata.features.push(currentFeature);
-			}
-			currentFeature = createFeature(message, groupName, contribID);
-			currentSender = message.sender;
-		}
-
-		if (currentFeature) {
-			if (message.imgFilenames) {
-				currentFeature.properties.imgFilenames.push(...message.imgFilenames);
-			}
-			currentFeature.properties.observations += message.content + "\n";
-		}
-	}
+        if (currentFeature) {
+            if (message.imgFilenames) {
+                currentFeature.properties.imgFilenames.push(...message.imgFilenames);
+            }
+            currentFeature.properties.observations += message.content + "\n";
+        }
+    }
 	// Push the last message to mapdataz
-	if (currentFeature && currentFeature.geometry) {
-		mapdata.features.push(currentFeature);
-	} else {
-		currentFeature = null;
-	}
-// Add to the end of processText, right before `return [mapdata, groupName];`
-const zip = new JSZip();
+    if (currentFeature && currentFeature.geometry) {
+        mapdata.features.push(currentFeature);
+    }
 
-// Collect all original image filenames
-const imageFilenames = new Set();
+    // Create the zip file
+    const zip = new JSZip();
 
-mapdata.features.forEach((feature) => {
-	if (feature.properties.imgFilenames) {
-		feature.properties.imgFilenames.forEach((name) => imageFilenames.add(name));
-	}
-});
+    // Collect all original image filenames
+    const imageFilenames = new Set();
 
-// Create the GeoJSON file
-const geojsonBlob = new Blob([JSON.stringify(mapdata, null, 2)], {
-	type: "application/geo+json",
-});
-zip.file("map.geojson", geojsonBlob);
+    mapdata.features.forEach((feature) => {
+        if (feature.properties.imgFilenames) {
+            feature.properties.imgFilenames.forEach((name) => imageFilenames.add(name));
+        }
+    });
 
-// Add images from zip input
-if (zipInput) {
-	const filenames = Object.keys(zipInput.files);
-	const imgFilenames = filenames.filter((f) => imageFilenames.has(f));
+    // Create the GeoJSON file
+    const geojsonBlob = new Blob([JSON.stringify(mapdata, null, 2)], {
+        type: "application/geo+json",
+    });
+    zip.file("map.geojson", geojsonBlob);
 
-	for (const filename of imgFilenames) {
-		const fileData = await zipInput.file(filename).async("blob");
-		zip.file(filename, fileData);
-	}
-}
+    // Add images from zip input
+    if (zipInput) {
+        const filenames = Object.keys(zipInput.files);
+        const imgFilenames = filenames.filter((f) => imageFilenames.has(f));
 
-// Generate zip and trigger download
-const processedChat = await zip.generateAsync({ type: "blob" });
-const url = URL.createObjectURL(processedChat);
-const a = document.createElement("a");
-a.href = url;
-a.download = `${groupName || "processed_chat"}.zip`;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-URL.revokeObjectURL(url);
+        for (const filename of imgFilenames) {
+            const fileData = await zipInput.file(filename).async("blob");
+            zip.file(filename, fileData);
+        }
+    }
 
-	return [mapdata, groupName];
+    // Generate the zip file as a Blob
+    const processedChatBlob = await zip.generateAsync({ type: "blob" });
+
+    // Convert the Blob to a File object
+    const processedChatFile = new File(
+        [processedChatBlob],
+        `${groupName || "processed_chat"}.zip`,
+        { type: "application/zip" }
+    );
+
+    // Return the map data and the processed chat file
+    return [mapdata, groupName, processedChatFile];
 };
