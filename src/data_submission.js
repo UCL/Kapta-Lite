@@ -1,6 +1,6 @@
 const API_URL = "https://mjbhgmtnxe.execute-api.eu-west-2.amazonaws.com/prod/KaptaLite_test";
 
-export async function uploadProcessedChat(file, setStatusText, setButtonDisabled) {
+export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, setButtonDisabled) {
     setStatusText("Preparing for sharing...");
     setButtonDisabled(true);
 
@@ -8,14 +8,14 @@ export async function uploadProcessedChat(file, setStatusText, setButtonDisabled
         // Step 1: Request a pre-signed URL from the backend
         const response = await fetch(`${API_URL}/upload-url`, {
             method: "POST",
-            body: JSON.stringify({ fileName: file.name, fileType: file.type }),
+            body: JSON.stringify({ fileName: fileNameWAMap, fileType: file.type }),
             headers: { "Content-Type": "application/json" }
         });
 
         if (!response.ok) throw new Error("Failed to get pre-signed URL");
 
         const { presignedUrl } = await response.json();
-        console.log("✅ Pre-signed URL:", presignedUrl);
+        // console.log("✅ Pre-signed URL:", presignedUrl);
 
         // Step 2: Upload the file to S3 using the pre-signed URL
         setStatusText("Uploading...");
@@ -32,7 +32,7 @@ export async function uploadProcessedChat(file, setStatusText, setButtonDisabled
         console.log("✅ File uploaded successfully");
 
         // Step 3: Fetch the pre-signed download URL
-        const encodedFileName = encodeURIComponent(file.name);
+        const encodedFileName = encodeURIComponent(fileNameWAMap);
         const downloadResponse = await fetch(`${API_URL}/download-url?fileName=${encodedFileName}`);
 
         if (!downloadResponse.ok) throw new Error(`Failed to get download URL: ${await downloadResponse.text()}`);

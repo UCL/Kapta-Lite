@@ -27,6 +27,7 @@ function ShareBtn({ setOpen }) {
         </button>
     );
 }
+
 function SubmitBtn() {
     return (
         <button type="submit" className="submit">
@@ -119,173 +120,156 @@ export function ShareModal({
     if (!isOpen) return null;
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
-    const filenameSlug = currentDataset.slug;
-    const shareContent = {
-        title: "#MadeWithKapta",
-        text: "Create your WhatsApp Maps with Kapta https://kapta.earth/",
-        url: "https://kapta.earth/",
-    };
-    const handleShareImgClick = () => {
-        let errorMsg;
-        html2canvas(document.querySelector("#map"), {
-            allowTaint: true,
-            useCORS: true,
-            imageTimeout: 5000,
-            removeContainer: true,
-            logging: false,
-            foreignObjectRendering: false,
-            ignoreElements: function (element) {
-                if ("button" == element.type || "submit" == element.type) {
-                    return true;
-                }
-                if (element.classList.contains("buttons")) {
-                    return true;
-                }
-                if (element.id === "map-actions-container") {
-                    return true;
-                }
-            },
-        }).then(async function (canvas) {
-            const dataURL = canvas.toDataURL();
-            const blob = await (await fetch(dataURL)).blob();
-            const filename = `${filenameSlug}.png`;
-            const filesArray = [
-                new File([blob], filename, {
-                    type: blob.type,
-                    lastModified: new Date().getTime(),
-                }),
-            ];
-            const shareData = {
-                files: filesArray,
-            };
-            if (navigator.canShare && navigator.canShare(shareData)) {
-                navigator
-                    .share({
-                        files: filesArray,
-                        ...shareContent,
-                    })
-                    .then(() => {
-                        errorMsg = "Failed to share map image";
-                    });
-            } else {
-                try {
-                    errorMsg = "Sharing not supported, image copied to clipboard";
-                    navigator.clipboard.write([
-                        new ClipboardItem({
-                            "image/png": blob,
-                        }),
-                    ]);
-                } catch (error) {
-                    console.error(error);
-                    errorMsg = "Failed to write image to clipboard";
-                }
-            }
-            if (errorMsg) {
-                const dialog = document.createElement("dialog");
-                dialog.textContent = errorMsg;
-                dialog.classList.add("error-dialog");
-                document.body.appendChild(dialog);
-                dialog.showModal();
-                dialog.classList.add("showing");
-                setTimeout(() => {
-                    dialog.classList.remove("showing");
-                    setTimeout(() => {
-                        dialog.remove();
-                    }, 1000);
-                }, 3000);
-            }
-        });
-    };
-
-    const downloadFile = (blob, filename) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    };
+    const [isOpenMapChecked, setIsOpenMapChecked] = useState(null);
+    const [hasTaskId, setHasTaskId] = useState(null);
+    const [taskId, setTaskId] = useState("");
+    const [buttonText, setButtonText] = useState(t("sharedata"));
+    const [isButtonDisabled, setButtonDisabled] = useState(false);
+    const [kaptaWaMapUrl, setKaptaWaMapUrl] = useState(""); // Store the generated URL
 
     const handleShareDataClick = async () => {
-		if (!globalProcessedChatFile) {
-			console.error("❌ No processed chat file available.");
-			return;
-		}
-	
-		const button = document.querySelector(".btn");
-		const originalText = button.textContent;
-		button.textContent = "Preparing for sharing...";
-		button.disabled = true;
-	
-		try {
-			// Use the globalProcessedChatFile for upload
-			const presignedUrl = await uploadProcessedChat(globalProcessedChatFile, (text) => {
-				button.textContent = text;
-			}, (disabled) => {
-				button.disabled = disabled;
-			});
-	
-			button.textContent = "Ready to Share!!!";
-			button.disabled = false;
-	
-			button.onclick = () => {
-				window.open(presignedUrl, "_blank");
-			};
-		} catch (error) {
-			console.error("❌ Upload error:", error);
-			button.textContent = originalText;
-			button.disabled = false;
-		}
-	};
+        if (kaptaWaMapUrl) {
+            // If the URL is already generated, handle re-click behavior
+            if (navigator.canShare && navigator.share) {
+                navigator
+                    .share({
+                        title: "#MadeWithKapta",
+                        text: "This is a WhatsApp Map created with Kapta",
+                        url: kaptaWaMapUrl,
+                    })
+                    .catch((error) => console.error("Sharing failed", error));
+            } else {
+                navigator.clipboard
+                    .writeText(kaptaWaMapUrl)
+                    .then(() => {
+                        alert("Link copied to clipboard!");
+                    })
+                    .catch((err) => {
+                        console.error("Failed to copy link: ", err);
+                    });
+            }
+            return;
+        }
 
-    const handleUploadClick = () => {
-        console.log("Upload with task ID to be developed yet");
+        // Generate the URL if it hasn't been generated yet
+        setButtonText("Uploading… Wait a few seconds");
+        setButtonDisabled(true);
+        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const date = new Date().toISOString().split("T")[0];
+		const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${isOpenMapChecked ? "open" : "close"}`;
+
+        try {
+            const presignedUrl = await uploadProcessedChat(globalProcessedChatFile, fileNameWAMap, setButtonText, setButtonDisabled);
+            const encodedPresignedUrl = encodeURIComponent(presignedUrl);
+            const generatedUrl = `http://localhost:8080/?import=${encodedPresignedUrl}`;
+            setKaptaWaMapUrl(generatedUrl); // Store the generated URL
+            setButtonText("Click to share the map directly with WhatsApp or other apps");
+            setButtonDisabled(false);
+
+            // Handle sharing
+            if (navigator.canShare && navigator.share) {
+                navigator
+                    .share({
+                        title: "#MadeWithKapta",
+                        text: "This is a WhatsApp Map created with Kapta",
+                        url: generatedUrl,
+                    })
+                    .catch((error) => console.error("Sharing failed", error));
+            } else {
+                navigator.clipboard
+                    .writeText(generatedUrl)
+                    .then(() => {
+                        alert("Link copied to clipboard!");
+                    })
+                    .catch((err) => {
+                        console.error("Failed to copy link: ", err);
+                    });
+            }
+        } catch (error) {
+            console.error("Error during sharing:", error);
+            setButtonText(t("sharedata"));
+            setButtonDisabled(false);
+        }
     };
-
-    const handleHelpClick = (evt) => {
-        evt.target.style.backgroundColor = "#a6a4a4";
-        setTimeout(() => {
-            window.location.href = ASK_URL;
-            evt.target.style.backgroundColor = "white";
-        }, 500);
-    };
-
-    const [isOpenMapChecked, setIsOpenMapChecked] = useState(false);
 
     useClickOutside(shareModalRef, () => setIsOpen(false));
 
     return (
-        <>
-            <div id="sharing-modal" ref={shareModalRef}>
-                <button className="modal-close btn" onClick={() => setIsOpen(false)}>
-                    {closeIcon}
-                </button>
-                <div className="modal-title">{t("sharingTitle")}</div>
-                <div className="option-button-container">
-                    <button className="btn" onClick={handleShareDataClick}>
-                        {dataIcn}
-                        {t("sharedata")}
-                    </button>
-                    <button className="btn" onClick={handleUploadClick}>
-                        {uploadIcn}
-                        {t("uploaddata")}
-                    </button>
-                </div>
+        <div id="sharing-modal" ref={shareModalRef}>
+            <button className="modal-close btn" onClick={() => setIsOpen(false)}>
+                {closeIcon}
+            </button>
+            <div className="modal-title">{t("sharingTitle")}</div>
 
-                <div className="checkbox-container" style={{ marginTop: "1rem" }}>
-                    <p>To share as OPEN WhatsApp Map, check this box</p>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={isOpenMapChecked}
-                            onChange={(e) => setIsOpenMapChecked(e.target.checked)}
-                        />{" "}
-                        Share as open map
-                    </label>
-                </div>
+            {/* Open WhatsApp Map Section */}
+            <p>Do you want to share this as an OPEN WhatsApp Map?</p>
+			<div className="checkbox-container">
+				<label>
+					<input
+						type="checkbox"
+						checked={isOpenMapChecked === false}
+						onChange={() => setIsOpenMapChecked(false)}
+					/>{" "}
+					No
+				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={isOpenMapChecked === true}
+						onChange={() => setIsOpenMapChecked(true)}
+					/>{" "}
+					Yes
+				</label>
+			</div>
+
+            {/* Task ID Section */}
+            <p>Do you have a TASK ID?</p>
+			<div className="checkbox-container">
+				<label>
+					<input
+						type="checkbox"
+						checked={hasTaskId === false}
+						onChange={() => {
+							setHasTaskId(false);
+							setTaskId("");
+						}}
+					/>{" "}
+					No
+				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={hasTaskId === true}
+						onChange={() => setHasTaskId(true)}
+					/>{" "}
+					Yes
+				</label>
+			</div>
+            {hasTaskId && (
+                <input
+                    type="text"
+                    placeholder="Enter Task ID"
+                    value={taskId}
+                    onChange={(e) => setTaskId(e.target.value.replace(/\D/g, ""))} // Allow only numeric input
+                    maxLength={6}
+                />
+            )}
+
+            {/* Share Button */}
+            <div className="option-button-container">
+                <button
+                    className="btn"
+                    onClick={handleShareDataClick}
+                    disabled={
+						isButtonDisabled ||
+						isOpenMapChecked === null ||
+						hasTaskId === null ||
+						(hasTaskId === true && taskId.length < 6)
+					}
+                >
+                    {buttonText}
+                </button>
             </div>
-        </>
+        </div>
     );
 }
