@@ -40,7 +40,9 @@
     right: 0;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease;
-    z-index: 1;
+    z-index: 100000;
+    pointer-events: auto; /* Ensure buttons are interactive */
+
 
     a {
         color: var(--link-blue);
@@ -148,8 +150,28 @@
     background-color: transparent;
     font-size: 1.3rem;
     border: none;
+    z-index: 1000;
+    pointer-events: auto; /* Ensure buttons are interactive */
 
     svg {
-        color: white;
+        color: rgb(54, 54, 54);
     }
+}
+
+.btn--open-burger-menu {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    background-color: var(--mid-green);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.btn--open-burger-menu:hover {
+    background-color: var(--dark-green);
 }

@@ -6,9 +6,13 @@ import {
     shareIcn,
     closeIcon,
     imageIcn,
+    menuIcon,
     dataIcn,
     uploadIcn,
     chevronUp,
+    connect,
+    share,
+    search,
     exitButtonIcon,
     msgIcon,
 } from "./icons";
@@ -18,29 +22,42 @@ import { useUserStore } from "./UserContext.jsx";
 import { ASK_URL, hasCognito } from "../globals.js";
 import { uploadProcessedChat } from "./data_submission.js";
 import { globalProcessedChatFile } from "./import_whatsapp";
+import BurgerMenu from "./BurgerMenu.jsx";
 
-function ShareBtn({ setOpen }) {
-    const openShareModal = () => setOpen(true);
-    return (
-        <button type="button" className="share" onClick={openShareModal}>
-            {shareIcn}
-        </button>
-    );
-}
 
-function SubmitBtn() {
-    return (
-        <button type="submit" className="submit">
-            {chevronUp}
-        </button>
-    );
-}
 
-function InputArea({ setTitle, setPulse, setModalOpen, currentDataset }) {
+// function ShareBtn({ setOpen }) {
+//     const openShareModal = () => setOpen(true);
+//     return (
+//         <button type="button" className="share" onClick={openShareModal}>
+//             {shareIcn}
+//         </button>
+//     );
+// }
+
+// function SubmitBtn() {
+//     return (
+//         <button type="submit" className="submit">
+//             {chevronUp}
+//         </button>
+//     );
+// }
+
+// function Search() {
+//     console.log("search clicked......")
+//     return (
+//         <button type="submit" className="submit">
+//             {chevronUp}
+//         </button>
+//     );
+// }
+
+function InputArea({ setTitle, setPulse, search, currentDataset }) {
     const { t } = useTranslation();
     const [isSubmit, setIsSubmit] = useState(false);
     const [filterValue, setFilterValue] = useState("");
     const [placeholderValue, setPlaceholderValue] = useState(t("addDescription"));
+   
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -68,17 +85,23 @@ function InputArea({ setTitle, setPulse, setModalOpen, currentDataset }) {
     };
 
     return (
-        <form className="filter__form" onSubmit={handleSubmit}>
-            <div className="filter__wrapper">
-                <textarea
-                    placeholder={placeholderValue}
-                    name="filter"
-                    onChange={handleInputChange}
-                    value={filterValue}
-                ></textarea>
-            </div>
-            {isSubmit ? <SubmitBtn /> : <ShareBtn setOpen={setModalOpen} />}
-        </form>
+        <form className="filter__form">
+  <div className="filter__wrapper">
+    <textarea
+      placeholder={placeholderValue}
+      name="filter"
+      onChange={handleInputChange}
+      value={filterValue}
+    ></textarea>
+
+    <button id="search" type="button" onClick={search}>
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" strokeWidth="2"/>
+        <path d="M22 22L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    </button>
+  </div>
+</form>
     );
 }
 
@@ -86,28 +109,88 @@ export function MapActionArea({
     setTitle,
     setPulse,
     showMenu,
-    setModalOpen,
     currentDataset,
+    search,
+    share,
+    connect
 }) {
+    const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
+   
+    const toggleBM = () => {
+        setIsBMVisible((prevState) => !prevState);
+    };
+   
+    const handleConnect = () => {
+        console.log("connect clicked and function called");
+    };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleShare = () => {
+        setIsModalOpen(true); // Opens the modal
+    };
+
+    const handleSearch = () => {
+        console.log("search clicked and function called");
+    };
+
+
+
     return (
-        <div id="map-actions-container">
-            <div className="map-actions__wrapper">
-                <div className="map-actions__body">
-                    <button id="exit-map" type="button" onClick={showMenu}>
-                        {exitButtonIcon}
+<div id="map-actions-container">
+  <div className="map-actions__wrapper">
+    <div className="map-actions__body">
+    <InputArea
+        setTitle={setTitle}
+        setPulse={setPulse}
+        currentDataset={currentDataset}
+        search={handleSearch}
+      />
+                    <button 
+                         className="btn--burger-menu"
+                         onClick={toggleBM}
+                    > 
+                    <div className="map-action-icon">{menuIcon}</div>
+                    {/* <span className="map-action-label">BURGER</span> */}
+
                     </button>
-                    <button id="connect" type="button" onClick={showMenu}>
-                        {exitButtonIcon}
+                    <BurgerMenu
+				isVisible={isBMVisible}
+				setIsVisible={setIsBMVisible}
+				// setIsLoginVisible={setIsLoginVisible}
+				// setIsWelcomeVisible={setIsWelcomeVisible}
+			/>
+                    <button
+                        id="connect"
+                        type="button"
+                        onClick={handleConnect}
+                        className="map-action-btn"
+                    >
+                        <div className="map-action-icon">{imageIcn}</div>
+                        <span className="map-action-label">Connect</span>
                     </button>
-                    <InputArea
-                        setTitle={setTitle}
-                        setPulse={setPulse}
-                        setModalOpen={setModalOpen}
-                        currentDataset={currentDataset}
-                    />
-                </div>
-            </div>
-        </div>
+
+                    <button
+                        id="share"
+                        type="button"
+                        onClick={handleShare}
+                        className="map-action-btn"
+                    >
+                        <div className="map-action-icon">{shareIcn}</div>
+                        <span className="map-action-label">Share</span>
+                    </button>
+
+    
+    </div>
+  </div>
+
+  <ShareModal
+    isOpen={isModalOpen}
+    setIsOpen={setIsModalOpen}
+    currentDataset={currentDataset}
+  />
+</div>
+
     );
 }
 

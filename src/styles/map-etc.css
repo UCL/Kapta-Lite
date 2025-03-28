@@ -191,7 +191,7 @@
     width: 100%;
     position: fixed;
     top: 2.8vh;
-    pointer-events: none; /* Allow interactions to pass through */
+    pointer-events: none; 
 
 
     .map-actions__wrapper {
