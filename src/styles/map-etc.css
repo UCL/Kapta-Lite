@@ -28,7 +28,7 @@
 #map {
     height: 100vh;
     width: 100vw;
-    position: absolute;
+    position: fixed;
 
     .map-button {
         position: absolute;
@@ -52,18 +52,60 @@
         }
     }
 
-    #gps {
-        right: 0.5rem;
-    }
-
     #base-map--toggle {
         left: 0.5rem;
+        z-index: 1000;
+        top: 7rem;
+        background-color: rgb(90, 89, 89);
     }
 
+    #base-map--toggle:active {
+        background-color: rgb(3, 2, 82);
+    }
+
+    #gps {
+        left: 0.5rem;
+        top: 10.5rem;
+        background-color: rgb(90, 89, 89);
+
+    }
     #gps:active {
-        background-color: rgb(175, 175, 175);
+        background-color: rgb(3, 2, 82);
     }
 
+    #connect,
+    #share {
+        position: fixed;
+        bottom: 2rem; /* Close to the bottom of the screen */
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 50%;
+        background-color: var(--mid-green);
+        border: 1px solid var(--mid-green--translucent);
+        z-index: 900;
+    }
+    
+    #connect {
+        left: 48%; /* Center horizontally with slight separation */
+        transform: translateX(-4rem); /* Adjust position slightly to the left */
+    }
+    
+    #share {
+        left: 52%; /* Center horizontally with slight separation */
+        transform: translateX(4rem); /* Adjust position slightly to the right */
+    }
+    
+    /* Center as a group using left 50% and offsets */
+    #exit-map {
+      left: 50%;
+      transform: translateX(-4.25rem); 
+    }
+    
+    #connect {
+      left: 50%;
+      transform: translateX(0.75rem);
+    }
+    
     .position-marker-icon {
         color: var(--bright-green);
 
@@ -106,10 +148,10 @@
     color: #f0f0f0;
     background-color: transparent;
     z-index: 900;
-    height: 12vh;
+    height: 100%;
     width: 100%;
     position: fixed;
-    bottom: 2.8vh;
+    top: 2.8vh;
 
     .map-actions__wrapper {
         display: flex;
@@ -129,56 +171,81 @@
                 padding-inline: 16vw;
             }
 
-            #exit-map {
-                background-color: var(--mid-green);
-                border-radius: 50%;
-                border-color: var(--mid-green--translucent);
-            }
-
+            
 
             .filter__form {
+                top: 1rem;
+                position: absolute;
                 width: 100%;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-evenly;
                 align-items: center;
-            }
-
-            .filter__wrapper {
+              }
+              
+              .filter__wrapper {
+                position: relative;
                 width: 80%;
                 border-radius: 30px;
                 background-color: white;
                 min-height: 3rem;
                 display: flex;
-                flex-direction: row;
-                justify-content: center;
                 align-items: center;
-
-                >textarea {
-                    width: 80%;
-                    align-content: center;
-                    border: none;
-                    resize: none;
-                    font-size: 105%;
-
-                    &:active,
-                    &:focus,
-                    &:focus-visible {
-                        border: none;
-                        outline: none;
-                    }
-                }
-            }
-
-
-            button {
+                padding-right: 3rem;
+                box-sizing: border-box;
+              }
+              
+              .filter__wrapper > textarea {
+                width: 100%;
+                border: none;
+                resize: none;
+                font-size: 105%;
+                padding: 0;                /* Reset padding */
+                padding-left: 1rem;        /* Left padding for text */
+                padding-right: 3rem;       /* Space for button */
+                border-radius: 30px;
+                outline: none;
+                background: transparent;
+                box-sizing: border-box;
+                line-height: 3rem;         /* Match the height of the wrapper */
+                height: 3rem;              /* Explicit height to match container */
+              }
+              
+              
+              .filter__wrapper > button {
+                position: absolute;
+                top: 50%;
+                right: 1rem;
+                transform: translateY(-50%);
+                background: transparent;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                height: 1.5rem;
+                width: 1.5rem;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 3rem;
+              }
+              
+              .filter__wrapper > button > svg {
+                height: 100%;
+                width: 100%;
+                color: var(--mid-green);
+              }
+              
+              
+
+
+            /* button {
+                display: flex;
+                right:-2rem;
+                align-items: center;
+                justify-content: center;
+                width: 5rem;
                 height: 3rem;
                 background-color: var(--mid-green);
-                border-radius: 50%;
+                border-radius: 20%;
                 border: 1px solid var(--mid-green--translucent);
 
                 >svg {
@@ -188,7 +255,7 @@
                     padding: 0.3rem;
                 }
 
-            }
+            } */
 
 
         }
@@ -213,7 +280,7 @@
 
     padding-bottom: 2rem;
     border-radius: 8px;
-    color: #eee;
+    color: #1f036d;
     box-shadow: 9px 9px 17px #140202,
         -9px -9px 17px #1b0e0e;
 
@@ -268,7 +335,7 @@
 
             &:active,
             :focus {
-                background-color: #9f1203;
+                background-color: #02b429;
                 color: #eee;
                 border-color: #031927;
 
@@ -280,6 +347,9 @@
 
 
     }
+}
+#sharing-modal .checkbox-container label {
+    color: #1f036d; /* Ensure checkbox labels are also dark blue */
 }
 
 
