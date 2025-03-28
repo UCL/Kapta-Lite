@@ -75,36 +75,27 @@
 
     #connect,
     #share {
-        position: fixed;
-        bottom: 2rem; /* Close to the bottom of the screen */
-        width: 3.5rem;
+        /* position: fixed; */
+        bottom: 2.5rem; /* Close to the bottom of the screen */
+        width: 5.5rem;
         height: 3.5rem;
-        border-radius: 50%;
+        border-radius: 20%;
         background-color: var(--mid-green);
         border: 1px solid var(--mid-green--translucent);
         z-index: 900;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        
     }
     
     #connect {
-        left: 48%; /* Center horizontally with slight separation */
-        transform: translateX(-4rem); /* Adjust position slightly to the left */
-    }
-    
-    #share {
-        left: 52%; /* Center horizontally with slight separation */
-        transform: translateX(4rem); /* Adjust position slightly to the right */
-    }
-    
-    /* Center as a group using left 50% and offsets */
-    #exit-map {
-      left: 50%;
-      transform: translateX(-4.25rem); 
-    }
-    
-    #connect {
-      left: 50%;
-      transform: translateX(0.75rem);
-    }
+        transform: translateX(-6.5rem); /* shift left from center */
+      }
+      
+      #share {
+        transform: translateX(1rem); /* shift right from center */
+      }
     
     .position-marker-icon {
         color: var(--bright-green);
@@ -143,6 +134,54 @@
 .map-popup-body {
     overflow-y: scroll;
 }
+.map-action-btn {
+    position: fixed;
+    bottom: 2rem;
+    width: 5rem;
+    height: 6rem;
+    border: none;
+    border-radius: 1.5rem;
+    background-color: var(--mid-green);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    z-index: 900;
+    padding: 0.5rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .map-action-btn:hover {
+    transform: scale(1.05);
+    background-color: var(--mid-green-dark, #028c28);
+  }
+  
+  .map-action-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .map-action-icon svg {
+    width: 100%;
+    height: 100%;
+    color: white;
+  }
+  
+  .map-action-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+  }
+  
+  
 
 #map-actions-container {
     color: #f0f0f0;
@@ -152,12 +191,16 @@
     width: 100%;
     position: fixed;
     top: 2.8vh;
+    pointer-events: none; /* Allow interactions to pass through */
+
 
     .map-actions__wrapper {
         display: flex;
         flex-direction: row;
         width: 100%;
         height: 100%;
+        pointer-events: none; /* Allow interactions to pass through */
+
 
 
         .map-actions__body {
@@ -166,24 +209,31 @@
             justify-content: space-around;
             width: 100%;
             margin-inline-start: 0.5rem;
+            pointer-events: none; /* Enable interactions for buttons and inputs */
+
 
             @media screen and (min-width: 600px) {
                 padding-inline: 16vw;
             }
 
-            
+            .map-action-btn {
+                pointer-events: auto; /* Ensure buttons are interactive */
+            }
 
             .filter__form {
-                top: 1rem;
+                top: 0.1rem;
+                left:0.5rem;
                 position: absolute;
                 width: 100%;
                 display: flex;
                 flex-direction: row;
-                justify-content: space-evenly;
+                justify-content: flex-start; /* Align to the start (left) */
                 align-items: center;
-              }
-              
-              .filter__wrapper {
+                pointer-events: auto; /* Ensure buttons are interactive */
+
+            }
+            
+            .filter__wrapper {
                 position: relative;
                 width: 80%;
                 border-radius: 30px;
@@ -193,7 +243,9 @@
                 align-items: center;
                 padding-right: 3rem;
                 box-sizing: border-box;
-              }
+                pointer-events: auto; /* Ensure buttons are interactive */
+
+            }
               
               .filter__wrapper > textarea {
                 width: 100%;
@@ -209,6 +261,8 @@
                 box-sizing: border-box;
                 line-height: 3rem;         /* Match the height of the wrapper */
                 height: 3rem;              /* Explicit height to match container */
+                pointer-events: auto; /* Ensure buttons are interactive */
+
               }
               
               
@@ -226,6 +280,8 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                pointer-events: auto; /* Ensure buttons are interactive */
+
               }
               
               .filter__wrapper > button > svg {
