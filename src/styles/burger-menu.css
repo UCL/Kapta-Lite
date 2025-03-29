@@ -17,6 +17,8 @@
         margin: 0.6rem 1rem;
         height: 2rem;
         border: none;
+        display: none !important;
+
     }
 
     .button--login {
@@ -40,7 +42,7 @@
     right: 0;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease;
-    z-index: 100000;
+    z-index: 10000000;
     pointer-events: auto; /* Ensure buttons are interactive */
 
 
@@ -65,6 +67,8 @@
     .bm__content {
         display: grid;
         height: 90%;
+        color: black;
+
     }
 
     .bm__item {
