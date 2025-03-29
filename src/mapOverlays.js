@@ -5,16 +5,18 @@ import html2canvas from "html2canvas";
 import {
     shareIcn,
     closeIcon,
+    createIcn,
     imageIcn,
     menuIcon,
     dataIcn,
     uploadIcn,
     chevronUp,
-    connect,
+    connectIcon,
     share,
     search,
     exitButtonIcon,
     msgIcon,
+    // fa-whatsapp,
 } from "./icons";
 import { slugify, useClickOutside } from "./utils.js";
 import { isMobileOrTablet } from "./main.js";
@@ -25,6 +27,7 @@ import { globalProcessedChatFile } from "./import_whatsapp";
 import BurgerMenu from "./BurgerMenu.jsx";
 import { handleConnect } from "./ConnectButton.js";
 import { handleSearch } from "./SearchBar.js";
+import { importdata } from "./import_whatsapp.js";
 
 
 
@@ -163,7 +166,7 @@ export function MapActionArea({
                         onClick={connect}
                         className="map-action-btn"
                     >
-                        <div className="map-action-icon">{imageIcn}</div>
+                        <div className="map-action-icon">{connectIcon}</div>
                         <span className="map-action-label">Connect</span>
                     </button>
 
@@ -173,8 +176,12 @@ export function MapActionArea({
                         onClick={handleShare}
                         className="map-action-btn"
                     >
-                        <div className="map-action-icon">{shareIcn}</div>
-                        <span className="map-action-label">Share</span>
+                        <div className="map-action-icon">
+                            {importdata ? shareIcn : createIcn}
+                        </div>
+                        <span className="map-action-label">
+                            {importdata ? "Share" : "Create"}
+                        </span>
                     </button>
                 </div>
             </div>
@@ -303,77 +310,108 @@ export function ShareModal({
             <button className="modal-close btn" onClick={() => setIsOpen(false)}>
                 {closeIcon}
             </button>
-            <div className="modal-title">{t("sharingTitle")}</div>
-
-            {/* Open WhatsApp Map Section */}
-            <p>Do you want to share this as an OPEN WhatsApp Map?</p>
-			<div className="checkbox-container">
-				<label>
-					<input
-						type="checkbox"
-						checked={isOpenMapChecked === false}
-						onChange={() => setIsOpenMapChecked(false)}
-					/>{" "}
-					No
-				</label>
-				<label>
-					<input
-						type="checkbox"
-						checked={isOpenMapChecked === true}
-						onChange={() => setIsOpenMapChecked(true)}
-					/>{" "}
-					Yes
-				</label>
-			</div>
-
-            {/* Task ID Section */}
-            <p>Do you have a TASK ID?</p>
-			<div className="checkbox-container">
-				<label>
-					<input
-						type="checkbox"
-						checked={hasTaskId === false}
-						onChange={() => {
-							setHasTaskId(false);
-							setTaskId("");
-						}}
-					/>{" "}
-					No
-				</label>
-				<label>
-					<input
-						type="checkbox"
-						checked={hasTaskId === true}
-						onChange={() => setHasTaskId(true)}
-					/>{" "}
-					Yes
-				</label>
-			</div>
-            {hasTaskId && (
-                <input
-                    type="text"
-                    placeholder="Enter Task ID"
-                    value={taskId}
-                    onChange={(e) => setTaskId(e.target.value.replace(/\D/g, ""))} // Allow only numeric input
-                    maxLength={6}
-                />
-            )}
-
-            {/* Share Button */}
-            <div className="option-button-container">
-                <button
-                    className="btn"
-                    onClick={handleShareDataClick}
-                    disabled={
-						isButtonDisabled ||
-						isOpenMapChecked === null ||
-						hasTaskId === null ||
-						(hasTaskId === true && taskId.length < 6)
-					}
-                >
-                    {buttonText}
-                </button>
+            <div className="modal-title">
+                {importdata ? t("sharingTitle") : "Create WhatsApp Map"}
             </div>
+    
+            {importdata ? (
+                <>
+                    {/* Open WhatsApp Map Section */}
+                    <section className="modal-section">
+                        <p>Do you want to share this as an OPEN WhatsApp Map?</p>
+                        <div className="checkbox-container">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={isOpenMapChecked === false}
+                                    onChange={() => setIsOpenMapChecked(false)}
+                                />{" "}
+                                No
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={isOpenMapChecked === true}
+                                    onChange={() => setIsOpenMapChecked(true)}
+                                />{" "}
+                                Yes
+                            </label>
+                        </div>
+                    </section>
+    
+                    {/* Task ID Section */}
+                    <section className="modal-section">
+                        <p>Do you have a TASK ID?</p>
+                        <div className="checkbox-container">
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={hasTaskId === false}
+                                    onChange={() => {
+                                        setHasTaskId(false);
+                                        setTaskId("");
+                                    }}
+                                />{" "}
+                                No
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={hasTaskId === true}
+                                    onChange={() => setHasTaskId(true)}
+                                />{" "}
+                                Yes
+                            </label>
+                        </div>
+                        {hasTaskId && (
+                            <input
+                                type="text"
+                                placeholder="Enter Task ID"
+                                value={taskId}
+                                onChange={(e) =>
+                                    setTaskId(e.target.value.replace(/\D/g, ""))
+                                } // Allow only numeric input
+                                maxLength={6}
+                            />
+                        )}
+                    </section>
+    
+                    {/* Share Button */}
+                    <div className="option-button-container">
+                        <button
+                            className="btn"
+                            onClick={handleShareDataClick}
+                            disabled={
+                                isButtonDisabled ||
+                                isOpenMapChecked === null ||
+                                hasTaskId === null ||
+                                (hasTaskId === true && taskId.length < 6)
+                            }
+                        >
+                            {buttonText}
+                        </button>
+                    </div>
+                </>
+            ) : (
+                <>
+                    {/* Content for when importdata is false */}
+                    <div className="modal-content">
+                        <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
+                        <ol>
+                            <li>Upload your WhatsApp chat file.</li>
+                            <li>Customize your map settings.</li>
+                            <li>Generate and share your map.</li>
+                        </ol>
+                    </div>
+    
+                    {/* Close Button */}
+                    <div className="option-button-container">
+                        <button className="btn" onClick={() => setIsOpen(false)}>
+                            Close
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

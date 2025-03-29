@@ -28,8 +28,11 @@ const getTimestamp = () => {
 	return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}Z`;
 };
 var timestamp = getTimestamp();
+export let importdata = false; // Track whether FileParser is called
 
 export function FileParser({ file, ...dataDisplayProps }) {
+	importdata = true; // Set to true when FileParser is called
+
 	const { setMapData, showMap, setFileToParse } = dataDisplayProps;
 
 	const setDataDisplayMap = useCallback(
