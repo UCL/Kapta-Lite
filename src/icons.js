@@ -21,6 +21,7 @@ import {
 	faMessage,
 	faBars,
 	faInfoCircle,
+	faLayerGroup,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
 
@@ -44,7 +45,8 @@ library.add(
 	faMessage,
 	faBars,
 	faGithub,
-	faInfoCircle
+	faInfoCircle,
+	faLayerGroup
 );
 // we use .btn-icon but there is no global styling for it, only ever nested,
 // which allows for easy selecting and flexible styling
@@ -66,9 +68,9 @@ export const addMetaIcn = (
 export const uploadIcn = (
 	<FontAwesomeIcon icon={faCloudArrowUp} className="btn-icon" />
 );
-export const GPSIcn = <FontAwesomeIcon icon={faLocationCrosshairs} />;
-export const basemapSatIcon = <FontAwesomeIcon icon={faSun} />;
-export const basemapDarkIcon = <FontAwesomeIcon icon={faMoon} />;
+export const GPSIcn = <FontAwesomeIcon icon={faLocationCrosshairs} style={{ color: "#3a3a3a" }}/>;
+export const basemapSatIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
+export const basemapDarkIcon = <FontAwesomeIcon icon={faLayerGroup} />;
 export const exitButtonIcon = (
 	<FontAwesomeIcon icon={faArrowLeft} className="btn-icon" />
 );

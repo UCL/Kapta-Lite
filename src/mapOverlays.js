@@ -23,6 +23,8 @@ import { ASK_URL, hasCognito } from "../globals.js";
 import { uploadProcessedChat } from "./data_submission.js";
 import { globalProcessedChatFile } from "./import_whatsapp";
 import BurgerMenu from "./BurgerMenu.jsx";
+import { handleConnect } from "./ConnectButton.js";
+import { handleSearch } from "./SearchBar.js";
 
 
 
@@ -86,22 +88,27 @@ function InputArea({ setTitle, setPulse, search, currentDataset }) {
 
     return (
         <form className="filter__form">
-  <div className="filter__wrapper">
-    <textarea
-      placeholder={placeholderValue}
-      name="filter"
-      onChange={handleInputChange}
-      value={filterValue}
-    ></textarea>
+            <div className="filter__wrapper">
+                <textarea
+                placeholder={placeholderValue}
+                name="filter"
+                onChange={handleInputChange}
+                value={filterValue}
+                ></textarea>
 
-    <button id="search" type="button" onClick={search}>
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" strokeWidth="2"/>
-        <path d="M22 22L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-      </svg>
-    </button>
-  </div>
-</form>
+                <button id="search" type="button" onClick={search}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" strokeWidth="2"/>
+                    <path d="M22 22L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+                </button>
+            </div>
+            <div className="filter__suggested-tags">
+                 <button type="button" onClick={search}>Water</button>
+                 <button type="button" onClick={search}>Population</button>
+                 <button type="button" onClick={search}>Football</button>
+             </div>
+        </form>
     );
 }
 
@@ -115,55 +122,45 @@ export function MapActionArea({
     connect
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
-   
+    const [isModalOpen, setIsModalOpen] = useState(false); // State for the share modal
+    const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for the search modal
+
     const toggleBM = () => {
         setIsBMVisible((prevState) => !prevState);
     };
-   
-    const handleConnect = () => {
-        console.log("connect clicked and function called");
-    };
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleShare = () => {
-        setIsModalOpen(true); // Opens the modal
+        setIsModalOpen(true); // Opens the share modal
     };
 
     const handleSearch = () => {
-        console.log("search clicked and function called");
+        setIsSearchModalOpen(true); // Opens the search modal
     };
 
-
-
     return (
-<div id="map-actions-container">
-  <div className="map-actions__wrapper">
-    <div className="map-actions__body">
-    <InputArea
-        setTitle={setTitle}
-        setPulse={setPulse}
-        currentDataset={currentDataset}
-        search={handleSearch}
-      />
-                    <button 
-                         className="btn--burger-menu"
-                         onClick={toggleBM}
-                    > 
-                    <div className="map-action-icon">{menuIcon}</div>
-                    {/* <span className="map-action-label">BURGER</span> */}
-
+        <div id="map-actions-container">
+            <div className="map-actions__wrapper">
+                <div className="map-actions__body">
+                    <InputArea
+                        setTitle={setTitle}
+                        setPulse={setPulse}
+                        currentDataset={currentDataset}
+                        search={handleSearch}
+                    />
+                    <button
+                        className="btn--burger-menu"
+                        onClick={toggleBM}
+                    >
+                        <div className="map-action-icon">{menuIcon}</div>
                     </button>
                     <BurgerMenu
-				isVisible={isBMVisible}
-				setIsVisible={setIsBMVisible}
-				// setIsLoginVisible={setIsLoginVisible}
-				// setIsWelcomeVisible={setIsWelcomeVisible}
-			/>
+                        isVisible={isBMVisible}
+                        setIsVisible={setIsBMVisible}
+                    />
                     <button
                         id="connect"
                         type="button"
-                        onClick={handleConnect}
+                        onClick={connect}
                         className="map-action-btn"
                     >
                         <div className="map-action-icon">{imageIcn}</div>
@@ -179,18 +176,42 @@ export function MapActionArea({
                         <div className="map-action-icon">{shareIcn}</div>
                         <span className="map-action-label">Share</span>
                     </button>
+                </div>
+            </div>
 
-    
-    </div>
-  </div>
+            {/* Share Modal */}
+            <ShareModal
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                currentDataset={currentDataset}
+            />
 
-  <ShareModal
-    isOpen={isModalOpen}
-    setIsOpen={setIsModalOpen}
-    currentDataset={currentDataset}
-  />
-</div>
+            {/* Search Modal */}
+            <SearchModal
+                isOpen={isSearchModalOpen}
+                setIsOpen={setIsSearchModalOpen}
+            />
+        </div>
+    );
+}
 
+export function SearchModal({ isOpen, setIsOpen }) {
+    if (!isOpen) return null;
+
+    const searchModalRef = useRef(null);
+
+    useClickOutside(searchModalRef, () => setIsOpen(false)); // Close modal when clicking outside
+
+    return (
+        <div id="search-modal" ref={searchModalRef}>
+            <button className="modal-close btn" onClick={() => setIsOpen(false)}>
+                {closeIcon}
+            </button>
+            <div className="modal-title">Search</div>
+            <div className="modal-content">
+                <p>No open data at this time</p>
+            </div>
+        </div>
     );
 }
 

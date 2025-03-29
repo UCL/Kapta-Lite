@@ -53,24 +53,40 @@
     }
 
     #base-map--toggle {
-        left: 0.5rem;
-        z-index: 1000;
-        top: 7rem;
-        background-color: rgb(90, 89, 89);
+        right: 0.5rem;
+        /* z-index: 1000; */
+        top: 6rem;
+        background-color: rgb(252, 251, 251);
+        /* border-color: #3a3a3a; */
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        border:none;
+        
+        
     }
 
     #base-map--toggle:active {
-        background-color: rgb(3, 2, 82);
+        background-color: rgb(184, 184, 185);
+        /* border-color: #3a3a3a; */
+
     }
 
     #gps {
-        left: 0.5rem;
-        top: 10.5rem;
-        background-color: rgb(90, 89, 89);
+        right: 0.5rem;
+        top: 9.5rem;
+        background-color: rgb(252, 250, 250);
+        /* border-color: #3a3a3a; */
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        border:none;
 
     }
     #gps:active {
-        background-color: rgb(3, 2, 82);
+        background-color: rgb(247, 247, 250);
+        /* border-color: #3a3a3a; */
+
     }
 
     #connect,
@@ -221,17 +237,17 @@
             }
 
             .filter__form {
-                top: 0.1rem;
-                left:0.5rem;
                 position: absolute;
-                width: 100%;
+                top: 0.1rem;
+                left: 0.5rem;
                 display: flex;
-                flex-direction: row;
-                justify-content: flex-start; /* Align to the start (left) */
-                align-items: center;
-                pointer-events: auto; /* Ensure buttons are interactive */
-
-            }
+                flex-direction: column; /* 👈 key change: stack vertically */
+                align-items: flex-start;
+                gap: 0.3rem; /* space between search bar and suggestions */
+                width: 100%;
+                pointer-events: auto;
+              }
+              
             
             .filter__wrapper {
                 position: relative;
@@ -290,6 +306,30 @@
                 color: var(--mid-green);
               }
               
+              .filter__suggested-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                padding-inline: 0.5rem;
+              }
+              
+              .filter__suggested-tags button {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+                border: 1px solid var(--mid-green);
+                background-color: white;
+                border-radius: 20px;
+                color: var(--mid-green);
+                cursor: pointer;
+                white-space: nowrap;
+                width: auto; /* 👈 button width now adapts to content */
+              }
+              
+              
+              .filter__suggested-tags button:hover {
+                background-color: var(--mid-green);
+                color: white;
+              }
               
 
 
@@ -439,4 +479,63 @@
             color: white;
         }
     }
+}
+
+#search-modal {
+    display: flex;
+    flex: 7;
+    min-width: 50vw;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 901;
+    position: absolute;
+    top: 16vh;
+    margin-inline: 20%;
+    background-color: var(--mid-green--translucent);
+    backdrop-filter: blur(2px);
+    padding: 1rem;
+    padding-bottom: 2rem;
+    border-radius: 8px;
+    color: #1f036d;
+    box-shadow: 9px 9px 17px #140202,
+        -9px -9px 17px #1b0e0e;
+}
+
+#search-modal .modal-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0.5rem;
+    background: transparent;
+    /* border: none; */
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: var(--black-blue); /* Match the color of the share modal close button */
+    transition: color 0.3s ease; /* Add smooth transition for hover effect */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 1.5rem;
+    border-radius: 30%; /* Make it circular like the share modal */
+    background-color: white; /* Match the background color */
+    border-color: rgb(7, 7, 7); /* Match the background color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for consistency */
+}
+
+#search-modal .modal-close:hover {
+    background-color: var(--mid-green-dark); /* Darken background on hover */
+    color: white; /* Change icon color to white on hover */
+}
+
+#search-modal .modal-title {
+    font-size: 105%;
+    font-weight: 600;
+}
+
+#search-modal .modal-content {
+    font-size: 1rem;
+    color: #1f036d;
+    text-align: center;
 }
