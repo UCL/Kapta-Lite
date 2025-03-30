@@ -10,6 +10,7 @@ import "./styles/main.css";
 import ReactGA from "react-ga4";
 import { UserProvider } from "./UserContext.jsx";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
+import { ShareModal } from "./mapOverlays.js";
 
 export const isMobileOrTablet = () => {
     return (
@@ -65,20 +66,21 @@ function App() {
     useEffect(() => {
         // Initialize GA and SW
         initServiceWorker(setFileToParse);
+
         // ReactGA.initialize("G-LEP1Y0FVCD");  //disable GA for dev
     }, []); // Empty dependency array ensures this effect runs once on mount
-
+	
+    
+    const [isMenuVisible, setIsMenuVisible] = useState(true); // To be set to false when the issue with FilePicker is fixed
     const [isMapVisible, setIsMapVisible] = useState(true); // Always show map
     const [mapData, setMapData] = useState(null);
     const [isLoaderVisible, setIsLoaderVisible] = useState(true);
     const [isLoginVisible, setIsLoginVisible] = useState(false);
     const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
-
-    const showMap = (showLoader = false) => {
+        const showMap = (showLoader = false) => {
         if (showLoader) setIsLoaderVisible(true);
         setIsMapVisible(true);
     };
-
     const dataDisplayProps = {
         setMapData,
         showMap,
@@ -99,19 +101,26 @@ function App() {
                 setIsVisible={setIsWelcomeVisible}
             />
             <MainMenu
-                isVisible={false} // Never show menu
+                isVisible={isMenuVisible} 
                 setIsLoginVisible={setIsLoginVisible}
                 setIsWelcomeVisible={setIsWelcomeVisible}
                 dataset={mapData}
                 {...dataDisplayProps}
             />
-            {fileToParse && <FileParser file={fileToParse} {...dataDisplayProps} />}
             <Map
                 isVisible={isMapVisible}
                 data={mapData}
                 isLoginVisible={isLoginVisible}
                 setIsLoginVisible={setIsLoginVisible}
+                {...dataDisplayProps}
+
             />
+            <ShareModal
+            {...dataDisplayProps}
+            />
+            
+            {fileToParse && <FileParser file={fileToParse} {...dataDisplayProps} />}
+
         </UserProvider>
     );
 }

@@ -24,10 +24,11 @@ import { useUserStore } from "./UserContext.jsx";
 import { ASK_URL, hasCognito } from "../globals.js";
 import { uploadProcessedChat } from "./data_submission.js";
 import { globalProcessedChatFile } from "./import_whatsapp";
-import BurgerMenu from "./BurgerMenu.jsx";
+// import BurgerMenu from "./BurgerMenu.jsx";
 import { handleConnect } from "./ConnectButton.js";
 import { handleSearch } from "./SearchBar.js";
 import { importdata } from "./import_whatsapp.js";
+import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based on your project structure
 
 
 
@@ -122,18 +123,20 @@ export function MapActionArea({
     currentDataset,
     search,
     share,
-    connect
+    connect,
+    ...dataDisplayProps // Add this to capture the props
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
     const [isModalOpen, setIsModalOpen] = useState(false); // State for the share modal
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for the search modal
 
-    const toggleBM = () => {
-        setIsBMVisible((prevState) => !prevState);
-    };
+    // const toggleBM = () => {
+    //     setIsBMVisible((prevState) => !prevState);
+    // };
 
     const handleShare = () => {
         setIsModalOpen(true); // Opens the share modal
+        
     };
 
     const handleSearch = () => {
@@ -150,16 +153,16 @@ export function MapActionArea({
                         currentDataset={currentDataset}
                         search={handleSearch}
                     />
-                    <button
+                    {/* <button
                         className="btn--burger-menu"
                         onClick={toggleBM}
                     >
                         <div className="map-action-icon">{menuIcon}</div>
-                    </button>
-                    <BurgerMenu
+                    </button> */}
+                    {/* <BurgerMenu
                         isVisible={isBMVisible}
                         setIsVisible={setIsBMVisible}
-                    />
+                    /> */}
                     <button
                         id="connect"
                         type="button"
@@ -191,6 +194,8 @@ export function MapActionArea({
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}
                 currentDataset={currentDataset}
+                {...dataDisplayProps} // Pass the props here
+
             />
 
             {/* Search Modal */}
@@ -227,7 +232,11 @@ export function ShareModal({
     setIsOpen,
     currentDataset,
     setIsUploadDialogOpen,
+    dataset,
+    ...dataDisplayProps
 }) {
+    
+    console.log("ShareModalclick", dataDisplayProps);
     if (!isOpen) return null;
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
@@ -303,9 +312,25 @@ export function ShareModal({
         }
     };
 
+    const handleDownload = () => {
+       if (globalProcessedChatFile) {
+    const blob = new Blob([globalProcessedChatFile], {
+      type: "application/zip",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "processed_chat.zip"; // or your desired filename
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+    };
+
     useClickOutside(shareModalRef, () => setIsOpen(false));
 
     return (
+        
         <div id="sharing-modal" ref={shareModalRef}>
             <button className="modal-close btn" onClick={() => setIsOpen(false)}>
                 {closeIcon}
@@ -391,6 +416,14 @@ export function ShareModal({
                             {buttonText}
                         </button>
                     </div>
+                    {!isMobileOrTablet() && (
+                <div className="option-button-container">
+                    <button className="btn" onClick={handleDownload}>
+                        Download Map
+                    </button>
+                </div>
+            )}
+
                 </>
             ) : (
                 <>
@@ -402,16 +435,28 @@ export function ShareModal({
                             <li>Customize your map settings.</li>
                             <li>Generate and share your map.</li>
                         </ol>
+                        {(!isMobileOrTablet()) && (
+                        <p>Or if you already have the chat. Upload to convert it.</p>
+                       )}
                     </div>
-    
-                    {/* Close Button */}
-                    <div className="option-button-container">
-                        <button className="btn" onClick={() => setIsOpen(false)}>
-                            Close
+                        {/* {(!isMobileOrTablet() || isIOS()) && (
+                            <FilePicker {...dataDisplayProps}/> //this for some reason is not working
+                        )} */}
+            {(!isMobileOrTablet()) && (
+                         <button className="btn"//done this way rather than using  <FilePicker {...dataDisplayProps} /> like in MainMenu.jsx
+                                                 //beause encountered issus with passing props to import_whatsapp.js
+                            onClick={() => { 
+                               
+                                const filePickerButton = document.getElementById("filePickerButton")
+                                filePickerButton.click(); // Programmatically trigger the click
+                                setIsOpen(false)
+                            }}
+                        > Convert Chat to Mappp
                         </button>
-                    </div>
+                        )}
                 </>
             )}
         </div>
     );
 }
+

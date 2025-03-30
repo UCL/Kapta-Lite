@@ -119,8 +119,7 @@ function RecentMapButton({ showMap }) {
         </button>
     );
 }
-
-function FilePicker(dataDisplayProps) {
+export function FilePicker(dataDisplayProps,) {
     const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null);
 
@@ -135,7 +134,6 @@ function FilePicker(dataDisplayProps) {
     };
 
     const { t } = useTranslation();
-
     return (
         <>
             <input
@@ -145,7 +143,9 @@ function FilePicker(dataDisplayProps) {
                 style={{ display: "none" }}
                 onChange={handleFileChange}
             />
-            <button onClick={handleButtonClick} className="btn menu-btn file-input">
+            {/* <button onClick={handleButtonClick} className="btn menu-btn file-input"> */}
+
+            <button id="filePickerButton" onClick={handleButtonClick}>
                 {t("selectFile")}
             </button>
             {selectedFile && (
