@@ -6,6 +6,7 @@ import {
     shareIcn,
     closeIcon,
     createIcn,
+    premiumIcn,
     imageIcn,
     menuIcon,
     dataIcn,
@@ -129,6 +130,7 @@ export function MapActionArea({
     const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
     const [isModalOpen, setIsModalOpen] = useState(false); // State for the share modal
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for the search modal
+    const [isPremium, setIsPremium] = useState(false); // State to differentiate between Search and Premium
 
     // const toggleBM = () => {
     //     setIsBMVisible((prevState) => !prevState);
@@ -136,10 +138,18 @@ export function MapActionArea({
 
     const handleShare = () => {
         setIsModalOpen(true); // Opens the share modal
-        
+        setIsPremium(false); // Set to "Premium" mode
+
     };
 
     const handleSearch = () => {
+        setIsSearchModalOpen(true); // Opens the search modal
+        setIsPremium(false); // Reset isPremium to false
+
+    };
+
+    const handlePremium = () => {
+        setIsPremium(true); // Set to "Premium" mode
         setIsSearchModalOpen(true); // Opens the search modal
     };
 
@@ -186,6 +196,17 @@ export function MapActionArea({
                             {importdata ? "Share" : "Create"}
                         </span>
                     </button>
+                    {(!isMobileOrTablet()) && (
+                    <button
+                        id="premium"
+                        type="button"
+                        onClick={handlePremium}
+                        className="map-action-btn premium-btn" 
+                        >
+                        <div className="map-action-icon">{premiumIcn}</div>
+                        <span className="map-action-label">Premium</span>
+                    </button>
+                    )}
                 </div>
             </div>
 
@@ -202,28 +223,49 @@ export function MapActionArea({
             <SearchModal
                 isOpen={isSearchModalOpen}
                 setIsOpen={setIsSearchModalOpen}
+                isPremium={isPremium} // Pass the isPremium state here
+                setIsPremium={setIsPremium} // Pass the setIsPremium function
+
             />
         </div>
     );
 }
 
-export function SearchModal({ isOpen, setIsOpen }) {
+export function SearchModal({ isOpen, setIsOpen, isPremium, setIsPremium }) {
     if (!isOpen) return null;
 
     const searchModalRef = useRef(null);
 
-    useClickOutside(searchModalRef, () => setIsOpen(false)); // Close modal when clicking outside
+    useClickOutside(searchModalRef, () => 
+        setIsOpen(false)); // Close modal when clicking outside
+        //  setIsPremium(false); // Reset isPremium to false
 
     return (
         <div id="search-modal" ref={searchModalRef}>
-            <button className="modal-close btn" onClick={() => setIsOpen(false)}>
+            <button className="modal-close btn" onClick={() => {
+                        setIsPremium(false); // Reset isPremium to false
+                setIsOpen(false)
+                }}>
                 {closeIcon}
             </button>
-            <div className="modal-title">Search</div>
+            <div className="modal-title">
+                {isPremium ? "Premium Feature" : "Search"}
+            </div>
             <div className="modal-content">
-                <p>No open data at this time</p>
+                {isPremium ? (
+                    <p>
+  You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualise them in Kapta Lite. <br />
+  To request a demo for Premium data management and visualisation, please fill in this form:<br />
+  <a href="https://forms.gle/Br6C8eAueZdo35Y7A" target="_blank" rel="noopener noreferrer">
+    https://forms.gle/Br6C8eAueZdo35Y7A
+  </a>
+</p>
+                ) : (
+                    <p>No open WhatsApp Maps in this area yet. Contribute yours!</p>
+                )}
             </div>
         </div>
+        
     );
 }
 

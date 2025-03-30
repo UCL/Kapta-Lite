@@ -24,6 +24,7 @@ import {
 	faInfoCircle,
 	faLayerGroup,
 	faPlus,
+	faArrowUpRightFromSquare,
 	// faWhatsapp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
@@ -52,7 +53,8 @@ library.add(
 	faInfoCircle,
 	faLayerGroup,
 	faWhatsapp,
-	faPlus
+	faPlus,
+	faArrowUpRightFromSquare
 );
 // we use .btn-icon but there is no global styling for it, only ever nested,
 // which allows for easy selecting and flexible styling
@@ -62,6 +64,8 @@ export const nextIcn = <FontAwesomeIcon icon={faForwardStep} />;
 export const imageIcn = <FontAwesomeIcon icon={faImage} className="btn-icon" />;
 export const shareIcn = <FontAwesomeIcon icon={faShareNodes} />;
 export const createIcn = <FontAwesomeIcon icon={faPlus} />;
+export const premiumIcn = <FontAwesomeIcon icon={faArrowUpRightFromSquare} />;
+
 
 export const dataIcn = (
 	<FontAwesomeIcon icon={faFileCode} className="btn-icon" />

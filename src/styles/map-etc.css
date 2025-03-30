@@ -373,6 +373,8 @@
     background-color: var(--mid-green--translucent);
     backdrop-filter: blur(2px);
     padding: 1rem;
+    pointer-events: auto; 
+
 
     padding-bottom: 2rem;
     border-radius: 8px;
@@ -500,6 +502,7 @@
     color: #1f036d;
     box-shadow: 9px 9px 17px #140202,
         -9px -9px 17px #1b0e0e;
+    pointer-events: auto; 
 }
 
 #search-modal .modal-close {
@@ -538,4 +541,18 @@
     font-size: 1rem;
     color: #1f036d;
     text-align: center;
+}
+
+.premium-btn {
+    position: absolute;
+        /* position: fixed; */
+        bottom: 2.5rem; /* Close to the bottom of the screen */
+        width: 5.5rem;
+        height: 3.5rem;
+        border-radius: 20%;
+        right: 20px; /* Adjust as needed */
+    z-index: 1000; /* Ensure it appears above other elements */
+    background-color: var(--mid-green-dark, #028c28);
+    color: #000;
+    border: none;
 }
