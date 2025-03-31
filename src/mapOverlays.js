@@ -93,7 +93,12 @@ function InputArea({ setTitle, setPulse, search, currentDataset }) {
 
     return (
         <form className="filter__form">
-            <div className="filter__wrapper">
+            <div
+                className="filter__wrapper"
+                style={{
+                width: isMobileOrTablet() ? "80%" : "25%",
+                }}
+            >
                 <textarea
                 placeholder={placeholderValue}
                 name="filter"
@@ -103,17 +108,28 @@ function InputArea({ setTitle, setPulse, search, currentDataset }) {
 
                 <button id="search" type="button" onClick={search}>
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M22 22L16 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path
+                    d="M10 18C14.4183 18 18 14.4183 18 10C18 5.58172 14.4183 2 10 2C5.58172 2 2 5.58172 2 10C2 14.4183 5.58172 18 10 18Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    />
+                    <path
+                    d="M22 22L16 16"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    />
                 </svg>
                 </button>
             </div>
+
             <div className="filter__suggested-tags">
-                 <button type="button" onClick={search}>Water</button>
-                 <button type="button" onClick={search}>Population</button>
-                 <button type="button" onClick={search}>Football</button>
-             </div>
+                <button type="button" onClick={search}>Water</button>
+                <button type="button" onClick={search}>Population</button>
+                <button type="button" onClick={search}>Football</button>
+            </div>
         </form>
+
     );
 }
 

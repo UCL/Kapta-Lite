@@ -54,8 +54,8 @@
 
     #base-map--toggle {
         right: 0.5rem;
-        /* z-index: 1000; */
-        top: 6rem;
+        z-index: 1000;
+        top: 5rem;
         background-color: rgb(252, 251, 251);
         /* border-color: #3a3a3a; */
         width: 2rem;
@@ -74,7 +74,7 @@
 
     #gps {
         right: 0.5rem;
-        top: 9.5rem;
+        top: 8rem;
         background-color: rgb(252, 250, 250);
         /* border-color: #3a3a3a; */
         width: 2rem;
@@ -130,19 +130,21 @@
         }
     }
     .whatsapp-mapper-icon {
-        color: #f9faf9;
-        background-color:var(--bright-green);        /* Adds white background */
-        border-radius: 50%;             /* Makes it circular */
-        padding: 4px;                   /* Adjust padding for spacing */
-        display: inline-flex;           /* Center the icon */
+        background-color: var(--bright-green);  /* Background around the icon */
+        border-radius: 50%;                     /* Circular shape */
+        padding: 6px;                           /* Space between icon and edge */
+        width: 60px;                            /* Size = icon size + padding * 2 */
+        height: 60px;
+        display: flex;                          /* Center the icon inside */
         align-items: center;
         justify-content: center;
-        /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); Optional: adds subtle shadow */
-        
-        svg {
-            height: 35px;
-            width: 35px;
-        }
+        color: #f9faf9;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);  /* Optional shadow */
+    }
+    
+    .whatsapp-mapper-icon svg {
+        width: 35px;
+        height: 35px;
     }
 
     .leaflet-div-icon {
