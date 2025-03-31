@@ -38,18 +38,18 @@ function initServiceWorker(setFileToParse) {
                 });
         });
 
-        if (!isMobileOrTablet() || isIOS()) {
-            window.addEventListener("load", function () {
-                const shownWorksBestOnAndroid = localStorage.getItem(
-                    "shownWorksBestOnAndroid"
-                );
+        // if (!isMobileOrTablet() || isIOS()) {
+        //     window.addEventListener("load", function () {
+        //         const shownWorksBestOnAndroid = localStorage.getItem(
+        //             "shownWorksBestOnAndroid"
+        //         );
 
-                if (!shownWorksBestOnAndroid) {
-                    alert(i18next.t("desktoporiosPrompt")); // using like this since can't use useTranslation outside a component
-                    localStorage.setItem("shownWorksBestOnAndroid", "true");
-                }
-            });
-        }
+        //         if (!shownWorksBestOnAndroid) {
+        //             alert(i18next.t("desktoporiosPrompt")); // using like this since can't use useTranslation outside a component
+        //             localStorage.setItem("shownWorksBestOnAndroid", "true");
+        //         }
+        //     });
+        // }
     }
 
     navigator.serviceWorker.addEventListener("message", (event) => {

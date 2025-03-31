@@ -397,7 +397,7 @@ export function ShareModal({
         try {
             const presignedUrl = await uploadProcessedChat(globalProcessedChatFile, fileNameWAMap, setButtonText, setButtonDisabled);
             const encodedPresignedUrl = encodeURIComponent(presignedUrl);
-            const generatedUrl = `http://localhost:8080/?import=${encodedPresignedUrl}`;
+            const generatedUrl = `https://staging.d3qub397zqfncc.amplifyapp.com/?import=${encodedPresignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("Click to share the map directly with WhatsApp or other apps");
             setButtonDisabled(false);
@@ -429,6 +429,7 @@ export function ShareModal({
     };
 
     const handleDownload = () => {
+        console.log(globalProcessedChatFile)
        if (globalProcessedChatFile) {
     const blob = new Blob([globalProcessedChatFile], {
       type: "application/zip",
