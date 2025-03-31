@@ -121,6 +121,14 @@
             width: 15px;
         }
     }
+    .whatsapp-marker-icon {
+        color: var(--bright-green);
+
+        svg {
+            height: 25px;
+            width: 25px;
+        }
+    }
 
     .leaflet-div-icon {
         border: none;

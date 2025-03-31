@@ -23,6 +23,9 @@ import {
 	basemapDarkIcon,
 	basemapSatIcon,
 	GPSPositionIcn,
+	WhatAppMapMarkerPosition,
+	WhatAppMapMarker,
+	WhatAppMapper,
 	GPSIcn,
 	nextIcn,
 } from "./icons.js";
@@ -34,6 +37,33 @@ import SuccessModal from "./SuccessModal.jsx";
  *   Basemaps (TileLayers)
  ************************************************************************************************/
 
+const wamappers = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-122.4194, 37.7749]
+      },
+      "properties": {
+        "name": "San Francisco",
+        "population": 883305
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-118.2437, 34.0522]
+      },
+      "properties": {
+        "name": "Los Angeles",
+        "population": 3990456
+      }
+    }
+  ]
+}
 
 
 function DarkTileLayer() {
@@ -103,13 +133,21 @@ const getImageURLFromZip = async (zip, imgFilename) => {
 	}
 };
 
+
+
 function MapDataLayer({ data }) {
 	const { t } = useTranslation();
 	const map = useMap();
 	const boundsRef = useRef([]);
 	const { data: geoJSON, imgZip } = data;
 	const [featureImages, setFeatureImages] = useState({}); // this is basically a cache
-
+    // Define a custom GPS icon
+    const WhatsAppMarkerIcon = L.divIcon({
+		html: WhatAppMapMarkerPosition, // Use the imported GPS icon
+		className: "whatsapp-marker-icon",
+		// iconSize: [100, 100], // Adjust size as needed
+		// iconAnchor: [15, 30], // Anchor point for the icon
+	});
 	if (geoJSON.features.length == 0) {
 		// need translation
 		return <ErrorPopup error="No data to display" />;
@@ -161,19 +199,16 @@ function MapDataLayer({ data }) {
 
 					const imgFilenames = feature.properties.imgFilenames;
 					return (
-						<CircleMarker
-							key={index}
-							center={latlng}
-							pathOptions={{
-								color: markerColour,
-								fillColor: markerColour,
-								...markerOptions,
-							}}
-							eventHandlers={{
-								click: () => handleMarkerClick(feature),
-							}}
-						>
-							<Popup>
+			
+							<Marker
+								key={index}
+								position={latlng}
+								icon={WhatsAppMarkerIcon}
+								eventHandlers={{
+									click: () => handleMarkerClick(feature),
+								}}
+							>
+								<Popup>
 								<div className="map-popup-body">
 									{imgFilenames && imgFilenames.length > 0 && (
 										<div
@@ -222,8 +257,10 @@ function MapDataLayer({ data }) {
 									{t("observer")}: {feature.properties.observer}
 								</div>
 							</Popup>
-						</CircleMarker>
-					);
+							</Marker>
+						);
+						
+
 				}
 			})}
 		</>

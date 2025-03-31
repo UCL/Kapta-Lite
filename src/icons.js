@@ -25,6 +25,7 @@ import {
 	faLayerGroup,
 	faPlus,
 	faArrowUpRightFromSquare,
+	faLocationDot,
 	// faWhatsapp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
@@ -54,7 +55,8 @@ library.add(
 	faLayerGroup,
 	faWhatsapp,
 	faPlus,
-	faArrowUpRightFromSquare
+	faArrowUpRightFromSquare,
+	faLocationDot
 );
 // we use .btn-icon but there is no global styling for it, only ever nested,
 // which allows for easy selecting and flexible styling
@@ -80,6 +82,8 @@ export const addMetaIcn = (
 export const uploadIcn = (
 	<FontAwesomeIcon icon={faCloudArrowUp} className="btn-icon" />
 );
+export const WhatAppMapper = <FontAwesomeIcon icon={faWhatsapp} style={{ color: "#05ad29" }}/>;
+export const WhatAppMapMarker = <FontAwesomeIcon icon={faLocationDot} style={{ color: "#05ad29" }}/>;
 export const GPSIcn = <FontAwesomeIcon icon={faLocationCrosshairs} style={{ color: "#3a3a3a" }}/>;
 export const basemapSatIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
 export const basemapDarkIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
@@ -89,6 +93,10 @@ export const exitButtonIcon = (
 export const GPSPositionIcn = icon({
 	prefix: "fas",
 	iconName: "dot-circle",
+}).html;
+export const WhatAppMapMarkerPosition = icon({
+	prefix: "fa",
+	iconName: "location-dot",
 }).html;
 export const closeIcon = <FontAwesomeIcon icon={faX} className="btn-icon" />;
 export const connectIcon = <FontAwesomeIcon icon={faWhatsapp} className="btn-icon" />;
