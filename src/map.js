@@ -289,20 +289,41 @@ function WhatsAppMappersDataLayer({ data }) {
 
 	return (
 		<>
-			
-			{wamapperslocations.features.map((feature, i) => {
-				const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-				return (
-					<Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
-						<Popup>
-							<h3>{feature.properties.name}</h3>
-							<p>Population: {feature.properties.population}</p>
-						</Popup>
-					</Marker>
-				);
-			})}
-		
-		</>
+  {wamapperslocations.features.map((feature, i) => {
+    const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+    const { name, Description, phone } = feature.properties;
+    const whatsappUrl = `https://wa.me/${phone.replace(/\D/g, "")}?text=Hi,%20I%20would%20like%20to%20request%20a%20WhatsApp%20Map`;
+
+    return (
+      <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
+        <Popup>
+          <h3>{name}</h3>
+          <p>{Description}</p>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn"
+            style={{
+              display: "inline-block",
+              marginTop: "0.5rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "#25D366",
+              color: "white",
+              borderRadius: "5px",
+              fontWeight: "bold",
+              textDecoration: "none",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+            }}
+          >
+            View my profile/Contact me
+          </a>
+        </Popup>
+      </Marker>
+    );
+  })}
+</>
+
 	);
 }
 
