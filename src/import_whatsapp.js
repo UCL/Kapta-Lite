@@ -93,6 +93,8 @@ const processFile = (file, setDataDisplayMap) => {
                                 try {
                                     const [data, name] = processGeoJson(geojsonContent);
                                     setDataDisplayMap(data, name, zip);
+									globalProcessedChatFile = file;
+
                                 } catch (error) {
                                     console.error("Error processing GeoJSON file:", error);
                                 }
