@@ -98,6 +98,8 @@ export const WhatAppMapMarkerPosition = icon({
 	prefix: "fa",
 	iconName: "location-dot",
 }).html;
+export const WhatAppMapperPosition = icon(faWhatsapp).html;
+
 export const closeIcon = <FontAwesomeIcon icon={faX} className="btn-icon" />;
 export const connectIcon = <FontAwesomeIcon icon={faWhatsapp} className="btn-icon" />;
 

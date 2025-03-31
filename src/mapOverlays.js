@@ -26,7 +26,7 @@ import { ASK_URL, hasCognito } from "../globals.js";
 import { uploadProcessedChat } from "./data_submission.js";
 import { globalProcessedChatFile } from "./import_whatsapp";
 // import BurgerMenu from "./BurgerMenu.jsx";
-import { handleConnect } from "./ConnectButton.js";
+// import { handleConnect } from "./ConnectButton.js";
 import { handleSearch } from "./SearchBar.js";
 import { importdata } from "./import_whatsapp.js";
 import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based on your project structure
@@ -125,12 +125,15 @@ export function MapActionArea({
     search,
     share,
     connect,
+    showWaMappers, 
+    setShowWaMappers, 
     ...dataDisplayProps // Add this to capture the props
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
     const [isModalOpen, setIsModalOpen] = useState(false); // State for the share modal
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for the search modal
     const [isPremium, setIsPremium] = useState(false); // State to differentiate between Search and Premium
+    // const [showWaMappers, setShowWaMappers] = useState(false);
 
     // const toggleBM = () => {
     //     setIsBMVisible((prevState) => !prevState);
@@ -176,11 +179,13 @@ export function MapActionArea({
                     <button
                         id="connect"
                         type="button"
-                        onClick={connect}
+                        onClick={() => setShowWaMappers(!showWaMappers)}
                         className="map-action-btn"
-                    >
-                        <div className="map-action-icon">{connectIcon}</div>
-                        <span className="map-action-label">Connect</span>
+                            >
+                                <div className="map-action-icon">{connectIcon}</div>
+                                <span className="map-action-label">
+                                    {showWaMappers ? "Connect" : "Connect"}
+                                </span>
                     </button>
 
                     <button

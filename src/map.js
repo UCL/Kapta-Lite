@@ -26,6 +26,7 @@ import {
 	WhatAppMapMarkerPosition,
 	WhatAppMapMarker,
 	WhatAppMapper,
+	WhatAppMapperPosition,
 	GPSIcn,
 	nextIcn,
 } from "./icons.js";
@@ -36,35 +37,6 @@ import SuccessModal from "./SuccessModal.jsx";
 /************************************************************************************************
  *   Basemaps (TileLayers)
  ************************************************************************************************/
-
-const wamappers = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-122.4194, 37.7749]
-      },
-      "properties": {
-        "name": "San Francisco",
-        "population": 883305
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [-118.2437, 34.0522]
-      },
-      "properties": {
-        "name": "Los Angeles",
-        "population": 3990456
-      }
-    }
-  ]
-}
-
 
 function DarkTileLayer() {
 	return (
@@ -80,9 +52,6 @@ function DarkTileLayer() {
 		/>
 	);
 }
-
-
-
 
 
 function SatelliteTileLayer() {
@@ -268,6 +237,103 @@ function MapDataLayer({ data }) {
 }
 
 /************************************************************************************************
+ *  Location of WhatsApp Mappers
+ ************************************************************************************************/
+let wamapperslocations = {
+	"type": "FeatureCollection",
+	"features": [
+	  {
+		"type": "Feature",
+		"geometry": {
+		  "type": "Point",
+		  "coordinates": [-122.4194, 37.7749]
+		},
+		"properties": {
+		  "name": "San Francisco",
+		  "population": 883305
+		}
+	  },
+	  {
+		"type": "Feature",
+		"geometry": {
+		  "type": "Point",
+		  "coordinates": [-118.2437, 34.0522]
+		},
+		"properties": {
+		  "name": "Los Angeles",
+		  "population": 3990456
+		}
+	  }
+	]
+  }
+function WhatsAppMappersDataLayer({ data }) {
+	const { t } = useTranslation();
+	const map = useMap();
+	const boundsRef = useRef([]);
+	// const { data: geoJSON, imgZip } = data;
+	const [featureImages, setFeatureImages] = useState({}); // this is basically a cache
+    // Define a custom GPS icon
+	const geoJSON = wamapperslocations;
+
+    const WhatsAppMapperIcon = L.divIcon({
+		html: WhatAppMapperPosition, // Use the imported GPS icon
+		className: "whatsapp-marker-icon",
+		// iconSize: [100, 100], // Adjust size as needed
+		// iconAnchor: [15, 30], // Anchor point for the icon
+	});
+	if (geoJSON.features.length == 0) {
+		// need translation
+		return <ErrorPopup error="No data to display" />;
+	}
+
+	useEffect(() => {
+		// fit map to bounds
+		if (boundsRef.current.length > 0) {
+			map.fitBounds(boundsRef.current);
+		}
+	}, [geoJSON, map]);
+
+	// const handleMarkerClick = useCallback(
+	// 	async (feature) => {
+	// 		if (imgZip && feature.properties.imgFilenames.length > 0) {
+	// 			// will want to map over imgFilenames when we support multiple
+	// 			feature.properties.imgFilenames.map(async (filename) =>
+	// 				// check the image isn't already loaded
+	// 				{
+	// 					if (filename && !featureImages[filename]) {
+	// 						const url = await getImageURLFromZip(imgZip, filename);
+	// 						setFeatureImages((prev) => ({
+	// 							...prev,
+	// 							[filename]: url,
+	// 						}));
+	// 					}
+	// 				}
+	// 			);
+	// 		}
+	// 	},
+	// 	[imgZip, featureImages]
+	// );
+
+	return (
+		<>
+			
+			{wamapperslocations.features.map((feature, i) => {
+				const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+				return (
+					<Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
+						<Popup>
+							<h3>{feature.properties.name}</h3>
+							<p>Population: {feature.properties.population}</p>
+						</Popup>
+					</Marker>
+				);
+			})}
+		
+		</>
+	);
+}
+
+/************************************************************************************************
  *  Error Popup
  ************************************************************************************************/
 function ErrorPopup({ error }) {
@@ -347,6 +413,8 @@ export function Map({
 	const [currentLocation, setCurrentLocation] = useState(null);
 	const [flyToLocation, setFlyToLocation] = useState(false);
 	const [error, setError] = useState(null);
+	const [showWaMappers, setShowWaMappers] = useState(false);
+
 
 	// pulse effect on title update
 	useEffect(() => {
@@ -436,6 +504,8 @@ export function Map({
 					{/* error if currentLocation can't be found */}
 					{error && <ErrorPopup />}
 					{data && <MapDataLayer data={data} />}
+					{showWaMappers && <WhatsAppMappersDataLayer/>}
+					{/* <MapDataLayer data={data} /> */}
 					<UpdateMap
 						currentLocation={currentLocation}
 						flyToLocation={flyToLocation}
@@ -453,6 +523,8 @@ export function Map({
 					setPulse={setShouldPulse}
 					setModalOpen={setIsModalOpen}
 					currentDataset={data?.data}
+					showWaMappers={showWaMappers}
+  					setShowWaMappers={setShowWaMappers}
 				/>
 			</div>
 		</>
