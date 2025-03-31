@@ -133,11 +133,19 @@ export function MapActionArea({
     const [isModalOpen, setIsModalOpen] = useState(false); // State for the share modal
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for the search modal
     const [isPremium, setIsPremium] = useState(false); // State to differentiate between Search and Premium
+    const [isRegisterMapper, setIsRegisterMapper] = useState(false); // State for "register as a mapper"
+
     // const [showWaMappers, setShowWaMappers] = useState(false);
 
     // const toggleBM = () => {
     //     setIsBMVisible((prevState) => !prevState);
     // };
+
+    const handleConnect = () => {
+        setIsRegisterMapper(true); // Set the modal content to "register as a mapper"
+        setIsSearchModalOpen(true); // Open the search modal
+        setShowWaMappers(!showWaMappers); // Toggle the WhatsApp Mappers state
+    };
 
     const handleShare = () => {
         setIsModalOpen(true); // Opens the share modal
@@ -179,7 +187,7 @@ export function MapActionArea({
                     <button
                         id="connect"
                         type="button"
-                        onClick={() => setShowWaMappers(!showWaMappers)}
+                        onClick={handleConnect}
                         className="map-action-btn"
                             >
                                 <div className="map-action-icon">{connectIcon}</div>
@@ -230,47 +238,92 @@ export function MapActionArea({
                 setIsOpen={setIsSearchModalOpen}
                 isPremium={isPremium} // Pass the isPremium state here
                 setIsPremium={setIsPremium} // Pass the setIsPremium function
-
+                isRegisterMapper={isRegisterMapper} // Pass the new state
+                setIsRegisterMapper={setIsRegisterMapper} // Pass the setter
             />
         </div>
     );
 }
 
-export function SearchModal({ isOpen, setIsOpen, isPremium, setIsPremium }) {
+export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, setIsRegisterMapper }) {
     if (!isOpen) return null;
 
     const searchModalRef = useRef(null);
 
-    useClickOutside(searchModalRef, () => 
-        setIsOpen(false)); // Close modal when clicking outside
-        //  setIsPremium(false); // Reset isPremium to false
+    useClickOutside(searchModalRef, () => {
+        setIsOpen(false);
+        setIsRegisterMapper(false); // Reset the state when the modal is closed
+    });
 
     return (
         <div id="search-modal" ref={searchModalRef}>
-            <button className="modal-close btn" onClick={() => {
-                        setIsPremium(false); // Reset isPremium to false
-                setIsOpen(false)
-                }}>
+            <button
+                className="modal-close btn"
+                onClick={() => {
+                    setIsOpen(false);
+                    setIsRegisterMapper(false); // Reset the state
+                }}
+            >
                 {closeIcon}
             </button>
             <div className="modal-title">
-                {isPremium ? "Premium Feature" : "Search"}
+                {isRegisterMapper
+                    ? "Connect with WhatsApp Mappers"
+                    : isPremium
+                    ? "Premium"
+                    : "Search"}
             </div>
             <div className="modal-content">
-                {isPremium ? (
-                    <p>
-  You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualise them in Kapta Lite. <br />
-  To request a demo for Premium data management and visualisation, please fill in this form:<br />
-  <a href="https://forms.gle/Br6C8eAueZdo35Y7A" target="_blank" rel="noopener noreferrer">
-    https://forms.gle/Br6C8eAueZdo35Y7A
-  </a>
-</p>
-                ) : (
-                    <p>No open WhatsApp Maps in this area yet. Contribute yours!</p>
-                )}
+    {isRegisterMapper ? (
+        <>
+            <p>
+                Zoom out if you can't find WhatsApp Mappers in this area.
+                <br />
+                Or register yourself or others as WhatsApp Mappers. Once registered, anyone can contact you to pay you for creating a WhatsApp Map.<br /> 
+                We recommend you to create a WhatsApp Business account to show your profile.
+                <br />
+                <br />
+                To register, all you need to do is send us a WhatsApp message 👇
+            </p>
+            <div className="option-button-container">
+                <button
+                    className="btn"
+                    onClick={() => {
+                    window.open(
+                        "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                        "_blank"
+                    );
+                    }}
+                >
+                    Register as WhatsApp Mapper
+                </button>
             </div>
+        </>
+    ) : isPremium ? (
+        <>
+            <p>
+                You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite.
+                <br />
+                To request a demo for Premium data management and visualization, please fill in this form:
+            </p>
+            <div className="option-button-container">
+                <button
+                    className="btn"
+                    onClick={() => {
+                    window.open("https://forms.gle/Br6C8eAueZdo35Y7A", "_blank");
+                    }}
+                >
+                    Request Premium Demo
+                </button>
+            </div>
+
+        </>
+    ) : (
+        <p>No open WhatsApp Maps in this area yet. Contribute yours!</p>
+    )}
+</div>
+
         </div>
-        
     );
 }
 

@@ -33,7 +33,7 @@ import {
 import { MAPBOX_TOKEN } from "../globals.js";
 import { UploadDialog } from "./UploadDialog.jsx";
 import SuccessModal from "./SuccessModal.jsx";
-
+import { wamapperslocations } from "./wamapperslocations.js";
 /************************************************************************************************
  *   Basemaps (TileLayers)
  ************************************************************************************************/
@@ -239,40 +239,13 @@ function MapDataLayer({ data }) {
 /************************************************************************************************
  *  Location of WhatsApp Mappers
  ************************************************************************************************/
-let wamapperslocations = {
-	"type": "FeatureCollection",
-	"features": [
-	  {
-		"type": "Feature",
-		"geometry": {
-		  "type": "Point",
-		  "coordinates": [-122.4194, 37.7749]
-		},
-		"properties": {
-		  "name": "San Francisco",
-		  "population": 883305
-		}
-	  },
-	  {
-		"type": "Feature",
-		"geometry": {
-		  "type": "Point",
-		  "coordinates": [-118.2437, 34.0522]
-		},
-		"properties": {
-		  "name": "Los Angeles",
-		  "population": 3990456
-		}
-	  }
-	]
-  }
+
 function WhatsAppMappersDataLayer({ data }) {
 	const { t } = useTranslation();
 	const map = useMap();
 	const boundsRef = useRef([]);
 	// const { data: geoJSON, imgZip } = data;
 	const [featureImages, setFeatureImages] = useState({}); // this is basically a cache
-    // Define a custom GPS icon
 	const geoJSON = wamapperslocations;
 
     const WhatsAppMapperIcon = L.divIcon({
