@@ -129,6 +129,21 @@
             width: 25px;
         }
     }
+    .whatsapp-mapper-icon {
+        color: #f9faf9;
+        background-color:var(--bright-green);        /* Adds white background */
+        border-radius: 50%;             /* Makes it circular */
+        padding: 4px;                   /* Adjust padding for spacing */
+        display: inline-flex;           /* Center the icon */
+        align-items: center;
+        justify-content: center;
+        /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); Optional: adds subtle shadow */
+        
+        svg {
+            height: 35px;
+            width: 35px;
+        }
+    }
 
     .leaflet-div-icon {
         border: none;

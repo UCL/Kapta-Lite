@@ -250,7 +250,7 @@ function WhatsAppMappersDataLayer({ data }) {
 
     const WhatsAppMapperIcon = L.divIcon({
 		html: WhatAppMapperPosition, // Use the imported GPS icon
-		className: "whatsapp-marker-icon",
+		className: "whatsapp-mapper-icon",
 		// iconSize: [100, 100], // Adjust size as needed
 		// iconAnchor: [15, 30], // Anchor point for the icon
 	});
