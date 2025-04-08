@@ -8,7 +8,7 @@
     /* to be above scale line and attribution */
     z-index: 1002;
     gap: 5px;
-    background-color: var(--mid-green);
+    background-color: var(--wa-green);
 
     &.loader:before,
     &.loader:after {
@@ -18,7 +18,7 @@
 
 #upload-loader {
     z-index: 1003;
-    color: var(--mid-green);
+    color: var(--wa-green);
     position: absolute;
     display: flex;
     justify-content: center;
@@ -31,7 +31,7 @@
 
     &.loader:before,
     &.loader:after {
-        box-shadow: 0 0 0 3px inset var(--mid-green);
+        box-shadow: 0 0 0 3px inset var(--wa-green);
     }
 }
 

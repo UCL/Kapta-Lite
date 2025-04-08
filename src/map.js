@@ -380,7 +380,7 @@ console.log("ismobileortrable",isMobileOrTablet())
 if (!isMobileOrTablet()) {
       var zoomOnload = 3; //to avoid multiple global maps displayed     
     }else{
-	  var zoomOnload = 2; 
+	  var zoomOnload = 3; 
 	}
 const mapConfig = {
 	center: [0, 0],

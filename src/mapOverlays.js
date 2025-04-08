@@ -404,7 +404,7 @@ export function ShareModal({
         try {
             const presignedUrl = await uploadProcessedChat(globalProcessedChatFile, fileNameWAMap, setButtonText, setButtonDisabled);
             const encodedPresignedUrl = encodeURIComponent(presignedUrl);
-            const generatedUrl = `https://staging.d3qub397zqfncc.amplifyapp.com/?import=${encodedPresignedUrl}`;
+            const generatedUrl = `https://staging.d1aatc9qjk4pwp.amplifyapp.com/?import=${encodedPresignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("Click here to share directly");
             setButtonDisabled(false);
@@ -515,7 +515,7 @@ export function ShareModal({
                         </div>
                         {hasTaskId && (
                             <input
-                                type="text"
+                                type="number"
                                 placeholder="Enter Task ID"
                                 value={taskId}
                                 onChange={(e) =>
@@ -556,9 +556,9 @@ export function ShareModal({
                     <div className="modal-content">
                         <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
                         <ol>
-                            <li>1- Share locations in a WhatsApp Group</li>
-                            <li>2- Export chat to Kapta Lite app</li>
-                            <li>3- Share your WhatsApp Map</li>
+                            <li>Share locations in a WhatsApp Group</li>
+                            <li>Export chat to Kapta Lite app</li>
+                            <li>Share your WhatsApp Map</li>
                         </ol>
                         {(!isMobileOrTablet()) && (
                         <p>Or if you already have the chat. Upload to convert it.</p>
@@ -580,7 +580,7 @@ export function ShareModal({
                             
                             onClick={() => { 
                                 window.open(
-                                    "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                                    "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
                                     "_blank"
                                 );
                             }}
