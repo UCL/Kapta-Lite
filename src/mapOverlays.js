@@ -293,15 +293,22 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
     {isRegisterMapper ? (
         <>
             <p>
-                Zoom out if you can't find WhatsApp Mappers in this area.
+                {/* Zoom out if you can't find WhatsApp Mappers in this area.
                 <br />
                 Or register yourself or others as WhatsApp Mappers. Once registered, anyone can contact you to pay you for creating a WhatsApp Map.<br /> 
                 We recommend you to create a WhatsApp Business account to show your profile.
                 <br />
                 <br />
-                To register, all you need to do is send us a WhatsApp message 👇
+                To register, all you need to do is send us a WhatsApp message 👇 */}
             </p>
             <div className="option-button-container">
+
+                 <button
+                    className="btn"
+                    onClick={() => setIsOpen(false)}>
+
+                    Connect with mappers in the map
+                </button>
                 <button
                     className="btn"
                     onClick={() => {
@@ -311,7 +318,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     );
                     }}
                 >
-                    Register as WhatsApp Mapper
+                    Register as WhatsApp Business Mapper
                 </button>
             </div>
         </>
