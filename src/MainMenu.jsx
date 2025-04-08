@@ -211,6 +211,8 @@ export default function MainMenu({
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false);
     const [isLoaderVisible, setIsLoaderVisible] = useState(false); // State for loader visibility
+    // const [importParam, setImportParam] = useState(null); // State for importParam
+    const [loadingMessage, setLoadingMessage] = useState(false); // State for loading message visibility
 
     const toggleBM = () => {
         setIsBMVisible((prevState) => !prevState);
@@ -221,9 +223,13 @@ export default function MainMenu({
             setIsLoaderVisible(true); // Show loader
             const query = window.location.search;
             const importParam = query.startsWith('?import=') ? query.slice(8) : null;
+            // setImportParam(importParam); // Set importParam state
             console.log('Import URL:', importParam);
+
             if (!importParam) {
                 throw new Error('No import URL found in query.');
+            } else {
+                setLoadingMessage(true); // Show the loading message
             }
 
             const decodedUrl = decodeURIComponent(importParam);
@@ -243,6 +249,8 @@ export default function MainMenu({
             console.error('Error fetching or uploading file:', error);
         } finally {
             setIsLoaderVisible(false); // Hide loader
+            setLoadingMessage(false); // Hide the loading message
+            console.log('Loader hidden');
         }
     };
 
@@ -259,7 +267,16 @@ export default function MainMenu({
 
     return (
         <>
-            <Loader isVisible={isLoaderVisible} setIsVisible={setIsLoaderVisible} /> {/* Loader component */}
+            {loadingMessage && (
+                <div id="loadingMessage" className="loading-message">
+                    Your WhatsApp Map is loading. This might take a few seconds.
+                </div>
+            )}
+            <Loader
+                isVisible={isLoaderVisible}
+                setIsVisible={setIsLoaderVisible}
+                // importParam={importParam}
+            />
             <button onClick={toggleBM} className="btn--burger-menu">
                 {menuIcon}
             </button>
