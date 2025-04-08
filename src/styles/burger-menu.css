@@ -161,7 +161,11 @@
         color: rgb(54, 54, 54);
     }
 }
-
+.btn--burger-menu:focus,
+.btn--open-burger-menu:focus {
+    outline: none; /* Remove the blue focus outline */
+    box-shadow: none; /* Remove any default focus shadow */
+}
 .btn--open-burger-menu {
     position: absolute;
     top: 2rem;

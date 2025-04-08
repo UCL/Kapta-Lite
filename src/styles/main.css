@@ -295,6 +295,10 @@ body {
     button {
         height: 3rem;
     }
+    button:focus {
+        outline: none; /* Remove the blue focus outline */
+        box-shadow: none; /* Remove any default focus shadow */
+    }
 
     img {
         object-fit: cover;

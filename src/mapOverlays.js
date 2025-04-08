@@ -438,7 +438,8 @@ export function ShareModal({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "processed_chat.zip"; // or your desired filename
+    const date = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+    link.download = `Kapta_WhatsApp_Map_${date}.zip`;
     link.click();
     URL.revokeObjectURL(url);
   }

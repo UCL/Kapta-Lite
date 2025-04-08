@@ -309,7 +309,7 @@ function WhatsAppMappersDataLayer({ data }) {
 		<>
   {wamapperslocations.features.map((feature, i) => {
     const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-    const { name, Description, phone, KaptaID} = feature.properties;
+    const { name, Description, KaptaID} = feature.properties; 
     const whatsappUrl = `https://wa.me/447473522912?text=Hi,%20please%20connect%20me%20with%20${name}%20%28${KaptaID}%29`;
 
     return (
