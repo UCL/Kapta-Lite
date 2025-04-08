@@ -96,8 +96,8 @@
         width: 5.5rem;
         height: 3.5rem;
         border-radius: 20%;
-        background-color: var(--mid-green);
-        border: 1px solid var(--mid-green--translucent);
+        background-color: var(--wa-green);
+        /* border: 1px solid var(--mid-green--translucent); */
         z-index: 900;
         position: absolute;
         left: 50%;
@@ -116,7 +116,7 @@
     /* Hover state */
     #connect:hover,
     #share:hover {
-        background-color: var(--mid-green-dark, #028c28); /* Darken background */
+        background-color: var(--wa-green--dark); /* Darken background */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for hover effect */
     }
 
@@ -216,7 +216,7 @@
   
   .map-action-btn:hover {
     transform: scale(1.05);
-    background-color: var(--mid-green-dark, #028c28);
+    background-color: var(--wa-green--dark);
   }
   
   .map-action-icon {
@@ -346,7 +346,7 @@
               .filter__wrapper > button > svg {
                 height: 100%;
                 width: 100%;
-                color: var(--mid-green);
+                color: var(--wa-green);
               }
               
               .filter__suggested-tags {
@@ -359,10 +359,10 @@
               .filter__suggested-tags button {
                 font-size: 0.7rem;
                 padding: 0.3rem 0.6rem;
-                border: 1px solid var(--mid-green);
+                border: 1px solid var(--wa-green);
                 background-color: white;
                 border-radius: 20px;
-                color: var(--mid-green);
+                color: var(--wa-green);
                 cursor: pointer;
                 white-space: nowrap;
                 width: auto; /* 👈 button width now adapts to content */
@@ -370,7 +370,7 @@
               
               
               .filter__suggested-tags button:hover {
-                background-color: var(--mid-green);
+                background-color: var(--wa-green);
                 color: white;
               }
               
@@ -571,7 +571,7 @@
 }
 
 #search-modal .modal-close:hover {
-    background-color: var(--mid-green-dark); /* Darken background on hover */
+    background-color: var(--wa-green--dark); /* Darken background on hover */
     color: white; /* Change icon color to white on hover */
 }
 
@@ -595,12 +595,12 @@
         border-radius: 20%;
         right: 20px; /* Adjust as needed */
     z-index: 1000; /* Ensure it appears above other elements */
-    background-color: var(--mid-green);
+    background-color: var(--wa-green);
     /* border: 1px solid var(--mid-green--translucent); */
     border: none;
 }
 .premium-btn:hover{
-        background-color: var(--mid-green-dark, #028c28); /* Darken background */
+        background-color: var(--wa-green--dark); /* Darken background */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for hover effect */
     }
 
@@ -640,7 +640,7 @@
 }
 
 #search-modal .option-button-container .btn:hover {
-    background-color: var(--mid-green-dark);
+    background-color: var(--wa-green--dark);
     color: white;
 }
 

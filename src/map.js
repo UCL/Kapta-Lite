@@ -309,8 +309,8 @@ function WhatsAppMappersDataLayer({ data }) {
 		<>
   {wamapperslocations.features.map((feature, i) => {
     const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-    const { name, Description, phone } = feature.properties;
-    const whatsappUrl = `https://wa.me/${phone.replace(/\D/g, "")}?text=Hi,%20I%20would%20like%20to%20request%20a%20WhatsApp%20Map`;
+    const { name, Description, phone, KaptaID} = feature.properties;
+    const whatsappUrl = `https://wa.me/447473522912?text=Hi,%20please%20connect%20me%20with%20${name}%20%28${KaptaID}%29`;
 
     return (
       <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
@@ -334,7 +334,7 @@ function WhatsAppMappersDataLayer({ data }) {
               boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
             }}
           >
-            View my profile/Contact me
+            Contact {name}
           </a>
         </Popup>
       </Marker>
