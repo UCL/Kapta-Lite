@@ -47,7 +47,7 @@ function DarkTileLayer() {
 			maxNativeZoom={21}
 			opacity={1}
 			subdomains={["mt0", "mt1", "mt2", "mt3"]}
-			attribution=" Mapbox | OSM Contributors"
+			attribution=" Google | OSM Contributors "
 			crossOrigin="anonymous"
 		/>
 	);
@@ -63,10 +63,25 @@ function SatelliteTileLayer() {
 			maxNativeZoom={21}
 			opacity={1}
 			subdomains={["mt0", "mt1", "mt2", "mt3"]}
-			attribution=" Mapbox | OSM Contributors"
+			attribution=" Google | OSM Contributors "
 			crossOrigin="anonymous"
 		/>
 	);
+}
+
+function OSMTileLayer() {
+    return (
+        <TileLayer
+            url={`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`}
+            minZoom={2}
+            maxZoom={21}
+            maxNativeZoom={21}
+            opacity={1}
+            // subdomains={["mt0", "mt1", "mt2", "mt3"]}
+            attribution=" Google | OSM Contributors "
+            crossOrigin="anonymous"
+        />
+    );
 }
 
 /************************************************************************************************
@@ -391,136 +406,142 @@ function UpdateMap({ currentLocation, flyToLocation, setFlyToLocation }) {
 }
 
 export function Map({
-	isVisible,
-	data,
-	isLoginVisible,
-	setIsLoginVisible,
+    isVisible,
+    data,
+    isLoginVisible,
+    setIsLoginVisible,
 }) {
-	if (!isVisible) return null;
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
-	const [successModalVisible, setSuccessModalVisible] = useState(false);
+    if (!isVisible) return null;
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [successModalVisible, setSuccessModalVisible] = useState(false);
 
-	const [titleValue, setTitleValue] = useState("");
-	const [shouldPulse, setShouldPulse] = useState(false);
-	const [isSatelliteLayer, setIsSatelliteLayer] = useState(false);
-	const [currentLocation, setCurrentLocation] = useState(null);
-	const [flyToLocation, setFlyToLocation] = useState(false);
-	const [error, setError] = useState(null);
-	const [showWaMappers, setShowWaMappers] = useState(false);
+    const [titleValue, setTitleValue] = useState("");
+    const [shouldPulse, setShouldPulse] = useState(false);
+    const [currentLocation, setCurrentLocation] = useState(null);
+    const [flyToLocation, setFlyToLocation] = useState(false);
+    const [error, setError] = useState(null);
+    const [showWaMappers, setShowWaMappers] = useState(false);
 
+    // State to track the active tile layer
+    const [activeTileLayer, setActiveTileLayer] = useState("dark");
 
-	// pulse effect on title update
-	useEffect(() => {
-		if (shouldPulse) {
-			const timer = setTimeout(() => {
-				setShouldPulse(false);
-			}, 6000);
-			return () => clearTimeout(timer); // Cleanup to avoid memory leaks
-		}
-	}, [shouldPulse]);
+    // pulse effect on title update
+    useEffect(() => {
+        if (shouldPulse) {
+            const timer = setTimeout(() => {
+                setShouldPulse(false);
+            }, 6000);
+            return () => clearTimeout(timer); // Cleanup to avoid memory leaks
+        }
+    }, [shouldPulse]);
 
-	const getCurrentPosition = () => {
-		currentLocation && setFlyToLocation(true);
-		const options = {
-			enableHighAccuracy: true,
-			timeout: 5000,
-			maximumAge: 0,
-		};
-		const success = (pos) => {
-			const lat = pos.coords.latitude;
-			const lng = pos.coords.longitude;
-			setCurrentLocation([lat, lng]);
-			setFlyToLocation(true);
-		};
-		const error = (err) => {
-			console.warn(`ERROR(${err.code}): ${err.message}`);
-			setError(
-				"Unable to retrieve location. Please check your device settings."
-			);
-		};
-		// call the above if the browser supports it
-		navigator.geolocation
-			? navigator.geolocation.getCurrentPosition(success, error, options)
-			: console.error("GPS not available");
-	};
+    const getCurrentPosition = () => {
+        currentLocation && setFlyToLocation(true);
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+        };
+        const success = (pos) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            setCurrentLocation([lat, lng]);
+            setFlyToLocation(true);
+        };
+        const error = (err) => {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+            setError(
+                "Unable to retrieve location. Please check your device settings."
+            );
+        };
+        // call the above if the browser supports it
+        navigator.geolocation
+            ? navigator.geolocation.getCurrentPosition(success, error, options)
+            : console.error("GPS not available");
+    };
 
-	return (
-		<>
-			<SuccessModal
-				isVisible={successModalVisible}
-				setIsVisible={setSuccessModalVisible}
-			/>
-			<UploadDialog
-				isOpen={isUploadDialogOpen}
-				setIsOpen={setIsUploadDialogOpen}
-				currentDataset={data?.data}
-				setSuccessModalVisible={setSuccessModalVisible}
-				isLoginVisible={isLoginVisible}
-				setIsLoginVisible={setIsLoginVisible}
-			/>
-			<ShareModal
-				isOpen={isModalOpen}
-				setIsOpen={setIsModalOpen}
-				currentDataset={data?.data}
-				setIsUploadDialogOpen={setIsUploadDialogOpen}
-			/>
-			<div id="map">
-				<div className={`map-title ${shouldPulse ? "pulse-shadow" : ""}`}>
-					{titleValue}
-				</div>
-				<button
-					id="base-map--toggle"
-					className="map-button"
-					onClick={() => setIsSatelliteLayer(!isSatelliteLayer)}
-				>
-					{isSatelliteLayer ? basemapDarkIcon : basemapSatIcon}
-				</button>
-				<button id="gps" className="map-button" onClick={getCurrentPosition}>
-					{GPSIcn}
-				</button>
-				<MapContainer {...mapConfig}>
-					{/* determine which basemap we show */}
-					{isSatelliteLayer ? <SatelliteTileLayer /> : <DarkTileLayer />}
-					{/* current position marker */}
-					{currentLocation && (
-						<Marker position={currentLocation} icon={currentPositionIcon}>
-							<Popup>
-								<p style={{ textAlign: "center", fontWeight: 600 }}>
-									You're here!
-								</p>
-								<p style={{ textAlign: "center" }}>
-									{currentLocation.join(", ")}
-								</p>
-							</Popup>
-						</Marker>
-					)}
-					{/* error if currentLocation can't be found */}
-					{error && <ErrorPopup />}
-					{data && <MapDataLayer data={data} />}
-					{showWaMappers && <WhatsAppMappersDataLayer/>}
-					{/* <MapDataLayer data={data} /> */}
-					<UpdateMap
-						currentLocation={currentLocation}
-						flyToLocation={flyToLocation}
-						setFlyToLocation={setFlyToLocation}
-					/>
-					<ScaleControl position="bottomleft" metric={true} imperial={false} />
-					<AttributionControl
-						position="bottomright"
-						prefix="Leaflet"
-						attribution="Mapbox | OSM Contributors"
-					/>
-				</MapContainer>
-				<MapActionArea
-					setTitle={setTitleValue}
-					setPulse={setShouldPulse}
-					setModalOpen={setIsModalOpen}
-					currentDataset={data?.data}
-					showWaMappers={showWaMappers}
-  					setShowWaMappers={setShowWaMappers}
-				/>
-			</div>
-		</>
-	);
+    return (
+        <>
+            <SuccessModal
+                isVisible={successModalVisible}
+                setIsVisible={setSuccessModalVisible}
+            />
+            <UploadDialog
+                isOpen={isUploadDialogOpen}
+                setIsOpen={setIsUploadDialogOpen}
+                currentDataset={data?.data}
+                setSuccessModalVisible={setSuccessModalVisible}
+                isLoginVisible={isLoginVisible}
+                setIsLoginVisible={setIsLoginVisible}
+            />
+            <ShareModal
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                currentDataset={data?.data}
+                setIsUploadDialogOpen={setIsUploadDialogOpen}
+            />
+            <div id="map">
+                <div className={`map-title ${shouldPulse ? "pulse-shadow" : ""}`}>
+                    {titleValue}
+                </div>
+                <button
+                    id="base-map--toggle"
+                    className="map-button"
+                    onClick={() =>
+                        setActiveTileLayer((prev) =>
+                            prev === "dark" ? "satellite" : prev === "satellite" ? "osm" : "dark"
+                        )
+                    }
+                >
+                    {basemapDarkIcon}
+                </button>
+                <button id="gps" className="map-button" onClick={getCurrentPosition}>
+                    {GPSIcn}
+                </button>
+                <MapContainer {...mapConfig}>
+                    {/* Determine which basemap to show */}
+                    {activeTileLayer === "dark" && <DarkTileLayer />}
+                    {activeTileLayer === "satellite" && <SatelliteTileLayer />}
+                    {activeTileLayer === "osm" && <OSMTileLayer />}
+                    {/* current position marker */}
+                    {currentLocation && (
+                        <Marker position={currentLocation} icon={currentPositionIcon}>
+                            <Popup>
+                                <p style={{ textAlign: "center", fontWeight: 600 }}>
+                                    You're here!
+                                </p>
+                                <p style={{ textAlign: "center" }}>
+                                    {currentLocation.join(", ")}
+                                </p>
+                            </Popup>
+                        </Marker>
+                    )}
+                    {/* error if currentLocation can't be found */}
+                    {error && <ErrorPopup />}
+                    {data && <MapDataLayer data={data} />}
+                    {showWaMappers && <WhatsAppMappersDataLayer />}
+                    <UpdateMap
+                        currentLocation={currentLocation}
+                        flyToLocation={flyToLocation}
+                        setFlyToLocation={setFlyToLocation}
+                    />
+                    <ScaleControl position="bottomleft" metric={true} imperial={false} />
+                    <AttributionControl
+                        position="bottomright"
+                        prefix="Leaflet"
+                        attribution="Google | OSM Contributors"
+                    />
+                </MapContainer>
+                <MapActionArea
+                    setTitle={setTitleValue}
+                    setPulse={setShouldPulse}
+                    setModalOpen={setIsModalOpen}
+                    currentDataset={data?.data}
+                    showWaMappers={showWaMappers}
+                    setShowWaMappers={setShowWaMappers}
+                />
+            </div>
+        </>
+    );
 }
