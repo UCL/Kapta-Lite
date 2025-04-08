@@ -556,22 +556,50 @@ export function ShareModal({
                         {(!isMobileOrTablet()) && (
                         <p>Or if you already have the chat. Upload to convert it.</p>
                        )}
-                    </div>
-                        {/* {(!isMobileOrTablet() || isIOS()) && (
-                            <FilePicker {...dataDisplayProps}/> //this for some reason is not working
-                        )} */}
-            {(!isMobileOrTablet()) && (
-                         <button className="btn"//done this way rather than using  <FilePicker {...dataDisplayProps} /> like in MainMenu.jsx
-                                                 //beause encountered issus with passing props to import_whatsapp.js
+                       <div className="option-button-container">
+                            <button className="btn" 
+                            onClick={() => { 
+                                window.open(
+                                    "https://www.youtube.com/watch?v=vaPHy8S-OpA",
+                                    "_blank"
+                                );
+   
+                            }}
+                            
+                            >
+                                Watch Tutorial
+                            </button>
+                            <button className="btn" 
+                            
+                            onClick={() => { 
+                                window.open(
+                                    "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                                    "_blank"
+                                );
+                            }}
+                            
+                            >
+                                Need help? Contact us
+                            </button>
+                            {(!isMobileOrTablet()) && (
+                         <button className="btn" 
+                       
                             onClick={() => { 
                                
                                 const filePickerButton = document.getElementById("filePickerButton")
                                 filePickerButton.click(); // Programmatically trigger the click
                                 setIsOpen(false)
                             }}
-                        > Convert Chat to Mappp
+                        > Convert Chat to Map
                         </button>
                         )}
+                        </div>
+
+                    </div>
+                        {/* {(!isMobileOrTablet() || isIOS()) && (
+                            <FilePicker {...dataDisplayProps}/> //this for some reason is not working
+                        )} */}
+            
                 </>
             )}
         </div>

@@ -497,7 +497,13 @@
     color: #1f036d; /* Ensure checkbox labels are also dark blue */
 }
 
-
+.checkbox-container {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    gap: 1rem; /* Add spacing between the checkboxes */
+    margin-top: 1rem; /* Add some spacing above the container */
+}
 
 .feature-images {
     display: flex;
