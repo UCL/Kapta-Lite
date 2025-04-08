@@ -338,8 +338,21 @@ body {
     }
 }
 .error-message {
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #25D366;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    z-index: 1000;
+}
+.error-click {
     position: fixed; /* Position it relative to the viewport */
-    top: 50%; /* Center vertically */
+    top: 250px; /* Center vertically */
     left: 50%; /* Center horizontally */
     transform: translate(-50%, -50%); /* Adjust for the element's size */
     padding: 1rem 2rem; /* Increase padding for a larger button */
@@ -353,7 +366,23 @@ body {
     cursor: pointer; /* Pointer cursor for interactivity */
     z-index: 10000; /* Ensure it appears above other elements */
     transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
-   z-index:10000;
+}
+.error-exit {
+    position: fixed; /* Position it relative to the viewport */
+    top: 400px; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for the element's size */
+    padding: 1rem 2rem; /* Increase padding for a larger button */
+    background-color: #25D366; /* Red background for emphasis */
+    color: white; /* White text for contrast */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 1rem; /* Larger font size */
+    font-weight: bold; /* Bold text */
+    text-align: center; /* Center text */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Add shadow for better visibility */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    z-index: 10000; /* Ensure it appears above other elements */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
 }
 .btn {
     border-radius: 15px;

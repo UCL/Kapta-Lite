@@ -406,7 +406,7 @@ export function ShareModal({
             const encodedPresignedUrl = encodeURIComponent(presignedUrl);
             const generatedUrl = `https://staging.d3qub397zqfncc.amplifyapp.com/?import=${encodedPresignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
-            setButtonText("Click to share the map directly with WhatsApp or other apps");
+            setButtonText("Click here to share directly");
             setButtonDisabled(false);
 
             // Handle sharing
@@ -556,9 +556,9 @@ export function ShareModal({
                     <div className="modal-content">
                         <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
                         <ol>
-                            <li>Upload your WhatsApp chat file.</li>
-                            <li>Customize your map settings.</li>
-                            <li>Generate and share your map.</li>
+                            <li>1- Share locations in a WhatsApp Group</li>
+                            <li>2- Export chat to Kapta Lite app</li>
+                            <li>3- Share your WhatsApp Map</li>
                         </ol>
                         {(!isMobileOrTablet()) && (
                         <p>Or if you already have the chat. Upload to convert it.</p>

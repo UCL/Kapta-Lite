@@ -243,7 +243,7 @@ export default function MainMenu({
                 console.error('Fetch Response Headers:', response.headers);
                 
                 const timer = setTimeout(() => {
-                    setErrorMessage("This map URL has expired. Click here to request a refresh.");
+                    setErrorMessage("This map URL has expired");
                 }, 2000);
                 throw new Error(`Fetch error! Status: ${response.status}`);
             }
@@ -279,9 +279,11 @@ export default function MainMenu({
                 </div>
             )}
             {errorMessage && (
+                <div className="error-message">
+                    This map URL has expired
                 <button
-                    id="errorMessage"
-                    className="error-message"
+                  
+                    className="error-click"
                     onClick={() => {
                         const message = `Hi, please send me the new link for this map ${window.location.href}`;
                         const encodedMessage = encodeURIComponent(message); // Encode the message
@@ -290,8 +292,19 @@ export default function MainMenu({
                         }}
 
                 >
-                    {errorMessage}
+                    Click here to request a refresh
                 </button>
+                <button
+                   
+                    className="error-exit"
+                    onClick={() => {
+                        setErrorMessage(null); // Hide the error message
+                        }}
+
+                >
+                    Continue without the map
+                </button>
+                </div>
             )}
             <Loader
                 isVisible={isLoaderVisible}
