@@ -28,7 +28,7 @@ import { globalProcessedChatFile } from "./import_whatsapp";
 // import BurgerMenu from "./BurgerMenu.jsx";
 // import { handleConnect } from "./ConnectButton.js";
 import { handleSearch } from "./SearchBar.js";
-import { importdata } from "./import_whatsapp.js";
+import { importdata, enableDownload } from "./import_whatsapp.js";
 import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based on your project structure
 
 
@@ -589,6 +589,17 @@ export function ShareModal({
                                 Need help? Contact us
                             </button>
                             {(!isMobileOrTablet()) && (
+                         <div className="option-button-container">
+                            
+                            {enableDownload ? (
+                                <button className="btn" onClick={handleDownload}>
+                                    Download this map
+                                </button>
+                            ) : (
+                                <button className="btn" disabled style={{ display: "none" }}>
+                                    Please upload a map
+                                </button>
+                            )}
                          <button className="btn" 
                        
                             onClick={() => { 
@@ -597,8 +608,10 @@ export function ShareModal({
                                 filePickerButton.click(); // Programmatically trigger the click
                                 setIsOpen(false)
                             }}
-                        > Convert Chat to Map
+                        > Convert a chat into a map
                         </button>
+                        </div>
+
                         )}
                         </div>
 
