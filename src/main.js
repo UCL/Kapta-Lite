@@ -12,7 +12,7 @@ import { UserProvider } from "./UserContext.jsx";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 import { ShareModal } from "./mapOverlays.js";
 
-export const isMobileOrTablet = () => {
+export function isMobileOrTablet (){
     return (
         /iPad|iPhone|iPod|android|Mobile|mini|Fennec|Symbian|Windows Phone|BlackBerry|IEMobile/i.test(
             navigator.userAgent

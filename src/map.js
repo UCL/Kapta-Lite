@@ -6,6 +6,8 @@ import "leaflet-easyprint";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import "./styles/map-etc.css";
+import { isMobileOrTablet } from "./main.js";
+
 import L from "leaflet";
 import {
 	MapContainer,
@@ -34,6 +36,7 @@ import { MAPBOX_TOKEN } from "../globals.js";
 import { UploadDialog } from "./UploadDialog.jsx";
 import SuccessModal from "./SuccessModal.jsx";
 import { wamapperslocations } from "./wamapperslocations.js";
+
 /************************************************************************************************
  *   Basemaps (TileLayers)
  ************************************************************************************************/
@@ -373,9 +376,15 @@ function ErrorPopup({ error }) {
 
 var southWest = L.latLng(-70, -180);
 var northEast = L.latLng(80, 180);
+console.log("ismobileortrable",isMobileOrTablet())
+if (!isMobileOrTablet()) {
+      var zoomOnload = 3; //to avoid multiple global maps displayed     
+    }else{
+	  var zoomOnload = 2; 
+	}
 const mapConfig = {
 	center: [0, 0],
-	zoom: 2,
+	zoom: zoomOnload,
 	minZoom: 2,
 	maxZoom: 21,
 	zoomControl: false,
