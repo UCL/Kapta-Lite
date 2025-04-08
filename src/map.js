@@ -50,7 +50,7 @@ function DarkTileLayer() {
 			maxNativeZoom={21}
 			opacity={1}
 			subdomains={["mt0", "mt1", "mt2", "mt3"]}
-			attribution=" Google | OSM Contributors "
+			attribution=" Google "
 			crossOrigin="anonymous"
 		/>
 	);
@@ -66,7 +66,7 @@ function SatelliteTileLayer() {
 			maxNativeZoom={21}
 			opacity={1}
 			subdomains={["mt0", "mt1", "mt2", "mt3"]}
-			attribution=" Google | OSM Contributors "
+			attribution=" Google "
 			crossOrigin="anonymous"
 		/>
 	);
@@ -81,7 +81,7 @@ function OSMTileLayer() {
             maxNativeZoom={21}
             opacity={1}
             // subdomains={["mt0", "mt1", "mt2", "mt3"]}
-            attribution=" Google | OSM Contributors "
+            attribution=" OSM Contributors "
             crossOrigin="anonymous"
         />
     );
@@ -539,7 +539,7 @@ export function Map({
                     <AttributionControl
                         position="bottomright"
                         prefix="Leaflet"
-                        attribution="Google | OSM Contributors"
+                        attribution="Leaflet"
                     />
                 </MapContainer>
                 <MapActionArea
