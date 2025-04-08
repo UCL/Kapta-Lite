@@ -31,7 +31,10 @@ var timestamp = getTimestamp();
 export let importdata = false; // Track whether FileParser is called
 
 export function FileParser({ file, ...dataDisplayProps }) {
-	importdata = true; // Set to true when FileParser is called
+
+	if(!window.location.href.includes('?import=')){
+		importdata = true; // Set to true when FileParser is called from WhatsApp, not from pre-signed URL (to avoid zip file uploads)
+	}
 
 	const { setMapData, showMap, setFileToParse } = dataDisplayProps;
 
