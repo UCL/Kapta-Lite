@@ -213,6 +213,8 @@ export default function MainMenu({
     const [isLoaderVisible, setIsLoaderVisible] = useState(false); // State for loader visibility
     // const [importParam, setImportParam] = useState(null); // State for importParam
     const [loadingMessage, setLoadingMessage] = useState(false); // State for loading message visibility
+    const [errorMessage, setErrorMessage] = useState(null); // State for error message
+
 
     const toggleBM = () => {
         setIsBMVisible((prevState) => !prevState);
@@ -239,6 +241,10 @@ export default function MainMenu({
             if (!response.ok) {
                 console.error('Fetch Response Status:', response.status);
                 console.error('Fetch Response Headers:', response.headers);
+                
+                const timer = setTimeout(() => {
+                    setErrorMessage("This map URL has expired. Click here to request a refresh.");
+                }, 2000);
                 throw new Error(`Fetch error! Status: ${response.status}`);
             }
 
@@ -271,6 +277,21 @@ export default function MainMenu({
                 <div id="loadingMessage" className="loading-message">
                     Your WhatsApp Map is loading. This might take a few seconds.
                 </div>
+            )}
+            {errorMessage && (
+                <button
+                    id="errorMessage"
+                    className="error-message"
+                    onClick={() => {
+                        const message = `Hi, please send me the new link for this map ${window.location.href}`;
+                        const encodedMessage = encodeURIComponent(message); // Encode the message
+                        const whatsappUrl = `https://wa.me/447473522912?text=${encodedMessage}`;
+                        window.open(whatsappUrl, "_blank"); // Open the WhatsApp URL
+                        }}
+
+                >
+                    {errorMessage}
+                </button>
             )}
             <Loader
                 isVisible={isLoaderVisible}
