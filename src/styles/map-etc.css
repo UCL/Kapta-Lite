@@ -102,7 +102,8 @@
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        
+        transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+
     }
     
     #connect {
@@ -112,7 +113,24 @@
       #share {
         transform: translateX(1rem); /* shift right from center */
       }
-    
+    /* Hover state */
+    #connect:hover,
+    #share:hover {
+        background-color: var(--mid-green-dark, #028c28); /* Darken background */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for hover effect */
+    }
+
+    /* Focus state */
+    #connect:focus,
+    #share:focus {
+        outline: 2px solid var(--mid-green); /* Add focus outline */
+    }
+
+    /* Active state */
+    #connect:active,
+    #share:active {
+        background-color: var(--mid-green-light, #03c03c); /* Lighten background */
+    }
     .position-marker-icon {
         color: var(--bright-green);
 
@@ -577,10 +595,24 @@
         border-radius: 20%;
         right: 20px; /* Adjust as needed */
     z-index: 1000; /* Ensure it appears above other elements */
-    background-color: var(--mid-green-dark, #028c28);
-    color: #000;
+    background-color: var(--mid-green);
+    /* border: 1px solid var(--mid-green--translucent); */
     border: none;
 }
+.premium-btn:hover{
+        background-color: var(--mid-green-dark, #028c28); /* Darken background */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for hover effect */
+    }
+
+    /* Focus state */
+    .premium-btn:focus{
+        outline: 2px solid var(--mid-green); /* Add focus outline */
+    }
+
+    /* Active state */
+    .premium-btn:active{
+        background-color: var(--mid-green-light, #026e23); /* Lighten background */
+    }
 #search-modal .option-button-container {
     width: 100%;
     display: flex;
