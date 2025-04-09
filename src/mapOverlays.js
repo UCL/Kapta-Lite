@@ -284,7 +284,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             </button>
             <div className="modal-title">
                 {isRegisterMapper
-                    ? "Connect with WhatsApp Mappers"
+                    ? ""
                     : isPremium
                     ? "Premium"
                     : "Search"}
@@ -307,7 +307,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     className="btn"
                     onClick={() => setIsOpen(false)}>
 
-                    Connect with mappers in the map
+                    Connect with<br />mappers in the map
                 </button>
                 <button
                     className="btn"
@@ -318,16 +318,16 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     );
                     }}
                 >
-                    Register as WhatsApp Business Mapper
+                    Register as<br />WhatsApp Business Mapper
                 </button>
             </div>
         </>
     ) : isPremium ? (
         <>
             <p>
-                You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite.
+                {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                 <br />
-                To request a demo for Premium data management and visualization, please fill in this form:
+                To request a demo for advanced data management and visualization, please fill in this form:
             </p>
             <div className="option-button-container">
                 <button
@@ -336,7 +336,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     window.open("https://forms.gle/Br6C8eAueZdo35Y7A", "_blank");
                     }}
                 >
-                    Request Premium Demo
+                    Request premium demo
                 </button>
             </div>
 
@@ -556,14 +556,27 @@ export function ShareModal({
                     <div className="modal-content">
                         <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
                         <ol>
-                            <li>Share locations in a WhatsApp Group</li>
-                            <li>Export chat to Kapta Lite app</li>
-                            <li>Share your WhatsApp Map</li>
+                            
+                            <li>Share locationsin a<br />WhatsApp Group</li>
+                            <li>Export chat to<br />Kapta Lite app</li>
+                            <li>Share your<br />WhatsApp Map</li>
                         </ol>
                         {(!isMobileOrTablet()) && (
                         <p>Or if you already have the chat. Upload to convert it.</p>
                        )}
                        <div className="option-button-container">
+                             <button className="btn" 
+                            
+                            onClick={() => { 
+                                window.open(
+                                    "https://wa.me",
+                                    "_blank"
+                                );
+                            }}
+                            
+                            >
+                                Start mapping
+                            </button>
                             <button className="btn" 
                             onClick={() => { 
                                 window.open(
@@ -586,18 +599,18 @@ export function ShareModal({
                             }}
                             
                             >
-                                Need help? Contact us
+                                Need help?<br />Contact us
                             </button>
                             {(!isMobileOrTablet()) && (
                          <div className="option-button-container">
                             
                             {enableDownload ? (
                                 <button className="btn" onClick={handleDownload}>
-                                    Download this map
+                                    Download<br />this map
                                 </button>
                             ) : (
                                 <button className="btn" disabled style={{ display: "none" }}>
-                                    Please upload a map
+                                    Upload<br />a map
                                 </button>
                             )}
                          <button className="btn" 
@@ -608,7 +621,7 @@ export function ShareModal({
                                 filePickerButton.click(); // Programmatically trigger the click
                                 setIsOpen(false)
                             }}
-                        > Convert a chat into a map
+                        > Convert a chat<br />into a map
                         </button>
                         </div>
 
