@@ -563,7 +563,7 @@ export function ShareModal({
                         <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
                         <ol>
                             
-                            <li>Share locationsin a<br />WhatsApp Group</li>
+                            <li>Share locations in a<br />WhatsApp Group</li>
                             <li>Export chat to<br />Kapta Lite app</li>
                             <li>Share your<br />WhatsApp Map</li>
                         </ol>

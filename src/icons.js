@@ -108,7 +108,7 @@ export const WhatAppMapMarkerPosition = `
   <img
     src="${KaptaMarker}"
     alt="Kapta Marker"
-    style="width: 30px; height: 30px;"
+    style="width: 35px; height: 35px;"
   />
 `;
 // export const WhatAppMapMarkerPosition = icon({

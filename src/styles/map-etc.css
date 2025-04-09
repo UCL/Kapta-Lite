@@ -104,6 +104,11 @@
         transform: translateX(-50%);
         transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 
+        outline: none;
+  -webkit-tap-highlight-color: transparent; /* Removes grey highlight on iOS */
+  -webkit-focus-ring-color: transparent;    /* Removes blue glow in iOS Safari */
+  box-shadow: none;
+
     }
     
     #connect {
@@ -130,6 +135,11 @@
     #connect:active,
     #share:active {
         background-color: var(--mid-green-light, #03c03c); /* Lighten background */
+    }
+    #connect:focus:not(:focus-visible),
+    #share:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
     }
     .position-marker-icon {
         color: black;
