@@ -36,6 +36,7 @@ import { MAPBOX_TOKEN } from "../globals.js";
 import { UploadDialog } from "./UploadDialog.jsx";
 import SuccessModal from "./SuccessModal.jsx";
 import { wamapperslocations } from "./wamapperslocations.js";
+import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
 
 /************************************************************************************************
  *   Basemaps (TileLayers)
@@ -130,7 +131,7 @@ function MapDataLayer({ data }) {
 	const [featureImages, setFeatureImages] = useState({}); // this is basically a cache
     // Define a custom GPS icon
     const WhatsAppMarkerIcon = L.divIcon({
-		html: WhatAppMapMarkerPosition, // Use the imported GPS icon
+		html: WhatAppMapMarkerPosition, // 
 		className: "whatsapp-marker-icon",
 		// iconSize: [100, 100], // Adjust size as needed
 		// iconAnchor: [15, 30], // Anchor point for the icon
