@@ -410,7 +410,7 @@ export function ShareModal({
         try {
             const presignedUrl = await uploadProcessedChat(globalProcessedChatFile, fileNameWAMap, setButtonText, setButtonDisabled);
             const encodedPresignedUrl = encodeURIComponent(presignedUrl);
-            const generatedUrl = `https://staging.d1aatc9qjk4pwp.amplifyapp.com/?import=${encodedPresignedUrl}`;
+            const generatedUrl = `https://lite.kapta.earth/?import=${encodedPresignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("Click here to share directly");
             setButtonDisabled(false);
@@ -571,7 +571,7 @@ export function ShareModal({
                         <p>Or if you already have the chat. Upload to convert it.</p>
                        )}
                        <div className="option-button-container">
-                             <button className="btn" 
+                             {/* <button className="btn" 
                             
                             onClick={() => { 
                                 window.open(
@@ -582,7 +582,7 @@ export function ShareModal({
                             
                             >
                                 Start mapping
-                            </button>
+                            </button> */}
                             <button className="btn" 
                             onClick={() => { 
                                 window.open(
