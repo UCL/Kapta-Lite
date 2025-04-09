@@ -580,7 +580,7 @@ export function ShareModal({
                             <button className="btn" 
                             onClick={() => { 
                                 window.open(
-                                    "https://www.youtube.com/watch?v=vaPHy8S-OpA",
+                                    "https://youtu.be/cE30c18ipfU",
                                     "_blank"
                                 );
    

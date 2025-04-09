@@ -71,21 +71,6 @@ export default function BurgerMenu({
 					<div className="bm__item">
 						<div
 							className="bm__item__summary"
-							onClick={() => toggleSection("what")}
-						>
-							{chevronDown}
-							{t("what")}
-						</div>
-						<div
-							className={`bm__item__content ${
-								openSection === "what" ? "bm__item__content--open" : ""
-							}`}
-							dangerouslySetInnerHTML={{ __html: t("whatContent") }}
-						></div>
-					</div>
-					<div className="bm__item">
-						<div
-							className="bm__item__summary"
 							onClick={() => toggleSection("people")}
 						>
 							{chevronDown} {t("people")}
@@ -97,22 +82,44 @@ export default function BurgerMenu({
 							dangerouslySetInnerHTML={{ __html: t("peopleContent") }}
 						></div>
 					</div>
-				</div>
-				<div className="links-disclaimer__wrapper">
 					<div className="bm__item">
-						<a
-							href="https://github.com/UCL/kapta-mobile"
-							id="gh"
-							className="bm__item__content"
+						<div
+							className="bm__item__summary"
+							onClick={() => toggleSection("what")}
 						>
-							{GHIcon}
-						</a>
+							{chevronDown}
+							{t("what")}
+						</div>
+						<div
+							className={`bm__item__content ${
+								openSection === "what" ? "bm__item__content--open" : ""
+							}`}
+							dangerouslySetInnerHTML={{ __html: t("legalDisclaimer") }}
+						></div>
 					</div>
-					<p
+					
+				</div>
+				<div className="links-disclaimer__wrapper" style={{ textAlign: "center" }}>
+				<div className="bm__item" >
+					<a
+						href="https://github.com/UCL/kapta-mobile"
+						id="gh"
+						className="bm__item__content"
+					>
+						{GHIcon}
+					</a>
+					<div className="bm__item__text" style={{ marginTop: "0.5rem" }}>
+						<p>Have feedback or <br />want to get in touch?</p>
+						<p>
+						Contact us on WhatsApp at<br /><a href="https://wa.me/447473522912">+44 7473522912</a> or email us at<br /><a href="mailto:info@kapta.earth">info@kapta.earth</a>.
+						</p>
+					</div>
+				</div>
+					{/* <p
 						className="bm__item"
 						id="disclaimer"
 						dangerouslySetInnerHTML={{ __html: t("legalDisclaimer") }}
-					></p>
+					></p> */}
 				</div>
 			</div>
 		</div>

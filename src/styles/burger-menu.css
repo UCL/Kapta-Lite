@@ -35,7 +35,7 @@
 
 #burger-menu {
     background-color: white;
-    width: 250px;
+    width: 280px;
     height: 100vh;
     position: fixed;
     top: 0;
@@ -108,6 +108,8 @@
     .links-disclaimer__wrapper {
         position: fixed;
         bottom: 2rem;
+        width:100%;
+        
     }
 
     #gh {
