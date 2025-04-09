@@ -10,6 +10,8 @@ import BurgerMenu from "./BurgerMenu.jsx";
 import { menuIcon } from "./icons.js";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 import Loader from "./Loader.jsx"; // Import Loader component
+import checkingPwGif from "./images/checkingPw.gif";
+
 
 function LanguageSelector({ supportedLanguages }) {
     // Get the saved language from localStorage or fallback to i18next language
@@ -274,9 +276,28 @@ export default function MainMenu({
     return (
         <>
             {loadingMessage && (
-                <div id="loadingMessage" className="loading-message">
-                    Your WhatsApp Map is loading. This might take a few seconds.
-                </div>
+                <div
+                id="loadingMessage"
+                className="loading-message"
+                style={{
+                  backgroundColor: "#25D366",
+                  color: "white",
+                  padding: "1rem",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                }}
+              >
+
+                <span>Your WhatsApp Map is loading. This might take a few seconds.</span>
+                <img
+                  src={checkingPwGif}
+                  alt="Loading animation"
+                  style={{ width: "40px", height: "40px" }}
+                />
+              </div>
             )}
             {errorMessage && (
                 <div className="error-message">

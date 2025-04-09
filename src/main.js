@@ -67,7 +67,7 @@ function App() {
         // Initialize GA and SW
         initServiceWorker(setFileToParse);
 
-        // ReactGA.initialize("G-LEP1Y0FVCD");  //disable GA for dev
+        ReactGA.initialize("G-LEP1Y0FVCD");  //disable GA for dev
     }, []); // Empty dependency array ensures this effect runs once on mount
 	
     
