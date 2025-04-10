@@ -133,8 +133,8 @@ function MapDataLayer({ data }) {
     const WhatsAppMarkerIcon = L.divIcon({
 		html: WhatAppMapMarkerPosition, // 
 		className: "whatsapp-marker-icon",
-		// iconSize: [100, 100], // Adjust size as needed
-		// iconAnchor: [15, 30], // Anchor point for the icon
+		iconSize: [30, 30], // Adjust size as needed
+		iconAnchor: [15, 30], // Anchor point for the icon
 	});
 	if (geoJSON.features.length == 0) {
 		// need translation
@@ -270,8 +270,8 @@ function WhatsAppMappersDataLayer({ data }) {
     const WhatsAppMapperIcon = L.divIcon({
 		html: WhatAppMapperPosition, // Use the imported GPS icon
 		className: "whatsapp-mapper-icon",
-		// iconSize: [100, 100], // Adjust size as needed
-		// iconAnchor: [15, 30], // Anchor point for the icon
+		iconSize: [30, 30], // Adjust size as needed
+		iconAnchor: [15, 30], // Anchor point for the icon
 	});
 	if (geoJSON.features.length == 0) {
 		// need translation
@@ -398,7 +398,7 @@ const currentPositionIcon = L.divIcon({
 	html: GPSPositionIcn,
 	className: "position-marker-icon",
 	iconSize: [30, 30],
-	iconAnchor: [5, 0],
+	iconAnchor: [15, 30],
 });
 
 function UpdateMap({ currentLocation, flyToLocation, setFlyToLocation }) {
