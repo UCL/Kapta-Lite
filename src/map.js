@@ -196,7 +196,7 @@ function MapDataLayer({ data }) {
 									click: () => handleMarkerClick(feature),
 								}}
 							>
-								<Popup offset={L.point(2, -15)}>
+								<Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
 								<div className="map-popup-body">
 									{imgFilenames && imgFilenames.length > 0 && (
 										<div
@@ -315,7 +315,7 @@ function WhatsAppMappersDataLayer({ data }) {
 
     return (
       <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
-        <Popup offset={L.point(2, -15)}>
+        <Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
           <h3>{name}</h3>
           <p>{Description}</p>
           <a
@@ -360,6 +360,7 @@ function ErrorPopup({ error }) {
 
 	return error ? (
 		<Popup offset={L.point(0, -15)}
+			maxWidth={200} maxHeight={400}
 			position={[2, 0]} // Position within the map (centered in this case)
 			autoPan={true}
 			autoClose={false}
@@ -517,7 +518,7 @@ export function Map({
                     {/* current position marker */}
                     {currentLocation && (
                         <Marker position={currentLocation} icon={currentPositionIcon}>
-                            <Popup offset={L.point(-8, -15)}> 
+                            <Popup offset={L.point(-8, -15)} maxWidth={200} maxHeight={400}> 
                                 <p style={{ textAlign: "center", fontWeight: 600 }}>
                                     You're here!
                                 </p>
