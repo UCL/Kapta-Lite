@@ -1,3 +1,6 @@
+# Environment files
+.env
+
 # Dependency directories
 node_modules/
 
@@ -12,3 +15,7 @@ src/config.json
 export*.sh
 
 .DS_Store
+
+#geojson of whatsapp mappers' locations 
+
+src/wamapperslocations.js

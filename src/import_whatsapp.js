@@ -352,6 +352,18 @@ const sortMessages = (messages) => {
 	});
 	return messages;
 };
+const worldCapitals = [
+	"Kabul", "Tirana", "Algiers", "Andorra la Vella", "Luanda", "Buenos Aires", "Yerevan", "Canberra", "Vienna", "Baku",
+	"Nassau", "Manama", "Dhaka", "Bridgetown", "Minsk", "Brussels", "Belmopan", "Porto-Novo", "Thimphu", "Sucre",
+	"Sarajevo", "Gaborone", "Brasília", "Bandar Seri Begawan", "Sofia", "Ouagadougou", "Gitega", "Phnom Penh", "Yaoundé", "Ottawa",
+	"Praia", "Bangui", "N'Djamena", "Santiago", "Beijing", "Bogotá", "Moroni", "Kinshasa", "Brazzaville", "San José",
+	"Zagreb", "Havana", "Nicosia", "Prague", "Copenhagen", "Djibouti", "Roseau", "Santo Domingo", "Quito", "Cairo",
+	"San Salvador", "Malabo", "Asmara", "Tallinn", "Addis Ababa", "Suva", "Helsinki", "Paris", "Libreville", "Banjul",
+	"Tbilisi", "Berlin", "Accra", "Athens", "St. George's", "Guatemala City", "Conakry", "Bissau", "Georgetown", "Port-au-Prince",
+	"Tegucigalpa", "Budapest", "Reykjavik", "New Delhi", "Jakarta", "Tehran", "Baghdad", "Dublin", "Jerusalem", "Rome",
+	"Kingston", "Tokyo", "Amman", "Astana", "Nairobi", "Tarawa", "Pristina", "Kuwait City", "Bishkek", "Vientiane",
+	"Riga", "Beirut", "Maseru", "Monrovia", "Tripoli", "Vaduz", "Vilnius", "Luxembourg", "Antananarivo", "Lilongwe"
+  ];
 
 const processText = async (text, zipInput = null) => {
     const groupNameRegex = /"([^"]*)"/;
@@ -366,6 +378,14 @@ const processText = async (text, zipInput = null) => {
 
     // Convert messageMatches to array of JSON objects and then sort
     let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
+	const senderToCapital = {};
+	const mappingLog = Object.keys(senders).map((sender, i) => {
+		const capital = worldCapitals[i % worldCapitals.length];
+		senderToCapital[sender] = capital;
+		return `• ${sender} → ${capital}`;
+	}).join("\n");
+	
+	console.log("📍 Assigned Capitals to Observers:\n" + mappingLog);
     messages = sortMessages(messages);
 
     // Now loop through messages to create geojson for each location
@@ -383,7 +403,7 @@ const processText = async (text, zipInput = null) => {
                 contributionid: contribID,
                 mainattribute: groupName,
                 observations: "",
-                observer: message.sender,
+                observer: senderToCapital[message.sender],
                 datetime: message.datetime,
                 markerColour: senders[message.sender],
                 imgFilenames: [],
