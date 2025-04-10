@@ -93,7 +93,7 @@ i18next.use(initReactI18next).init({
 				uploaddata: "Share map with Task ID",
 				addMetadataTitle: "Describe this map",
 				sharingTitle: "",
-				addDescription: "Search WhatsApp Maps",
+				addDescription: "Search open WhatsApp Maps",
 				updateDescription: "Update map title",
 				copyright: "Kapta by UCL",
 				supportOption: "Get support to improve your map",

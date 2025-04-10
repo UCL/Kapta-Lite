@@ -213,7 +213,7 @@ export function MapActionArea({
                         className="map-action-btn"
                             >
                                 <div className="map-action-icon">{connectIcon}</div>
-                                <span className="map-action-label">
+                                <span className="map-action-label" style={{ color: "#3a3a3a" }}>
                                     {showWaMappers ? "Connect" : "Connect"}
                                 </span>
                     </button>
@@ -227,7 +227,7 @@ export function MapActionArea({
                         <div className="map-action-icon">
                             {importdata ? shareIcn : createIcn}
                         </div>
-                        <span className="map-action-label">
+                        <span className="map-action-label" style={{ color: "#3a3a3a" }}>
                             {importdata ? "Share" : "Create"}
                         </span>
                     </button>
@@ -239,7 +239,7 @@ export function MapActionArea({
                         className="map-action-btn premium-btn" 
                         >
                         <div className="map-action-icon">{premiumIcn}</div>
-                        <span className="map-action-label">Premium</span>
+                        <span className="map-action-label" style={{ color: "#3a3a3a" }}>Premium</span>
                     </button>
                     )}
                 </div>

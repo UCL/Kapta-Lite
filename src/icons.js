@@ -70,9 +70,9 @@ export const chevronDown = <FontAwesomeIcon icon={faChevronDown} />;
 export const chevronUp = <FontAwesomeIcon icon={faChevronUp} />;
 export const nextIcn = <FontAwesomeIcon icon={faForwardStep} />;
 export const imageIcn = <FontAwesomeIcon icon={faImage} className="btn-icon" />;
-export const shareIcn = <FontAwesomeIcon icon={faShareNodes} />;
-export const createIcn = <FontAwesomeIcon icon={faPlus} />;
-export const premiumIcn = <FontAwesomeIcon icon={faArrowUpRightFromSquare} />;
+export const shareIcn = <FontAwesomeIcon icon={faShareNodes} style={{ color: "#3a3a3a" }} />;
+export const createIcn = <FontAwesomeIcon icon={faPlus} style={{ color: "#3a3a3a" }} />;
+export const premiumIcn = <FontAwesomeIcon icon={faArrowUpRightFromSquare} style={{ color: "#3a3a3a" }} />;
 
 
 export const dataIcn = (
