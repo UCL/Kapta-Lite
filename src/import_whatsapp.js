@@ -378,11 +378,19 @@ const processText = async (text, zipInput = null) => {
 
     // Convert messageMatches to array of JSON objects and then sort
     let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
+	const shuffledCapitals = [...worldCapitals].sort(() => Math.random() - 0.5);
+
 	const senderToCapital = {};
 	const mappingLog = Object.keys(senders).map((sender, i) => {
-		const capital = worldCapitals[i % worldCapitals.length];
-		senderToCapital[sender] = capital;
-		return `• ${sender} → ${capital}`;
+		const capital = shuffledCapitals[i % shuffledCapitals.length];
+		const trimmedSender =
+			sender.length >= 4 ? sender.slice(-4) :
+			sender.length === 3 ? sender.slice(-3) :
+			sender.length === 2 ? sender.slice(-2) :
+			sender;
+		const observerName = `${capital}-${trimmedSender}`;
+		senderToCapital[sender] = observerName;
+		return `• ${sender} → ${observerName}`;
 	}).join("\n");
 	
 	console.log("📍 Assigned Capitals to Observers:\n" + mappingLog);
