@@ -263,9 +263,9 @@ export default function MainMenu({
             }
 
             const decodedUrl = decodeURIComponent(importParam);
-            console.log('Decoded import URL:', decodedUrl);
+            console.log('Decoded import URL:', importParam);
 
-            const response = await fetch(decodedUrl);
+            const response = await fetch(importParam);
             if (!response.ok) {
                 console.error('Fetch Response Status:', response.status);
                 console.error('Fetch Response Headers:', response.headers);

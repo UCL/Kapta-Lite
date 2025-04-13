@@ -32,8 +32,8 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
         console.log("✅ File uploaded successfully");
 
         // Step 3: Fetch the pre-signed download URL
-        const encodedFileName = encodeURIComponent(fileNameWAMap);
-        const downloadResponse = await fetch(`${API_URL}/download-url?fileName=${encodedFileName}`);
+        // const encodedFileName = encodeURIComponent(fileNameWAMap);
+        const downloadResponse = await fetch(`${API_URL}/download-url?fileName=${fileNameWAMap}`);
 
         if (!downloadResponse.ok) throw new Error(`Failed to get download URL: ${await downloadResponse.text()}`);
 

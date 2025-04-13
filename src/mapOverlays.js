@@ -465,8 +465,8 @@ export function ShareModal({
                 );
             }
             const presignedUrl = await uploadProcessedChat(globalProcessedChatFileReduced, fileNameWAMap, setButtonText, setButtonDisabled);
-            const encodedPresignedUrl = encodeURIComponent(presignedUrl);
-            const generatedUrl = `https://lite.kapta.earth/?import=${encodedPresignedUrl}`;
+            // const encodedPresignedUrl = encodeURIComponent(presignedUrl);
+            const generatedUrl = `https://lite.kapta.earth/?import=${presignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("Click here to share directly");
             setButtonDisabled(false);
