@@ -368,32 +368,6 @@ const worldCapitals = [
 	"Kingston", "Tokyo", "Amman", "Astana", "Nairobi", "Tarawa", "Pristina", "Kuwait City", "Bishkek", "Vientiane",
 	"Riga", "Beirut", "Maseru", "Monrovia", "Tripoli", "Vaduz", "Vilnius", "Luxembourg", "Antananarivo", "Lilongwe"
   ];
-  const compressImageBlob = (blob, quality = 0.3) => {
-    return new Promise((resolve) => {
-        const img = new Image();
-        const url = URL.createObjectURL(blob);
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
-            canvas.toBlob(
-                (compressedBlob) => {
-                    URL.revokeObjectURL(url);
-                    resolve(compressedBlob);
-                },
-                "image/jpeg",
-                quality
-            );
-        };
-        img.onerror = () => {
-            URL.revokeObjectURL(url);
-            resolve(null); // Skip on error
-        };
-        img.src = url;
-    });
-};
 
 const processText = async (text, zipInput = null) => {
     const groupNameRegex = /"([^"]*)"/;
@@ -503,13 +477,10 @@ const processText = async (text, zipInput = null) => {
         const filenames = Object.keys(zipInput.files);
         const imgFilenames = filenames.filter((f) => imageFilenames.has(f));
 
-		for (const filename of imgFilenames) {
-			const fileData = await zipInput.file(filename).async("blob");
-			const compressedBlob = await compressImageBlob(fileData, 0.3); // 30% quality
-			if (compressedBlob) {
-				zip.file(filename, compressedBlob);
-			}
-		}
+        for (const filename of imgFilenames) {
+            const fileData = await zipInput.file(filename).async("blob");
+            zip.file(filename, fileData);
+        }
     }
 
     // Generate the zip file as a Blob

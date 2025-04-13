@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./styles/map-etc.css";
 import html2canvas from "html2canvas";
+import * as JSZip from "jszip";
+
 import {
     shareIcn,
     closeIcon,
@@ -58,7 +60,33 @@ import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based 
 //         </button>
 //     );
 // }
-
+const quality = 0.2; // Set the compression parameter
+const compressImageBlob = (blob, quality) => {
+    return new Promise((resolve) => {
+        const img = new Image();
+        const url = URL.createObjectURL(blob);
+        img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            canvas.toBlob(
+                (compressedBlob) => {
+                    URL.revokeObjectURL(url);
+                    resolve(compressedBlob);
+                },
+                "image/jpeg",
+                quality
+            );
+        };
+        img.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null); // Skip on error
+        };
+        img.src = url;
+    });
+};
 function InputArea({ setTitle, setPulse, search, currentDataset }) {
     const { t } = useTranslation();
     const [isSubmit, setIsSubmit] = useState(false);
@@ -408,7 +436,35 @@ export function ShareModal({
 		const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${isOpenMapChecked ? "open" : "close"}`;
 
         try {
-            const presignedUrl = await uploadProcessedChat(globalProcessedChatFile, fileNameWAMap, setButtonText, setButtonDisabled);
+            // Compress images in the zip file before uploading
+            let globalProcessedChatFileReduced = null; // Create a new variable for the reduced file. 
+
+            if (globalProcessedChatFile) {
+                const zip = await JSZip.loadAsync(globalProcessedChatFile);
+                const filenames = Object.keys(zip.files);
+
+                const compressionPromises = filenames.map(async (filename) => {
+                    const file = zip.file(filename);
+                    if (file && /\.(jpg|jpeg|png|gif)$/i.test(filename)) {
+                        const fileData = await file.async("blob");
+                        const compressedBlob = await compressImageBlob(fileData, quality); 
+                        if (compressedBlob) {
+                            zip.file(filename, compressedBlob);
+                        }
+                    }
+                });
+
+                await Promise.all(compressionPromises);
+
+                // Generate the updated zip file
+                const updatedZipBlob = await zip.generateAsync({ type: "blob" });
+                globalProcessedChatFileReduced = new File(
+                    [updatedZipBlob],
+                    globalProcessedChatFile.name,
+                    { type: "application/zip" }
+                );
+            }
+            const presignedUrl = await uploadProcessedChat(globalProcessedChatFileReduced, fileNameWAMap, setButtonText, setButtonDisabled);
             const encodedPresignedUrl = encodeURIComponent(presignedUrl);
             const generatedUrl = `https://lite.kapta.earth/?import=${encodedPresignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
