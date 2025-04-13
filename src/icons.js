@@ -36,6 +36,10 @@ import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp';
 import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
 import KaptaMapper from "./images/KaptaLiteMapper.png"; // Import the image
 import WABusinessIcon from "./images/WABusinessIcon.png"; // Import the image
+import shareicon from "./images/shareicon.png"; // Import the image
+import createicon from "./images/createicon.png"; // Import the image
+import premiumicon from "./images/premiumicon.png"; // Import the image
+
 
 // Add fontawesome icons to library
 library.add(
@@ -70,9 +74,9 @@ export const chevronDown = <FontAwesomeIcon icon={faChevronDown} />;
 export const chevronUp = <FontAwesomeIcon icon={faChevronUp} />;
 export const nextIcn = <FontAwesomeIcon icon={faForwardStep} />;
 export const imageIcn = <FontAwesomeIcon icon={faImage} className="btn-icon" />;
-export const shareIcn = <FontAwesomeIcon icon={faShareNodes} style={{ color: "#3a3a3a" }} />;
-export const createIcn = <FontAwesomeIcon icon={faPlus} style={{ color: "#3a3a3a" }} />;
-export const premiumIcn = <FontAwesomeIcon icon={faArrowUpRightFromSquare} style={{ color: "#3a3a3a" }} />;
+// export const shareIcn = <FontAwesomeIcon icon={faShareNodes} style={{ color: "#3a3a3a" }} />;
+// export const createIcn = <FontAwesomeIcon icon={faPlus} style={{ color: "#3a3a3a" }} />;
+// export const premiumIcn = <FontAwesomeIcon icon={faArrowUpRightFromSquare} style={{ color: "#3a3a3a" }} />;
 
 
 export const dataIcn = (
@@ -131,6 +135,27 @@ export const connectIcon =   (
 	<img
 		src={WABusinessIcon}
 		alt="WhatsApp Business Icon"
+		style={{ width: "22px", height: "22px" }}
+	/>
+);
+export const shareIcn =   (
+	<img
+		src={shareicon}
+		alt="Share Icon"
+		style={{ width: "22px", height: "22px" }}
+	/>
+);
+export const createIcn =   (
+	<img
+		src={createicon}
+		alt="Create Icon"
+		style={{ width: "22px", height: "22px" }}
+	/>
+);
+export const premiumIcn =   (
+	<img
+		src={premiumicon}
+		alt="Premium Icon"
 		style={{ width: "22px", height: "22px" }}
 	/>
 );

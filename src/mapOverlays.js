@@ -267,7 +267,7 @@ export function MapActionArea({
                         className="map-action-btn premium-btn" 
                         >
                         <div className="map-action-icon">{premiumIcn}</div>
-                        <span className="map-action-label" style={{ color: "#3a3a3a" }}>Premium</span>
+                        <span className="map-action-label" style={{ color: "#3a3a3a", }}>Premium</span>
                     </button>
                     )}
                 </div>
