@@ -326,11 +326,12 @@ export default function MainMenu({
               </div>
             )}
             {errorMessage && (
-                <div className="error-message">
+                <div className="error-message" style={{top:"300px",backgroundColor: "#3a3a3a",color: "white",textAlign: "center", }}>
                     This map URL has expired
                 <button
                   
                     className="error-click"
+                    style={{top:"140px",width:"180px",color: "#3a3a3a",textAlign: "center", }}
                     onClick={() => {
                         const message = `Hi, please send me the new link for this map ${window.location.href}`;
                         const encodedMessage = encodeURIComponent(message); // Encode the message
@@ -344,6 +345,7 @@ export default function MainMenu({
                 <button
                    
                     className="error-exit"
+                    style={{top:"240px",width:"180px",color: "#3a3a3a",textAlign: "center", }}
                     onClick={() => {
                         setErrorMessage(null); // Hide the error message
                         }}
