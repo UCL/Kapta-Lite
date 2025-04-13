@@ -32,7 +32,7 @@ export let importdata = false; // Track whether FileParser is called
 export let enableDownload = false; // To enable download
 
 
-export function FileParser({ file, ...dataDisplayProps }) {
+export function FileParser({ file, onComplete, ...dataDisplayProps }) {
 	enableDownload = true
 	if(!window.location.href.includes('?import=')){
 		importdata = true; // Set to true when FileParser is called from WhatsApp, not from pre-signed URL (to avoid zip file uploads)
@@ -47,6 +47,10 @@ export function FileParser({ file, ...dataDisplayProps }) {
 			setMapData({ data: data, imgZip: imgZip });
 
 			showMap(true);
+			// Call onComplete callback after parsing is done
+			if (onComplete) {
+				onComplete();
+			}
 		},
 		[setMapData, showMap, setFileToParse]
 	);

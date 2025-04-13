@@ -121,23 +121,48 @@ function RecentMapButton({ showMap }) {
         </button>
     );
 }
-export function FilePicker(dataDisplayProps,) {
+export function FilePicker(dataDisplayProps) {
     const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null);
+    const [loadingMessage, setLoadingMessage] = useState(false);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         file && setSelectedFile(file);
         event.target.value = null; // Clear the input value
+        setLoadingMessage(true); // Show the loading message
     };
 
-    const handleButtonClick = () => {
+    const handleFilePick = () => {
         fileInputRef.current.click();
     };
 
     const { t } = useTranslation();
     return (
         <>
+            {loadingMessage && (
+                <div
+                    id="loadingMessage"
+                    className="loading-message"
+                    style={{
+                        backgroundColor: "#25D366",
+                        color: "white",
+                        padding: "1rem",
+                        textAlign: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                    }}
+                >
+                    <span>Your WhatsApp Map is loading. This might take a few seconds.</span>
+                    <img
+                        src={checkingPwGif}
+                        alt="Loading animation"
+                        style={{ width: "40px", height: "40px" }}
+                    />
+                </div>
+            )}
             <input
                 type="file"
                 accept={allowedExtensions.join(",")}
@@ -145,16 +170,17 @@ export function FilePicker(dataDisplayProps,) {
                 style={{ display: "none" }}
                 onChange={handleFileChange}
             />
-            {/* <button onClick={handleButtonClick} className="btn menu-btn file-input"> */}
-
-            <button id="filePickerButton" onClick={handleButtonClick}>
+            <button id="filePickerButton" onClick={handleFilePick}>
                 {t("selectFile")}
             </button>
             {selectedFile && (
                 <FileParser
                     file={selectedFile}
                     {...dataDisplayProps}
-                    onComplete={() => setSelectedFile(null)}
+                    onComplete={() => {
+                        setSelectedFile(null); // Reset selected file
+                        setLoadingMessage(false); // Hide the loading message
+                    }}
                 />
             )}
         </>
