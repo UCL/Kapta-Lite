@@ -403,6 +403,7 @@ export function ShareModal({
     const [buttonText, setButtonText] = useState(t("sharedata"));
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [kaptaWaMapUrl, setKaptaWaMapUrl] = useState(""); // Store the generated URL
+    const [WhatsAppMapTags, setWhatsAppMapTags] = useState(""); // New state for map description
 
     const handleShareDataClick = async () => {
         if (kaptaWaMapUrl) {
@@ -431,10 +432,9 @@ export function ShareModal({
         // Generate the URL if it hasn't been generated yet
         setButtonText("Uploading… Wait a few seconds");
         setButtonDisabled(true);
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
+        const randomNum = Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)).join('');
         const date = new Date().toISOString().split("T")[0];
-        const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${sharingOption || "unknown"}`;
-
+        const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${sharingOption || "unknown"}-${WhatsAppMapTags.replace(/\s+/g, "_")}`;
         try {
             // Compress images in the zip file before uploading
             let globalProcessedChatFileReduced = null;
@@ -577,6 +577,24 @@ export function ShareModal({
                             </a>
                         </p> */}
                     </section>
+
+                    {/* Map Description Section */}
+                    <section className="modal-section" style={{ textAlign: "center" }}>
+                        <p style={{ fontWeight: "bold" }}>Describe your map in three words:</p>
+                        <input
+                            type="text"
+                            placeholder="Enter three words"
+                            value={WhatsAppMapTags}
+                            onChange={(e) => setWhatsAppMapTags(e.target.value)}
+                            style={{
+                                marginTop: "10px",
+                                padding: "5px",
+                                fontSize: "1rem",
+                                width: "80%",
+                                textAlign: "center",
+                            }}
+                        />
+                    </section>
     
                     {/* Task ID Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
@@ -627,7 +645,8 @@ export function ShareModal({
                                 isButtonDisabled ||
                                 sharingOption === null || // Ensure one of the three checkboxes is selected
                                 hasTaskId === null || // Ensure Task ID selection is made
-                                (hasTaskId === true && taskId.length < 6) // Ensure Task ID is valid if selected
+                                (hasTaskId === true && taskId.length < 6) || // Ensure Task ID is valid if selected
+                                WhatsAppMapTags.trim().length === 0 // Ensure the map description is not empty
                             }
                         >
                             {buttonText}
