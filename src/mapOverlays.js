@@ -397,7 +397,7 @@ export function ShareModal({
     if (!isOpen) return null;
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
-    const [isOpenMapChecked, setIsOpenMapChecked] = useState(null);
+    const [sharingOption, setSharingOption] = useState(null); // Renamed from isOpenMapChecked
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
     const [buttonText, setButtonText] = useState(t("sharedata"));
@@ -433,11 +433,11 @@ export function ShareModal({
         setButtonDisabled(true);
         const randomNum = Math.floor(1000 + Math.random() * 9000);
         const date = new Date().toISOString().split("T")[0];
-		const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${isOpenMapChecked ? "open" : "close"}`;
+        const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${sharingOption || "unknown"}`;
 
         try {
             // Compress images in the zip file before uploading
-            let globalProcessedChatFileReduced = null; // Create a new variable for the reduced file. 
+            let globalProcessedChatFileReduced = null;
 
             if (globalProcessedChatFile) {
                 const zip = await JSZip.loadAsync(globalProcessedChatFile);
@@ -447,7 +447,7 @@ export function ShareModal({
                     const file = zip.file(filename);
                     if (file && /\.(jpg|jpeg|png|gif)$/i.test(filename)) {
                         const fileData = await file.async("blob");
-                        const compressedBlob = await compressImageBlob(fileData, quality); 
+                        const compressedBlob = await compressImageBlob(fileData, quality);
                         if (compressedBlob) {
                             zip.file(filename, compressedBlob);
                         }
@@ -464,8 +464,16 @@ export function ShareModal({
                     { type: "application/zip" }
                 );
             }
-            const presignedUrl = await uploadProcessedChat(globalProcessedChatFileReduced, fileNameWAMap, setButtonText, setButtonDisabled);
-            // const encodedPresignedUrl = encodeURIComponent(presignedUrl);
+
+            // Pass the sharingOption to data_submission
+            const presignedUrl = await uploadProcessedChat(
+                globalProcessedChatFileReduced,
+                fileNameWAMap,
+                setButtonText,
+                setButtonDisabled,
+                sharingOption // Pass the sharing option
+            );
+
             const generatedUrl = `https://lite.kapta.earth/?import=${presignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("Click here to share directly");
@@ -529,61 +537,83 @@ export function ShareModal({
             {importdata ? (
                 <>
                     {/* Open WhatsApp Map Section */}
-                    <section className="modal-section">
-                        <p>Do you want to share this as an OPEN WhatsApp Map?</p>
-                        <div className="checkbox-container">
-                            <label>
+                    <section className="modal-section" style={{ textAlign: "center" }}>
+                        <p style={{ fontWeight: "bold" }}>I want to share this data as:</p>
+                        <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px", marginLeft: "20px" }}>
+                            <label style={{ fontSize: "1rem" }}>
                                 <input
                                     type="checkbox"
-                                    checked={isOpenMapChecked === false}
-                                    onChange={() => setIsOpenMapChecked(false)}
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
+                                    checked={sharingOption === "private-sensitive"}
+                                    onChange={() => setSharingOption("private-sensitive")}
                                 />{" "}
-                                No
+                                Private & sensitive
                             </label>
-                            <label>
+                            <label style={{ fontSize: "1rem" }}>
                                 <input
                                     type="checkbox"
-                                    checked={isOpenMapChecked === true}
-                                    onChange={() => setIsOpenMapChecked(true)}
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
+                                    checked={sharingOption === "private-non-sensitive"}
+                                    // disabled // Disable this checkbox
+                                    onChange={() => setSharingOption("private-non-sensitive")}
                                 />{" "}
-                                Yes
+                                Private & non-sensitive
+                            </label>
+                            <label style={{ fontSize: "1rem" }}>
+                                <input
+                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
+                                    checked={sharingOption === "open"}
+                                    // disabled // Disable this checkbox
+                                    onChange={() => setSharingOption("open")}
+                                />{" "}
+                                Open
                             </label>
                         </div>
+                        {/* <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
+                            For more information, see{" "}
+                            <a href="https://lite.kapta.earth/DataProtection" target="_blank" rel="noopener noreferrer">
+                                https://lite.kapta.earth/DataProtection
+                            </a>
+                        </p> */}
                     </section>
     
                     {/* Task ID Section */}
-                    <section className="modal-section">
-                        <p>Do you have a TASK ID?</p>
-                        <div className="checkbox-container">
-                            <label>
+                    <section className="modal-section" style={{ textAlign: "center" }}>
+                        <p style={{ fontWeight: "bold" }}>Do you have a Task ID?</p>
+                        <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
+                            <label style={{ fontSize: "1rem" }}>
                                 <input
                                     type="checkbox"
-                                    checked={hasTaskId === false}
-                                    onChange={() => {
-                                        setHasTaskId(false);
-                                        setTaskId("");
-                                    }}
-                                />{" "}
-                                No
-                            </label>
-                            <label>
-                                <input
-                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
                                     checked={hasTaskId === true}
                                     onChange={() => setHasTaskId(true)}
                                 />{" "}
                                 Yes
                             </label>
+                            <label style={{ fontSize: "1rem" }}>
+                                <input
+                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
+                                    checked={hasTaskId === false}
+                                    onChange={() => setHasTaskId(false)}
+                                />{" "}
+                                No
+                            </label>
                         </div>
-                        {hasTaskId && (
+                        {hasTaskId === true && (
                             <input
-                                type="number"
+                                type="text"
                                 placeholder="Enter Task ID"
                                 value={taskId}
-                                onChange={(e) =>
-                                    setTaskId(e.target.value.replace(/\D/g, ""))
-                                } // Allow only numeric input
-                                maxLength={6}
+                                onChange={(e) => setTaskId(e.target.value)}
+                                style={{
+                                    marginTop: "10px",
+                                    padding: "5px",
+                                    fontSize: "1rem",
+                                    width: "80%",
+                                    textAlign: "center",
+                                }}
                             />
                         )}
                     </section>
@@ -595,22 +625,21 @@ export function ShareModal({
                             onClick={handleShareDataClick}
                             disabled={
                                 isButtonDisabled ||
-                                isOpenMapChecked === null ||
-                                hasTaskId === null ||
-                                (hasTaskId === true && taskId.length < 6)
+                                sharingOption === null || // Ensure one of the three checkboxes is selected
+                                hasTaskId === null || // Ensure Task ID selection is made
+                                (hasTaskId === true && taskId.length < 6) // Ensure Task ID is valid if selected
                             }
                         >
                             {buttonText}
                         </button>
                     </div>
                     {!isMobileOrTablet() && (
-                <div className="option-button-container">
-                    <button className="btn" onClick={handleDownload}>
-                        Download Map
-                    </button>
-                </div>
-            )}
-
+                        <div className="option-button-container">
+                            <button className="btn" onClick={handleDownload}>
+                                Download Map
+                            </button>
+                        </div>
+                    )}
                 </>
             ) : (
                 <>
