@@ -167,6 +167,7 @@ function InputArea({ setTitle, setPulse, search, currentDataset }) {
     );
 }
 
+
 export function MapActionArea({
     setTitle,
     setPulse,
@@ -175,6 +176,7 @@ export function MapActionArea({
     search,
     share,
     connect,
+    create,
     showWaMappers, 
     setShowWaMappers, 
     ...dataDisplayProps // Add this to capture the props
@@ -184,6 +186,7 @@ export function MapActionArea({
     const [isSearchModalOpen, setIsSearchModalOpen] = useState(false); // State for the search modal
     const [isPremium, setIsPremium] = useState(false); // State to differentiate between Search and Premium
     const [isRegisterMapper, setIsRegisterMapper] = useState(false); // State for "register as a mapper"
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for the "Create" modal
 
     // const [showWaMappers, setShowWaMappers] = useState(false);
 
@@ -214,6 +217,11 @@ export function MapActionArea({
         setIsSearchModalOpen(true); // Opens the search modal
     };
 
+    const handleCreate = () => {
+        setIsCreateModalOpen(true); // Open the "Create" modal
+        console.log("create modal clicked")
+    };
+
     return (
         <div id="map-actions-container">
             <div className="map-actions__wrapper">
@@ -224,41 +232,41 @@ export function MapActionArea({
                         currentDataset={currentDataset}
                         search={handleSearch}
                     />
-                    {/* <button
-                        className="btn--burger-menu"
-                        onClick={toggleBM}
-                    >
-                        <div className="map-action-icon">{menuIcon}</div>
-                    </button> */}
-                    {/* <BurgerMenu
-                        isVisible={isBMVisible}
-                        setIsVisible={setIsBMVisible}
-                    /> */}
-                    <button
-                        id="connect"
-                        type="button"
-                        onClick={handleConnect}
-                        className="map-action-btn"
-                            >
-                                <div className="map-action-icon">{connectIcon}</div>
-                                <span className="map-action-label" style={{ color: "#3a3a3a" }}>
-                                    {showWaMappers ? "Connect" : "Connect"}
-                                </span>
-                    </button>
+                    <div className="map-actions__buttons">
+                        {/* Connect Button */}
+                        <button
+                            id="connect"
+                            type="button"
+                            onClick={handleConnect}
+                            className="map-action-btn"
+                        >
+                            <div className="map-action-icon">{connectIcon}</div>
+                            <span className="map-action-label" style={{ color: "#3a3a3a", }}>Connect</span>
+                        </button>
 
-                    <button
-                        id="share"
-                        type="button"
-                        onClick={handleShare}
-                        className="map-action-btn"
-                    >
-                        <div className="map-action-icon">
-                            {importdata ? shareIcn : createIcn}
-                        </div>
-                        <span className="map-action-label" style={{ color: "#3a3a3a" }}>
-                            {importdata ? "Share" : "Create"}
-                        </span>
-                    </button>
+                         {/* Create Button */}
+                         <button
+                            id="create"
+                            type="button"
+                            onClick={handleCreate}
+                            className="map-action-btn"
+                        >
+                            <div className="map-action-icon">{createIcn}</div>
+                            <span className="map-action-label" style={{ color: "#3a3a3a", }}>Create</span>
+                        </button>
+                        {/* Share Button */}
+                        <button
+                            id="share"
+                            type="button"
+                            onClick={handleShare}
+                            className="map-action-btn"
+                        >
+                            <div className="map-action-icon">{shareIcn}</div>
+                            <span className="map-action-label" style={{ color: "#3a3a3a", }}>Share</span>
+                        </button>
+
+                       
+                    </div>
                     {(!isMobileOrTablet()) && (
                     <button
                         id="premium"
@@ -291,10 +299,85 @@ export function MapActionArea({
                 isRegisterMapper={isRegisterMapper} // Pass the new state
                 setIsRegisterMapper={setIsRegisterMapper} // Pass the setter
             />
+
+            {/* Create Modal */}
+            <CreateModal
+                isOpen={isCreateModalOpen}
+                setIsOpen={setIsCreateModalOpen}
+
+            />
+           
         </div>
     );
 }
+export function CreateModal({ isOpen, setIsOpen }) {
+    if (!isOpen) return null;
 
+    const createModalRef = useRef(null);
+
+    useClickOutside(createModalRef, () => setIsOpen(false)); // Close modal when clicking outside
+
+    return (
+        <div id="sharing-modal" ref={createModalRef}> {/* Use the same id as ShareModal */}
+            <button
+                className="modal-close btn"
+                onClick={() => setIsOpen(false)}
+            >
+                {closeIcon}
+            </button>
+            <div className="modal-title">Create WhatsApp Map</div> {/* Title */}
+            <div className="modal-content">
+                <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
+                <ol>
+                    <li>Share locations in a<br />WhatsApp Group</li>
+                    <li>Export chat to<br />Kapta Lite app</li>
+                    <li>Share your<br />WhatsApp Map</li>
+                </ol>
+                {!isMobileOrTablet() && (
+                    <p>Or if you already have the chat. Upload to convert it.</p>
+                )}
+                <div className="option-button-container">
+                    <button
+                        className="btn"
+                        onClick={() =>
+                            window.open("https://youtu.be/cE30c18ipfU", "_blank")
+                        }
+                    >
+                        Watch Tutorial
+                    </button>
+                    <button
+                        className="btn"
+                        onClick={() =>
+                            window.open(
+                                "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
+                                "_blank"
+                            )
+                        }
+                    >
+                        Need help?<br />Contact us
+                    </button>
+                    {!isMobileOrTablet() && (
+                    <button
+                    className="btn"
+                    onClick={() => {
+                        const filePickerButton = document.getElementById("filePickerButton");
+                        filePickerButton?.click();
+                        setIsOpen(false); // Close the "Create" modal
+
+                        // Clear the /?import=... in the URL
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete("import"); // Remove the "import" query parameter
+                        window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                    }}
+                    >
+                    Convert a chat<br />into a map
+                    </button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
 export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, setIsRegisterMapper }) {
     if (!isOpen) return null;
 
@@ -393,7 +476,7 @@ export function ShareModal({
     ...dataDisplayProps
 }) {
     
-    console.log("ShareModalclick", dataDisplayProps);
+    // console.log("ShareModalclick", dataDisplayProps);
     if (!isOpen) return null;
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
@@ -662,87 +745,9 @@ export function ShareModal({
                 </>
             ) : (
                 <>
-                    {/* Content for when importdata is false */}
-                    <div className="modal-content">
-                        <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
-                        <ol>
-                            
-                            <li>Share locations in a<br />WhatsApp Group</li>
-                            <li>Export chat to<br />Kapta Lite app</li>
-                            <li>Share your<br />WhatsApp Map</li>
-                        </ol>
-                        {(!isMobileOrTablet()) && (
-                        <p>Or if you already have the chat. Upload to convert it.</p>
-                       )}
-                       <div className="option-button-container">
-                             {/* <button className="btn" 
-                            
-                            onClick={() => { 
-                                window.open(
-                                    "https://wa.me",
-                                    "_blank"
-                                );
-                            }}
-                            
-                            >
-                                Start mapping
-                            </button> */}
-                            <button className="btn" 
-                            onClick={() => { 
-                                window.open(
-                                    "https://youtu.be/cE30c18ipfU",
-                                    "_blank"
-                                );
-   
-                            }}
-                            
-                            >
-                                Watch Tutorial
-                            </button>
-                            <button className="btn" 
-                            
-                            onClick={() => { 
-                                window.open(
-                                    "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
-                                    "_blank"
-                                );
-                            }}
-                            
-                            >
-                                Need help?<br />Contact us
-                            </button>
-                            {(!isMobileOrTablet()) && (
-                         <div className="option-button-container">
-                            
-                            {enableDownload ? (
-                                <button className="btn" onClick={handleDownload}>
-                                    Download<br />this map
-                                </button>
-                            ) : (
-                                <button className="btn" disabled style={{ display: "none" }}>
-                                    Upload<br />a map
-                                </button>
-                            )}
-                         <button className="btn" 
-                       
-                            onClick={() => { 
-                               
-                                const filePickerButton = document.getElementById("filePickerButton")
-                                filePickerButton.click(); // Programmatically trigger the click
-                                setIsOpen(false)
-                            }}
-                        > Convert a chat<br />into a map
-                        </button>
-                        </div>
-
-                        )}
-                        </div>
-
-                    </div>
-                        {/* {(!isMobileOrTablet() || isIOS()) && (
-                            <FilePicker {...dataDisplayProps}/> //this for some reason is not working
-                        )} */}
-            
+                <div className="modal-content">
+                <p>You need to first create a new WhatsApp Map to share it!</p>
+                </div>
                 </>
             )}
         </div>

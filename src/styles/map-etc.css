@@ -90,54 +90,48 @@
     }
 
     #connect,
+    #create,
     #share {
-        /* position: fixed; */
-        bottom: 2.5rem; /* Close to the bottom of the screen */
         width: 5.5rem;
         height: 3.5rem;
+        bottom: 1rem;
         border-radius: 20%;
         background-color: var(--wa-green);
-        /* border: 1px solid var(--mid-green--translucent); */
-        z-index: 900;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
         transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
         outline: none;
-  -webkit-tap-highlight-color: transparent; /* Removes grey highlight on iOS */
-  -webkit-focus-ring-color: transparent;    /* Removes blue glow in iOS Safari */
-  box-shadow: none;
-
+        border: none;
+        
     }
-    
-    #connect {
-        transform: translateX(-6.5rem); /* shift left from center */
-      }
-      
-      #share {
-        transform: translateX(1rem); /* shift right from center */
-      }
     /* Hover state */
     #connect:hover,
-    #share:hover {
+    #share:hover,
+    #create:hover {
         background-color: var(--wa-green--dark); /* Darken background */
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for hover effect */
     }
 
     /* Focus state */
     #connect:focus,
-    #share:focus {
+    #share:focus,
+    #create:focus {
         outline: none
     }
 
     /* Active state */
     #connect:active,
-    #share:active {
+    #share:active,
+    #create:active {
         background-color: var(--mid-green-light, #03c03c); /* Lighten background */
     }
     #connect:focus:not(:focus-visible),
-    #share:focus:not(:focus-visible) {
+    #share:focus:not(:focus-visible),
+    #create:focus:not(:focus-visible) {
     outline: none;
     box-shadow: none;
     }
@@ -206,10 +200,9 @@
     overflow-y: scroll;
 }
 .map-action-btn {
-    position: fixed;
-    bottom: 2rem;
     width: 5rem;
     height: 6rem;
+    /* bottom: 2.5em; */
     border: none;
     border-radius: 1.5rem;
     background-color: var(--mid-green);
@@ -221,42 +214,39 @@
     gap: 0.3rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    z-index: 900;
-    padding: 0.5rem;
-    transition: transform 0.2s ease;
-  }
-  
-  .map-action-btn:hover {
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.map-action-btn:hover {
     transform: scale(1.05);
     background-color: var(--wa-green--dark);
-  }
-  .map-action-btn:focus {
-    outline: none; /* Remove the blue focus outline */
-    box-shadow: none; /* Remove any default focus shadow */
 }
-  
-  .map-action-icon {
+
+.map-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.map-action-icon {
     width: 1.5rem;
     height: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .map-action-icon svg {
+}
+
+.map-action-icon svg {
     width: 100%;
     height: 100%;
     color: white;
-  }
-  
-  .map-action-label {
+}
+
+.map-action-label {
     font-size: 0.8rem;
     font-weight: 500;
     color: white;
     text-align: center;
-  }
-  
-  
+}
 
 #map-actions-container {
     color: #f0f0f0;
@@ -415,8 +405,58 @@
 
         }
     }
+    .map-actions__buttons {
+        display: flex;
+        justify-content: center; /* Center the buttons horizontally */
+        align-items: center; /* Align the buttons vertically */
+        gap: 2rem; /* Add spacing between the buttons */
+        position: fixed;
+        bottom: 1rem; /* Position the buttons 1rem from the bottom */
+        width: 100%; /* Ensure the container spans the full width */
+        z-index: 900; /* Ensure it appears above other elements */
+    }
 }
 
+
+#connect,
+#create,
+#share {
+    width: 5.5rem;
+    height: 3.5rem;
+    border-radius: 20%;
+    background-color: var(--wa-green);
+    transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    outline: none;
+    border: none;
+    color: #3a3a3a;
+    position: relative; /* Ensure proper positioning within the container */
+}
+
+#connect:hover,
+#create:hover,
+#share:hover {
+    background-color: var(--wa-green--dark); /* Darken background on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for hover effect */
+}
+
+#connect:disabled,
+#create:disabled,
+#share:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#connect:active,
+#create:active,
+#share:active {
+    background-color: var(--mid-green-light, #03c03c); /* Lighten background */
+}
 
 #sharing-modal {
     display: flex;
@@ -506,7 +546,7 @@
     }
 }
 #sharing-modal .checkbox-container label {
-    color: #1f036d; /* Ensure checkbox labels are also dark blue */
+    color: #050505; /* Ensure checkbox labels are also dark blue */
 }
 
 .checkbox-container {
@@ -579,7 +619,7 @@
     /* border: none; */
     font-size: 0.8rem;
     cursor: pointer;
-    color: var(--black-blue); /* Match the color of the share modal close button */
+    color:black; /* Match the color of the share modal close button */
     transition: color 0.3s ease; /* Add smooth transition for hover effect */
     display: flex;
     align-items: center;
@@ -611,7 +651,7 @@
 .premium-btn {
     position: absolute;
         /* position: fixed; */
-        bottom: 2.5rem; /* Close to the bottom of the screen */
+        bottom: 3.3rem; /* Close to the bottom of the screen */
         width: 5.5rem;
         height: 3.5rem;
         border-radius: 20%;
@@ -655,7 +695,7 @@
     font-size: medium;
     font-weight: 600;
     padding: 0.5rem;
-    color: var(--black-blue);
+    color: black;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     background-color: white;
     border-radius: 8px;
