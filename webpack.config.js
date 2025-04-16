@@ -1,7 +1,7 @@
 var webpack = require("webpack");
 var path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { InjectManifest } = require("workbox-webpack-plugin"); // Correct Import
+const { InjectManifest } = require("workbox-webpack-plugin");
 const WebpackPwaManifest = require("webpack-pwa-manifest");
 const CopyPlugin = require("copy-webpack-plugin");
 
@@ -9,7 +9,7 @@ module.exports = (env, argv) => {
 	const isProduction = argv.mode === "production";
 
 	return {
-		mode: isProduction ? "production" : "development", // Set mode correctly
+		mode: isProduction ? "production" : "development",
 		entry: {
 			main: "./src/main.js",
 		},
@@ -26,7 +26,7 @@ module.exports = (env, argv) => {
 		output: {
 			path: path.resolve(__dirname, "dist"),
 			filename: "[name].bundle.js",
-			clean: isProduction, // Clean only in production
+			clean: isProduction,
 		},
 		resolve: {
 			fallback: { path: require.resolve("path-browserify") },
@@ -72,7 +72,7 @@ module.exports = (env, argv) => {
 			new CopyPlugin({
 				patterns: [
 					{
-						from: "./src/images/icons/kapta-green.svg",
+						from: "./src/images/og-icon.png",
 						to: "og-icon.png",
 					},
 				],
@@ -80,7 +80,7 @@ module.exports = (env, argv) => {
 			new HtmlWebpackPlugin({
 				template: "./src/index.html",
 				title: "Kapta Lite",
-				favicon: "src/images/icons/favicon.svg",
+				favicon: "src/images/icons/favicon.png",
 				meta: {
 					"Content-Type": {
 						"http-equiv": "content-type",
@@ -94,7 +94,15 @@ module.exports = (env, argv) => {
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Click here to open Kapta Lite 🗺️",
+						content: "Click here to open Kapta Lite \ud83d\uddda\ufe0f",
+					},
+					"og:type": {
+						property: "og:type",
+						content: "website",
+					},
+					"og:url": {
+						property: "og:url",
+						content: "https://lite.kapta.earth/",
 					},
 					"og:image": {
 						property: "og:image",
@@ -119,10 +127,10 @@ module.exports = (env, argv) => {
 			}),
 			...(isProduction
 				? [
-					  new InjectManifest({
-						  swSrc: "./src/sw.js",
-						  maximumFileSizeToCacheInBytes: 6242880,
-					  }),
+						new InjectManifest({
+							swSrc: "./src/sw.js",
+							maximumFileSizeToCacheInBytes: 6242880,
+						}),
 				  ]
 				: []),
 			new WebpackPwaManifest({
@@ -144,43 +152,13 @@ module.exports = (env, argv) => {
 						text: "description",
 						url: "link",
 						files: [
-							{
-								name: "file",
-								accept: ["*/*"],
-							},
-							{
-								name: "lists",
-								accept: ["text/plain", ".txt"],
-							},
-							{
-								name: "geographies",
-								accept: ["application/json", ".geojson"],
-							},
-							{
-								name: "docs",
-								accept: [
-									"application/msword",
-									"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-								],
-							},
-							{
-								name: "zips",
-								accept: ["application/zip"],
-							},
-							{
-								name: "codes",
-								accept: [
-									"text/html",
-									"text/css",
-									"text/javascript",
-									"application/json",
-									"application/xml",
-								],
-							},
-							{
-								name: "others",
-								accept: ["*/*"],
-							},
+							{ name: "file", accept: ["*/*"] },
+							{ name: "lists", accept: ["text/plain", ".txt"] },
+							{ name: "geographies", accept: ["application/json", ".geojson"] },
+							{ name: "docs", accept: ["application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"] },
+							{ name: "zips", accept: ["application/zip"] },
+							{ name: "codes", accept: ["text/html", "text/css", "text/javascript", "application/json", "application/xml"] },
+							{ name: "others", accept: ["*/*"] },
 						],
 					},
 				},
