@@ -32,6 +32,8 @@ import { globalProcessedChatFile } from "./import_whatsapp";
 import { handleSearch } from "./SearchBar.js";
 import { importdata, enableDownload } from "./import_whatsapp.js";
 import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based on your project structure
+// import { createHash } from "crypto";
+
 
 
 
@@ -515,9 +517,34 @@ export function ShareModal({
         // Generate the URL if it hasn't been generated yet
         setButtonText("Uploading… Wait a few seconds");
         setButtonDisabled(true);
-        const randomNum = Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)).join('');
-        const date = new Date().toISOString().split("T")[0];
-        const fileNameWAMap = `KaptaWhatsAppMap-${date}-${randomNum}-${taskId || "000000"}-${sharingOption || "unknown"}-${WhatsAppMapTags.replace(/\s+/g, "_")}`;
+        // const randomNum = Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)).join('');
+
+        // function generateHashedFilename(originalName, salt = "") {
+        //     const timestamp = Date.now();
+        //     const input = `${originalName}-${salt}`;
+        //     const hash = createHash("sha256").update(input).digest("hex");
+        //     const extension = originalName.split('.').pop();
+        //     return `${hash}.${extension}`;
+        //   }
+        // const fileName = generateHashedFilename("map.png", "task123", "optionalSecret");
+  
+        // const date = new Date().toISOString().split("T")[0];
+        // const fileNameWAMap = `KaptaWhatsAppMap-${date}-${WhatsAppMapTags.replace(/\s+/g, "_")}-${taskId || "000000"}-${sharingOption || "unknown"}-${randomNum}`;
+        
+        function generateBase62Id(length = 32) {
+            const charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            const charsetLength = charset.length;
+            const values = new Uint8Array(length);
+            crypto.getRandomValues(values);
+          
+            return Array.from(values)
+              .map(byte => charset[byte % charsetLength])
+              .join("");
+          }
+        const randomNum = generateBase62Id(); // Generate a random string of 20 characters
+        console.log("🔐 Base62 ID:",randomNum)
+        const fileNameWAMap = `KaptaWhatsAppMap-${randomNum}`; //Reduce parameters to increase security of URL
+
         try {
             // Compress images in the zip file before uploading
             let globalProcessedChatFileReduced = null;
@@ -554,7 +581,9 @@ export function ShareModal({
                 fileNameWAMap,
                 setButtonText,
                 setButtonDisabled,
-                sharingOption // Pass the sharing option
+                sharingOption, // Pass the sharing option
+                taskId,
+                WhatsAppMapTags
             );
 
             const generatedUrl = `https://lite.kapta.earth/?import=${presignedUrl}`;
@@ -663,10 +692,10 @@ export function ShareModal({
 
                     {/* Map Description Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
-                        <p style={{ fontWeight: "bold" }}>Describe your map in three words:</p>
+                        <p style={{ fontWeight: "bold" }}>Describe your map in max. 3 words:</p>
                         <input
                             type="text"
-                            placeholder="Enter three words"
+                            placeholder="e.g. water pumps"
                             value={WhatsAppMapTags}
                             onChange={(e) => setWhatsAppMapTags(e.target.value)}
                             style={{
