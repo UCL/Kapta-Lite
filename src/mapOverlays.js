@@ -672,35 +672,42 @@ export function ShareModal({
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
                         <p style={{ fontWeight: "bold" }}>I want to share this data as:</p>
-                        <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px", marginLeft: "20px" }}>
-                            <label style={{ fontSize: "1rem" }}>
+                        <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>
+                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                                <input
+                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
+                                    checked={sharingOption === "private-non-sensitive"}
+                                    onChange={() => setSharingOption("private-non-sensitive")}
+                                />{" "}
+                                Private
+                                <span style={{ fontSize: "0.8rem", display: "block" }}>
+                                    (Only people with the link can view)
+                                </span>
+                            </label>
+                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                                <input
+                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
+                                    checked={sharingOption === "open"}
+                                    onChange={() => setSharingOption("open")}
+                                />{" "}
+                                Public
+                                <span style={{ fontSize: "0.8rem", display: "block" }}>
+                                    (Anynomous and anyone can view)
+                                </span>
+                            </label>
+                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
                                 <input
                                     type="checkbox"
                                     style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
                                     checked={sharingOption === "private-sensitive"}
                                     onChange={() => setSharingOption("private-sensitive")}
                                 />{" "}
-                                Private & sensitive
-                            </label>
-                            <label style={{ fontSize: "1rem" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={sharingOption === "private-non-sensitive"}
-                                    // disabled // Disable this checkbox
-                                    onChange={() => setSharingOption("private-non-sensitive")}
-                                />{" "}
-                                Private & non-sensitive
-                            </label>
-                            <label style={{ fontSize: "1rem" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={sharingOption === "open"}
-                                    // disabled // Disable this checkbox
-                                    onChange={() => setSharingOption("open")}
-                                />{" "}
-                                Open
+                                Extra Private
+                                <span style={{ fontSize: "0.8rem", display: "block" }}>
+                                    (Link expires in 7 days)
+                                </span>
                             </label>
                         </div>
                         {/* <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
