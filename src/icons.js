@@ -39,6 +39,7 @@ import WABusinessIcon from "./images/WABusinessIcon.png"; // Import the image
 import shareicon from "./images/shareicon.png"; // Import the image
 import createicon from "./images/createicon.png"; // Import the image
 import premiumicon from "./images/premiumicon.png"; // Import the image
+import gpsPositionIcn from "./images/gpsPositionIcn.png"; // Import the image
 
 
 // Add fontawesome icons to library
@@ -107,7 +108,13 @@ export const basemapDarkIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ col
 export const exitButtonIcon = (
 	<FontAwesomeIcon icon={faArrowLeft} className="btn-icon" />
 );
-export const GPSPositionIcn = icon(faCircleDot).html;
+export const GPSPositionIcn = `
+  <img
+    src="${gpsPositionIcn}"
+    alt="GPS Position"
+    style="width: 30px; height: 30px;"
+  />
+`;
 export const WhatAppMapMarkerPosition = `
   <img
     src="${KaptaMarker}"

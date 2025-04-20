@@ -399,7 +399,7 @@ const currentPositionIcon = L.divIcon({
 	html: GPSPositionIcn,
 	className: "position-marker-icon",
 	iconSize: [30, 30],
-	iconAnchor: [15, 30],
+	iconAnchor: [15, 15],
 });
 
 function UpdateMap({ currentLocation, flyToLocation, setFlyToLocation }) {
