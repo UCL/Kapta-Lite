@@ -467,7 +467,7 @@
     justify-content: center;
     z-index: 901;
     position: absolute;
-    top: 10vh;
+    top: 12vh;
     margin-inline: 20%;
     background-color: var(--mid-green--translucent);
     backdrop-filter: blur(2px);

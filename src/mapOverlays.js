@@ -676,74 +676,74 @@ export function ShareModal({
                     <section className="modal-section" style={{ textAlign: "center" }}>
                         <p style={{ fontWeight: "bold" }}>I want to share this data as:</p>
                         <div
-    className="checkbox-container"
-    style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}
->
-    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-        <input
-            type="checkbox"
-            style={{ width: "20px", height: "20px" }}
-            checked={sharingOption === "private-non-sensitive"}
-            onChange={() => setSharingOption("private-non-sensitive")}
-        />
-        <span>Private</span>
-    </label>
-    <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
-        (Only people with the link can view)
-    </p>
+                            className="checkbox-container"
+                            style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}
+                        >
+                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                                <input
+                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }}
+                                    checked={sharingOption === "private-non-sensitive"}
+                                    onChange={() => setSharingOption("private-non-sensitive")}
+                                />
+                                <strong>Private</strong>
+                            </label>
+                            <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
+                                (Only people with the link can view)
+                            </p>
 
-    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-        <input
-            type="checkbox"
-            style={{ width: "20px", height: "20px" }}
-            checked={sharingOption === "open"}
-            onChange={() => {
-                setSharingOption("open");
-                setShowMapperIdField(true);
-            }}
-        />
-        <span>Public</span>
-    </label>
-    <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
-        (Anonymous and anyone can view)
-    </p>
+                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                                <input
+                                    type="checkbox"
+                                    style={{ width: "20px", height: "20px" }}
+                                    checked={sharingOption === "open"}
+                                    onChange={() => {
+                                        setSharingOption("open");
+                                        setShowMapperIdField(true);
+                                    }}
+                                />
+                                <strong>Public</strong>
+                            </label>
+                            <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
+                                (Anonymous and anyone can view)
+                            </p>
 
-    {showMapperIdField && sharingOption === "open" && (
-        <div style={{ marginTop: "3px", textAlign: "center", alignItems: "center" }}>
-            <input
-                type="number"
-                placeholder="Your Mapper ID."
-                value={mapperId}
-                onChange={(e) => setMapperId(e.target.value)}
-                style={{
-                    padding: "5px",
-                    fontSize: "1rem",
-                    width: "80%",
-                    textAlign: "center",
-                }}
-            />
-            <p style={{ fontSize: "0.8rem" }}>
-                No ID? Go to "Connect" and register
-            </p>
-        </div>
-    )}
+                        {showMapperIdField && sharingOption === "open" && (
+                            <div style={{ marginTop: "3px", textAlign: "center", alignItems: "center" }}>
+                                <input
+                                    type="number"
+                                    placeholder="Your Mapper ID."
+                                    value={mapperId}
+                                    onChange={(e) => setMapperId(e.target.value)}
+                                    style={{
+                                        padding: "5px",
+                                        fontSize: "1rem",
+                                        width: "80%",
+                                        textAlign: "center",
+                                    }}
+                                />
+                                <p style={{ fontSize: "0.8rem" }}>
+                                    No ID? Go to "Connect" and register
+                                </p>
+                            </div>
+                        )}
 
-    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-        <input
-            type="checkbox"
-            style={{ width: "20px", height: "20px" }}
-            checked={sharingOption === "private-sensitive"}
-            onChange={() => {
-                setSharingOption("private-sensitive");
-                setShowMapperIdField(false);
-            }}
-        />
-        <span>Extra-Private</span>
-    </label>
-    <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
-        (Link expires in 7 days)
-    </p>
-</div>
+                        <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                            <input
+                                type="checkbox"
+                                style={{ width: "20px", height: "20px" }}
+                                checked={sharingOption === "private-sensitive"}
+                                onChange={() => {
+                                    setSharingOption("private-sensitive");
+                                    setShowMapperIdField(false);
+                                }}
+                            />
+                            <strong>Extra-Private</strong>
+                        </label>
+                        <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
+                            (Link expires in 7 days)
+                        </p>
+                    </div>
 
                     </section>
 
