@@ -401,7 +401,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             >
                 {closeIcon}
             </button>
-            <div className="modal-title">
+            <div className="modal-title"> Connect with mappers
                 {isRegisterMapper
                     ? ""
                     : isPremium
@@ -633,6 +633,27 @@ export function ShareModal({
     URL.revokeObjectURL(url);
   }
     };
+    const handleShareCurrentUrl = () => {
+
+        if (navigator.canShare && navigator.share) {
+            navigator
+                .share({
+                    title: "#MadeWithKapta",
+                    text: "This is a WhatsApp Map created with Kapta",
+                    url: window.location.href,
+                })
+                .catch((error) => console.error("Sharing failed", error));
+        } else {
+            navigator.clipboard
+                .writeText(window.location.href)
+                .then(() => {
+                    alert("The WhatsApp Map link has been copied to clipboard!");
+                })
+                .catch((err) => {
+                    console.error("Failed to copy link: ", err);
+                });
+        }
+    }
 
     useClickOutside(shareModalRef, () => setIsOpen(false));
 
@@ -643,7 +664,7 @@ export function ShareModal({
                 {closeIcon}
             </button>
             <div className="modal-title">
-                {importdata ? t("sharingTitle") : "Create WhatsApp Map"}
+                {importdata ? t("sharingTitle") : "Share WhatsApp Map"}
             </div>
     
             {importdata ? (
@@ -774,9 +795,19 @@ export function ShareModal({
                 </>
             ) : (
                 <>
-                <div className="modal-content">
-                <p>You need to first create a new WhatsApp Map to share it!</p>
+                <div className="option-button-container">
+                    <button className="btn" onClick={handleShareCurrentUrl}>
+                        Share WhatsApp Map
+                    </button>
                 </div>
+                {!isMobileOrTablet() && (
+                <div className="option-button-container">
+                    <button className="btn" onClick={handleDownload}>
+                        Download WhatsApp Map
+                    </button>
+                </div>
+                    )}
+
                 </>
             )}
         </div>
