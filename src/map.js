@@ -22,7 +22,7 @@ import {
 
 import { MapActionArea, ShareModal } from "./mapOverlays.js";
 import {
-	basemapDarkIcon,
+	basemapGMapsIcon,
 	basemapSatIcon,
 	GPSPositionIcn,
 	WhatAppMapMarkerPosition,
@@ -42,7 +42,7 @@ import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
  *   Basemaps (TileLayers)
  ************************************************************************************************/
 
-function DarkTileLayer() {
+function GMapsTileLayer() {
 	return (
 		<TileLayer
 			url={`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}`}
@@ -435,8 +435,23 @@ export function Map({
     const [showWaMappers, setShowWaMappers] = useState(false);
 
     // State to track the active tile layer
-    const [activeTileLayer, setActiveTileLayer] = useState("dark");
-
+    const [activeTileLayer, setActiveTileLayer] = useState("gmaps");
+	useEffect(() => {
+		const map = document.querySelector(".leaflet-control-attribution");
+	
+		if (map) {
+			// Clear existing attributions
+			map.innerHTML = "Leaflet";
+	
+			// Add correct attribution based on active layer
+			if (activeTileLayer === "osm") {
+				map.innerHTML += ' | OSM Contributors';
+			} else {
+				map.innerHTML += " | Google";
+			}
+		}
+	}, [activeTileLayer]);
+	
     // pulse effect on title update
     useEffect(() => {
         if (shouldPulse) {
@@ -501,18 +516,18 @@ export function Map({
                     className="map-button"
                     onClick={() =>
                         setActiveTileLayer((prev) =>
-                            prev === "dark" ? "satellite" : prev === "satellite" ? "osm" : "dark"
+                            prev === "gmaps" ? "satellite" : prev === "satellite" ? "osm" : "gmaps"
                         )
                     }
                 >
-                    {basemapDarkIcon}
+                    {basemapGMapsIcon}
                 </button>
                 <button id="gps" className="map-button" onClick={getCurrentPosition}>
                     {GPSIcn}
                 </button>
                 <MapContainer {...mapConfig}>
                     {/* Determine which basemap to show */}
-                    {activeTileLayer === "dark" && <DarkTileLayer />}
+                    {activeTileLayer === "gmaps" && <GMapsTileLayer />}
                     {activeTileLayer === "satellite" && <SatelliteTileLayer />}
                     {activeTileLayer === "osm" && <OSMTileLayer />}
                     {/* current position marker */}
@@ -541,7 +556,7 @@ export function Map({
                     <AttributionControl
                         position="bottomright"
                         prefix="Leaflet"
-                        attribution="Leaflet"
+						// attribution={activeTileLayer === "osm" ? "OSM Contributors" : "Google"}
                     />
                 </MapContainer>
                 <MapActionArea

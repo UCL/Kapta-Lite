@@ -104,7 +104,7 @@ export const WhatAppMapper = <FontAwesomeIcon icon={faWhatsapp} style={{ color: 
 //   );
 export const GPSIcn = <FontAwesomeIcon icon={faLocationCrosshairs} style={{ color: "#3a3a3a" }}/>;
 export const basemapSatIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
-export const basemapDarkIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
+export const basemapGMapsIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
 export const exitButtonIcon = (
 	<FontAwesomeIcon icon={faArrowLeft} className="btn-icon" />
 );
