@@ -94,7 +94,7 @@ module.exports = (env, argv) => {
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Click here to open Kapta Lite \ud83d\uddda\ufe0f",
+						content: "Connect with WhatsApp Mappers. Share WhatsApp Maps.",
 					},
 					"og:type": {
 						property: "og:type",

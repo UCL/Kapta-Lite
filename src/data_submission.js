@@ -1,7 +1,7 @@
 const API_URL = "https://mjbhgmtnxe.execute-api.eu-west-2.amazonaws.com/prod/KaptaLite_test";
 const BUCKET_BASE_URL = "https://s3.eu-west-2.amazonaws.com/kapta-lite-private-maps";
 
-export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, setButtonDisabled, sharingOption, taskId, WhatsAppMapTags) {
+export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, setButtonDisabled, sharingOption, taskId, WhatsAppMapTags, wabMapperId) {
     setStatusText("Preparing for sharing...");
     setButtonDisabled(true);
 
@@ -9,12 +9,14 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
         const visibility = sharingOption; // "private-sensitive", "private-non-sensitive", or "open"
         const taskIdFolder = taskId || "noTaskId";; // To classify data by taskId, and give a value if no value
         const tagsFolder = WhatsAppMapTags; // To classify data by tags
+        const WABMapperFolder = wabMapperId || "noWabMapperId"; // WhatsApp Mapper ID
 
         console.log("📦 Sending to /download-url:", {
             fileName: fileNameWAMap,
             visibility,
             taskIdFolder,
-            tagsFolder
+            tagsFolder,
+            WABMapperFolder
         });
 
         // Step 1: Request a pre-signed URL from the backend
@@ -25,7 +27,8 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
                 fileType: file.type,
                 visibility,
                 taskIdFolder,
-                tagsFolder
+                tagsFolder,
+                WABMapperFolder
             }),
             headers: { "Content-Type": "application/json" }
         });

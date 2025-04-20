@@ -485,10 +485,12 @@ export function ShareModal({
     const [sharingOption, setSharingOption] = useState(null); // Renamed from isOpenMapChecked
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
+    const [mapperId, setMapperId] = useState(""); // New state for Mapper ID
     const [buttonText, setButtonText] = useState(t("sharedata"));
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [kaptaWaMapUrl, setKaptaWaMapUrl] = useState(""); // Store the generated URL
     const [WhatsAppMapTags, setWhatsAppMapTags] = useState(""); // New state for map description
+    const [showMapperIdField, setShowMapperIdField] = useState(false); // New state for showing Mapper ID field
 
     const handleShareDataClick = async () => {
         if (kaptaWaMapUrl) {
@@ -575,7 +577,7 @@ export function ShareModal({
                 );
             }
 
-            // Pass the sharingOption to data_submission
+            // Pass the sharingOption and wabMapperId to data_submission
             const presignedUrl = await uploadProcessedChat(
                 globalProcessedChatFileReduced,
                 fileNameWAMap,
@@ -583,7 +585,8 @@ export function ShareModal({
                 setButtonDisabled,
                 sharingOption, // Pass the sharing option
                 taskId,
-                WhatsAppMapTags
+                WhatsAppMapTags,
+                mapperId // Pass the Mapper ID as wabMapperId
             );
 
             const generatedUrl = `https://lite.kapta.earth/?import=${presignedUrl}`;
@@ -672,50 +675,76 @@ export function ShareModal({
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
                         <p style={{ fontWeight: "bold" }}>I want to share this data as:</p>
-                        <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}>
-                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={sharingOption === "private-non-sensitive"}
-                                    onChange={() => setSharingOption("private-non-sensitive")}
-                                />{" "}
-                                Private
-                                <span style={{ fontSize: "0.8rem", display: "block" }}>
-                                    (Only people with the link can view)
-                                </span>
-                            </label>
-                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={sharingOption === "open"}
-                                    onChange={() => setSharingOption("open")}
-                                />{" "}
-                                Public
-                                <span style={{ fontSize: "0.8rem", display: "block" }}>
-                                    (Anynomous and anyone can view)
-                                </span>
-                            </label>
-                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={sharingOption === "private-sensitive"}
-                                    onChange={() => setSharingOption("private-sensitive")}
-                                />{" "}
-                                Extra Private
-                                <span style={{ fontSize: "0.8rem", display: "block" }}>
-                                    (Link expires in 7 days)
-                                </span>
-                            </label>
-                        </div>
-                        {/* <p style={{ marginTop: "10px", fontSize: "0.9rem" }}>
-                            For more information, see{" "}
-                            <a href="https://lite.kapta.earth/DataProtection" target="_blank" rel="noopener noreferrer">
-                                https://lite.kapta.earth/DataProtection
-                            </a>
-                        </p> */}
+                        <div
+    className="checkbox-container"
+    style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}
+>
+    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+        <input
+            type="checkbox"
+            style={{ width: "20px", height: "20px" }}
+            checked={sharingOption === "private-non-sensitive"}
+            onChange={() => setSharingOption("private-non-sensitive")}
+        />
+        <span>Private</span>
+    </label>
+    <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
+        (Only people with the link can view)
+    </p>
+
+    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+        <input
+            type="checkbox"
+            style={{ width: "20px", height: "20px" }}
+            checked={sharingOption === "open"}
+            onChange={() => {
+                setSharingOption("open");
+                setShowMapperIdField(true);
+            }}
+        />
+        <span>Public</span>
+    </label>
+    <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
+        (Anonymous and anyone can view)
+    </p>
+
+    {showMapperIdField && sharingOption === "open" && (
+        <div style={{ marginTop: "3px", textAlign: "center", alignItems: "center" }}>
+            <input
+                type="number"
+                placeholder="Your Mapper ID."
+                value={mapperId}
+                onChange={(e) => setMapperId(e.target.value)}
+                style={{
+                    padding: "5px",
+                    fontSize: "1rem",
+                    width: "80%",
+                    textAlign: "center",
+                }}
+            />
+            <p style={{ fontSize: "0.8rem" }}>
+                No ID? Go to "Connect" and register
+            </p>
+        </div>
+    )}
+
+    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+        <input
+            type="checkbox"
+            style={{ width: "20px", height: "20px" }}
+            checked={sharingOption === "private-sensitive"}
+            onChange={() => {
+                setSharingOption("private-sensitive");
+                setShowMapperIdField(false);
+            }}
+        />
+        <span>Extra-Private</span>
+    </label>
+    <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
+        (Link expires in 7 days)
+    </p>
+</div>
+
                     </section>
 
                     {/* Map Description Section */}
@@ -727,7 +756,7 @@ export function ShareModal({
                             value={WhatsAppMapTags}
                             onChange={(e) => setWhatsAppMapTags(e.target.value)}
                             style={{
-                                marginTop: "10px",
+                                marginTop: "1px",
                                 padding: "5px",
                                 fontSize: "1rem",
                                 width: "80%",
@@ -786,7 +815,8 @@ export function ShareModal({
                                 sharingOption === null || // Ensure one of the three checkboxes is selected
                                 hasTaskId === null || // Ensure Task ID selection is made
                                 (hasTaskId === true && taskId.length < 6) || // Ensure Task ID is valid if selected
-                                WhatsAppMapTags.trim().length === 0 // Ensure the map description is not empty
+                                WhatsAppMapTags.trim().length === 0 || // Ensure the map description is not empty
+                                (sharingOption === "open" && mapperId.length <= 6) // Ensure Mapper ID is 6 digits if "Public" is selected
                             }
                         >
                             {buttonText}
@@ -800,23 +830,34 @@ export function ShareModal({
                         </div>
                     )}
                 </>
-            ) : (
-                <>
-                <div className="option-button-container">
-                    <button className="btn" onClick={handleShareCurrentUrl}>
-                        Share WhatsApp Map
-                    </button>
-                </div>
-                {!isMobileOrTablet() && (
-                <div className="option-button-container">
-                    <button className="btn" onClick={handleDownload}>
-                        Download WhatsApp Map
-                    </button>
-                </div>
-                    )}
+                ) : (
+                    <>
+                {window.location.href.includes("import=") ? (
+                    <>
+                        <div className="option-button-container">
+                            <button className="btn" onClick={handleShareCurrentUrl}>
+                                Share
+                            </button>
+                        </div>
+                        {!isMobileOrTablet() && (
+                            <div className="option-button-container">
+                                <button className="btn" onClick={handleDownload}>
+                                    Download WhatsApp Map
+                                </button>
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <div className="modal-content">
+                        <p style={{ textAlign: "center" }}>
+                            You need to create a WhatsApp Map before you can share it!
+                        </p>
+                    </div>
+                )}
 
-                </>
-            )}
+
+                    </>
+                )}
         </div>
     );
 }
