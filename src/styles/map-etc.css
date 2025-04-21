@@ -198,6 +198,7 @@
 
 .map-popup-body {
     overflow-y: scroll;
+
 }
 .map-action-btn {
     width: 5rem;
@@ -706,4 +707,16 @@
     background-color: var(--wa-green--dark);
     color: white;
 }
-
+/* Custom Leaflet Popup Background */
+.leaflet-popup-content-wrapper {
+    background-color: #a9fe8e !important;
+    color: #000 !important; /* Use dark text for contrast */
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  /* Optional: Adjust popup tip color */
+  .leaflet-popup-tip {
+    background-color: #a9fe8e !important;
+  }
+  

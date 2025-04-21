@@ -401,7 +401,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             >
                 {closeIcon}
             </button>
-            <div className="modal-title"> Connect with mappers
+            <div className="modal-title"> 
                 {isRegisterMapper
                     ? ""
                     : isPremium
