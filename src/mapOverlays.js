@@ -356,8 +356,21 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             )
                         }
                     >
-                        Need help?<br />Contact us
+                        Contact us
                     </button>
+                    <p style={{ marginTop:"-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
+                    <button
+                    className="btn"
+                    style={{ marginTop:"-15px"}}
+                    onClick={() => {
+                    window.open(
+                        "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                        "_blank"
+                    );
+                    }}
+                >
+                    Register
+                </button>
                     {!isMobileOrTablet() && (
                     <button
                     className="btn"
@@ -422,22 +435,24 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             </p>
             <div className="option-button-container">
 
-                 <button
+                 {/* <button
                     className="btn"
                     onClick={() => setIsOpen(false)}>
 
                     Connect with<br />mappers in the map
-                </button>
+                </button> */}
+                <p>No mappers? The Kapta team can connect you with mappers in the area</p>
                 <button
                     className="btn"
+                    style={{ height:"45px", borderRadius:"15px"}}
                     onClick={() => {
                     window.open(
-                        "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                        "https://wa.me/447473522912?text=Hi%2C%20please%20connect%20me%20with%20mappers%20in%20the%20area.%20",
                         "_blank"
                     );
                     }}
                 >
-                    Register as<br />WhatsApp Business Mapper
+                    Send request
                 </button>
             </div>
         </>
@@ -461,7 +476,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
         </>
     ) : (
-        <p>No open WhatsApp Maps in this area yet. Contribute yours!</p>
+        <p>No open WhatsApp Maps have been shared yet. Contribute yours!</p>
     )}
 </div>
 

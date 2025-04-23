@@ -606,7 +606,7 @@
     padding: 1rem;
     padding-bottom: 2rem;
     border-radius: 8px;
-    color: #1f036d;
+    color: #222222;
     box-shadow: 9px 9px 17px #140202,
         -9px -9px 17px #1b0e0e;
     pointer-events: auto; 
@@ -646,7 +646,7 @@
 
 #search-modal .modal-content {
     font-size: 1rem;
-    color: #1f036d;
+    color: #19191a;
     text-align: center;
 }
 
