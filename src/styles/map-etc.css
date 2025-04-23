@@ -462,19 +462,21 @@
 
 #sharing-modal {
     display: flex;
-    flex: 7;
-    min-width: 50vw;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Top-aligned for scrollable content */
     z-index: 901;
     position: absolute;
     top: 12vh;
-    margin-inline: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 50vw;
+    max-height: 75vh; /* restrict modal height */
+    overflow-y: auto; /* enable vertical scroll when content overflows */
     background-color: var(--mid-green--translucent);
     backdrop-filter: blur(2px);
     padding: 1rem;
-    pointer-events: auto; 
+    pointer-events: auto;
 
 
     padding-bottom: 2rem;
