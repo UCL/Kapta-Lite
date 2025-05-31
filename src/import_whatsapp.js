@@ -322,12 +322,15 @@ const setImgMsgRegex = (fileType) => {
 			/\[(\d{2,4}\/\d{2}\/\d{2,4}),\s(\d{1,2}:\d{2}:\d{2}\s(?:AM|PM))\]\s(.*?):\s(.+?)(?=(\n\d{2,4}\/\d{2}\/\d{2,4})|$)/gs;
 		imgFileRegex = /<attached: (\d+-[\w\-_]+\.(jpg|jpeg|png|gif))>/gim;
 	} else if (fileType.match(/\d{2}\//)) {
-		// console.info("android format");
-		// Android format
-		messageRegex =
-		/(\d{1,4}\/\d{1,2}\/\d{1,4}),?\s(\d{1,2}:\d{2}(?::\d{2})?(?:\s?(?:AM|PM|am|pm))?)?\s-\s(.*?):[\t\f\cK ]((.|\n)*?)(?=(\n\d{1,4}\/\d{1,2}\/\d{1,4})|$)/g;
-			// Regex to match and capture image filenames in messages
-		imgFileRegex = /\b([\w\-_]*\.(jpg|jpeg|png|gif))\s\(file attached\)/gim;
+    // Android format (UK/Europe)
+    messageRegex =
+        /(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
+    imgFileRegex = /([\w\-_]+\.(jpg|jpeg|png|gif))>?/gim;
+	//fix for ios gibraltar
+	    // Android format (UK/Europe)
+    // messageRegex =
+    //     /(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
+    // imgFileRegex = /([\w\-_]+\.(jpg|jpeg|png|gif))>?/gim;
 	} else {
 		console.log("Unknown file type, defaulting to Android format");
 		messageRegex =
@@ -336,6 +339,7 @@ const setImgMsgRegex = (fileType) => {
 		imgFileRegex = /\b([\w\-_]*\.(jpg|jpeg|png|gif))\s\(file attached\)/gim;
 	}
 	return [messageRegex, imgFileRegex];
+	
 };
 
 const sortMessages = (messages) => {

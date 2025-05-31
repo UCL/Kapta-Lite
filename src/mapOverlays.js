@@ -441,7 +441,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                <p>No mappers? The Kapta team can connect you with mappers in the area</p>
+                <p>No mappers in the area? The Kapta team can connect you with mappers in the area</p>
                 <button
                     className="btn"
                     style={{ height:"45px", borderRadius:"15px"}}
