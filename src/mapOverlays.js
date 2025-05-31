@@ -500,7 +500,7 @@ export function ShareModal({
     if (!isOpen) return null;
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
-    const [sharingOption, setSharingOption] = useState(null); // Renamed from isOpenMapChecked
+    const [sharingOption, setSharingOption] = useState("private-non-sensitive"); // Default to Private
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
     const [mapperId, setMapperId] = useState(""); // New state for Mapper ID
@@ -710,7 +710,7 @@ export function ShareModal({
                                 (Only people with the link can view)
                             </p>
 
-                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                            {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
                                 <input
                                     type="checkbox"
                                     style={{ width: "20px", height: "20px" }}
@@ -724,9 +724,9 @@ export function ShareModal({
                             </label>
                             <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
                                 (Anonymous and anyone can view)
-                            </p>
+                            </p> */}
 
-                        {showMapperIdField && sharingOption === "open" && (
+                        {/* {showMapperIdField && sharingOption === "open" && (
                             <div style={{ marginTop: "3px", textAlign: "center", alignItems: "center" }}>
                                 <input
                                     type="number"
@@ -744,29 +744,31 @@ export function ShareModal({
                                     No ID? Go to "Connect" and register
                                 </p>
                             </div>
-                        )}
+                        )} */}
 
-                        <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px", opacity: 0.5, cursor: "not-allowed" }}>
                             <input
                                 type="checkbox"
                                 style={{ width: "20px", height: "20px" }}
                                 checked={sharingOption === "private-sensitive"}
-                                onChange={() => {
-                                    setSharingOption("private-sensitive");
-                                    setShowMapperIdField(false);
-                                }}
+                                disabled
+                                readOnly
+                                // onChange={() => {
+                                //     setSharingOption("private-sensitive");
+                                //     setShowMapperIdField(false);
+                                // }}
                             />
-                            <strong>Extra-Private</strong>
+                            <strong>Extra-Private </strong>
                         </label>
-                        <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
-                            (Link expires in 7 days)
+                        <p style={{ fontSize: "0.8rem", marginTop: "-8px", opacity: 0.5 }}>
+                            (Encrypt your WhatsApp Map with a password - coming soon)
                         </p>
                     </div>
 
                     </section>
 
                     {/* Map Description Section */}
-                    <section className="modal-section" style={{ textAlign: "center" }}>
+                    {/* <section className="modal-section" style={{ textAlign: "center" }}>
                         <p style={{ fontWeight: "bold" }}>Describe your map in max. 3 words:</p>
                         <input
                             type="text"
@@ -781,10 +783,10 @@ export function ShareModal({
                                 textAlign: "center",
                             }}
                         />
-                    </section>
+                    </section> */}
     
                     {/* Task ID Section */}
-                    <section className="modal-section" style={{ textAlign: "center" }}>
+                    {/* <section className="modal-section" style={{ textAlign: "center" }}>
                         <p style={{ fontWeight: "bold" }}>Do you have a Task ID?</p>
                         <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
                             <label style={{ fontSize: "1rem" }}>
@@ -821,21 +823,21 @@ export function ShareModal({
                                 }}
                             />
                         )}
-                    </section>
+                    </section> */}
     
                     {/* Share Button */}
                     <div className="option-button-container">
                         <button
                             className="btn"
                             onClick={handleShareDataClick}
-                            disabled={
-                                isButtonDisabled ||
-                                sharingOption === null || // Ensure one of the three checkboxes is selected
-                                hasTaskId === null || // Ensure Task ID selection is made
-                                (hasTaskId === true && taskId.length < 6) || // Ensure Task ID is valid if selected
-                                WhatsAppMapTags.trim().length === 0 || // Ensure the map description is not empty
-                                (sharingOption === "open" && mapperId.length <= 6) // Ensure Mapper ID is 6 digits if "Public" is selected
-                            }
+                            // disabled={
+                            //     isButtonDisabled ||
+                            //     sharingOption === null || // Ensure one of the three checkboxes is selected
+                            //     hasTaskId === null || // Ensure Task ID selection is made
+                            //     (hasTaskId === true && taskId.length < 6) || // Ensure Task ID is valid if selected
+                            //     WhatsAppMapTags.trim().length === 0 || // Ensure the map description is not empty
+                            //     (sharingOption === "open" && mapperId.length <= 6) // Ensure Mapper ID is 6 digits if "Public" is selected
+                            // }
                         >
                             {buttonText}
                         </button>
