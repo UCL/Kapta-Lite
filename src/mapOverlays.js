@@ -338,39 +338,9 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {!isMobileOrTablet() && (
                     <p>Or if you already have the chat. Upload to convert it.</p>
                 )}
+                
                 <div className="option-button-container">
-                    <button
-                        className="btn"
-                        onClick={() =>
-                            window.open("https://youtu.be/cE30c18ipfU", "_blank")
-                        }
-                    >
-                        Watch Tutorial
-                    </button>
-                    <button
-                        className="btn"
-                        onClick={() =>
-                            window.open(
-                                "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
-                                "_blank"
-                            )
-                        }
-                    >
-                        Contact us
-                    </button>
-                    <p style={{ marginTop:"-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
-                    <button
-                    className="btn"
-                    style={{ marginTop:"-15px"}}
-                    onClick={() => {
-                    window.open(
-                        "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
-                        "_blank"
-                    );
-                    }}
-                >
-                    Register
-                </button>
+                    
                     {!isMobileOrTablet() && (
                     <button
                     className="btn"
@@ -388,6 +358,39 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     Convert a chat<br />into a map
                     </button>
                     )}
+                    {/* <button
+                        className="btn"
+                        onClick={() =>
+                            window.open("https://youtu.be/cE30c18ipfU", "_blank")
+                        }
+                    >
+                        Watch Tutorial
+                    </button> */}
+                    {/* <button
+                        className="btn"
+                        onClick={() =>
+                            window.open(
+                                "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
+                                "_blank"
+                            )
+                        }
+                    >
+                        Contact us
+                    </button> */}
+                    <p style={{ marginTop:"-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
+                    <button
+                    className="btn"
+                    style={{ marginTop:"-15px"}}
+                    onClick={() => {
+                    window.open(
+                        "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                        "_blank"
+                    );
+                    }}
+                >
+                    Register
+                </button>
+                    
                 </div>
             </div>
         </div>

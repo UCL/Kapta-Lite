@@ -138,7 +138,34 @@ function MapDataLayer({ data }) {
 	});
 	if (geoJSON.features.length == 0) {
 		// need translation
-		return <ErrorPopup error="No data to display" />;
+		return <ErrorPopup
+  error={
+    <>
+      No data to display or parsing error.{" "}
+      <a
+        href="https://wa.me/447473522912?text=Hi%2C%20I%20can%27t%20display%20the%20data.%20Please%20help."
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "inline-block",
+          marginLeft: "0.5rem",
+          padding: "0.4rem 0.75rem",
+          backgroundColor: "white",
+          color: "black",
+          border: "black 1px solid",
+          borderRadius: "4px",
+          textDecoration: "none",
+          fontWeight: "bold",
+          fontSize: "1.2rem",
+          cursor: "pointer"
+        }}
+      >
+        Contact us
+      </a>
+    </>
+  }
+/>
+
 	}
 
 	useEffect(() => {

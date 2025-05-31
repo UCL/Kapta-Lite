@@ -291,7 +291,7 @@
                 position: absolute;
                 top: 0.1rem;
                 left: 0.5rem;
-                display: flex;
+                display: none;
                 flex-direction: column; /* 👈 key change: stack vertically */
                 align-items: flex-start;
                 gap: 0.3rem; /* space between search bar and suggestions */
@@ -306,7 +306,7 @@
                 border-radius: 30px;
                 background-color: white;
                 min-height: 3rem;
-                display: flex;
+                display: none;
                 align-items: center;
                 padding-right: 3rem;
                 box-sizing: border-box;
