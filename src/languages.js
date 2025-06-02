@@ -63,16 +63,14 @@ i18next.use(initReactI18next).init({
 				inputgoallabel: "What do you want to achieve with this map?",
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
-				about: "Kapta",
-				aboutContent: `<br /><strong>Kapta is a platform that brings people together to create and share WhatsApp Maps.</strong><br /><br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to citizen science that enables people from all backgrounds to participate in scientific research addressing local issues.
-<br /><br />
-<!-- Video tutorial embedded -->
-<div style="max-width:320px;">
-  <iframe width="100%" height="180" src="https://www.youtube.com/embed/cE30c18ipfU?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="border-radius:8px;"></iframe>
-</div>
-`,
+				about: "WhatsApp Maps with Kapta",
+				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a><br />
+								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
+								<br /><strong>What are WhatsApp Business Mappers?</strong> People who make a business creating WhatsApp Maps with their communities.  <br />
+								<br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a><br />`,
+// `,
 				why: " Case studies",
-				whyContent: `<br /><li><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></li><br><li><a href='${GibraltarUrl}'>Gibraltar WhatsApp Maps</a></li><br><li><a href='${whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information (Ethiopia)</a></li><br><li><a href='${extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
+				whyContent: `<br /><li><a href='${GibraltarUrl}'>Gibraltar Places</a></li><br><li><a href='${whatsappMapsUrl}'>Water Infrastructure in rural Ethiopia</a></li><br><li><a href='${extremeCitizenUrl}'>Hunter-gatherers in the Congo rainforest</a></li>`,
 				what: " Disclaimer",
 				whatContent:
 					"Kapta Web: A platform that brings people together to create and share WhatsApp Maps",
