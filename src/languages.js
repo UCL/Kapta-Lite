@@ -14,6 +14,8 @@ export const savedLanguage = localStorage.getItem("preferredLanguage") || "en";
 const youtubeOpts = "?rel=0&autoplay=1";
 const whatsappMapsUrl =
 	"https://uclexcites.blog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/";
+const GibraltarUrl =
+	"https://dashboards.kapta.earth/?dashboardid=9d9efa9e-5ca4-4cbb-9a5a-99ee9de11238";
 const firstwhatsappMapsUrl =
 	"https://www.ucl.ac.uk/geography/news/2024/dec/first-ever-whatsapp-map";
 const whatsappMapsUrlSpanish =
@@ -62,10 +64,15 @@ i18next.use(initReactI18next).init({
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
 				about: "Kapta",
-				aboutContent: `<br /><strong>Kapta is a platform that brings people together to create and share WhatsApp Maps.</strong><br /><br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to citizen science that enables people from all backgrounds, regardless of their literacy, technical, or scientific skills, to co-design and participate in scientific research addressing local challenges.
+				aboutContent: `<br /><strong>Kapta is a platform that brings people together to create and share WhatsApp Maps.</strong><br /><br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to citizen science that enables people from all backgrounds to participate in scientific research addressing local issues.
+<br /><br />
+<!-- Video tutorial embedded -->
+<div style="max-width:320px;">
+  <iframe width="100%" height="180" src="https://www.youtube.com/embed/cE30c18ipfU?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="border-radius:8px;"></iframe>
+</div>
 `,
 				why: " Case studies",
-				whyContent: `<br /><li><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></li><br><li><a href='${whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information</a></li><br><li><a href='${extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
+				whyContent: `<br /><li><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></li><br><li><a href='${GibraltarUrl}'>Gibraltar WhatsApp Maps</a></li><br><li><a href='${whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information (Ethiopia)</a></li><br><li><a href='${extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
 				what: " Disclaimer",
 				whatContent:
 					"Kapta Web: A platform that brings people together to create and share WhatsApp Maps",

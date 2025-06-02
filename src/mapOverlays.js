@@ -366,7 +366,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     >
                         Watch Tutorial
                     </button> */}
-                    {/* <button
+                    <button
                         className="btn"
                         onClick={() =>
                             window.open(
@@ -375,8 +375,8 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             )
                         }
                     >
-                        Contact us
-                    </button> */}
+                        Open WhatsApp to start
+                    </button>
                     <p style={{ marginTop:"-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
                     <button
                     className="btn"
@@ -444,7 +444,8 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                <p>No mappers in the area? The Kapta team can connect you with mappers in the area</p>
+                <p>No mappers in the area? The Kapta Team can organise the data collection. Get in touch.
+                </p>
                 <button
                     className="btn"
                     style={{ height:"45px", borderRadius:"15px"}}
@@ -455,7 +456,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     );
                     }}
                 >
-                    Send request
+                    I need WhatsApp Maps
                 </button>
             </div>
         </>

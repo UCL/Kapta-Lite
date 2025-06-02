@@ -8,7 +8,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
     try {
         const visibility = sharingOption; // "private-sensitive", "private-non-sensitive", or "open"
         const taskIdFolder = taskId || "noTaskId";; // To classify data by taskId, and give a value if no value
-        const tagsFolder = WhatsAppMapTags; // To classify data by tags
+        const tagsFolder = WhatsAppMapTags || "noMapTags"; // To classify data by tags
         const WABMapperFolder = wabMapperId || "noWabMapperId"; // WhatsApp Mapper ID
 
         console.log("📦 Sending to /download-url:", {
