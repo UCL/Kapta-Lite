@@ -1,11 +1,7 @@
-# Kapta Mobile
+# Kapta Lite
 
-Kapta Mobile is a Progressive Web App to convert WhatsApp chats into WhatsApp Maps
-
-👉 📱 https://mobile.kapta.earth
-
-Visit Kapta Web
-👉 https://kapta.earth
+Kapta is a platform that brings people together to create and share WhatsApp Maps.
+https://lite.kapta.earth
 
 # Guidance for Developers
 
@@ -20,7 +16,7 @@ Visit Kapta Web
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/UCL/kapta-mobile.git && cd kapta-mobile`
+1. Clone the repository: `git clone https://github.com/UCL/kapta-lite.git && cd kapta-lite`
 2. Run `npm install` in the root directory
 3. Create config file (see below)
 4. Run `npm run build` to build the project
