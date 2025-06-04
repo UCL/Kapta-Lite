@@ -100,3 +100,16 @@
         font-size: 150%;
     }
 }
+.loading-message {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(28, 131, 3, 0.993);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    text-align: center;
+    z-index: 1000;
+}
