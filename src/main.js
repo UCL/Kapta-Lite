@@ -24,6 +24,19 @@ export function isMobileOrTablet (){
 export const isIOS = () => {
     return /iPad|iPhone|iPod/i.test(navigator.userAgent);
 };
+function showBrowserRecommendationIfNeeded() {
+    const ua = navigator.userAgent;
+    const isMobile = /iPad|iPhone|iPod|android|Mobile|mini|Fennec|Symbian|Windows Phone|BlackBerry|IEMobile/i.test(ua)
+        || (window.innerWidth <= 1024 && ("ontouchstart" in window || navigator.maxTouchPoints > 0));
+    const isChrome = /Chrome/.test(ua) && !/Edg|OPR|Brave|SamsungBrowser|UCBrowser|CriOS/.test(ua);
+    const isEdge = /Edg/.test(ua);
+
+    if (isMobile && !(isChrome || isEdge)) {
+        alert("Please open Kapta using Chrome or Edge browsers.");
+    }
+}
+
+window.addEventListener("DOMContentLoaded", showBrowserRecommendationIfNeeded);
 
 function initServiceWorker(setFileToParse) {
     if ("serviceWorker" in navigator) {
