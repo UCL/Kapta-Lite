@@ -11,7 +11,10 @@
 .pulse-shadow {
     animation: pulseShadow 3s ease 2;
 }
-
+.btn:hover {
+  background-color: #d7d7d8;
+  color: none;
+}
 
 @keyframes pulseShadow {
 
@@ -628,17 +631,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 1.5rem;
-    border-radius: 30%; /* Make it circular like the share modal */
+    width: 1.5rem;
+    height: 1.3rem;
+    border-radius: 40%; /* Make it circular like the share modal */
     background-color: white; /* Match the background color */
     border-color: rgb(7, 7, 7); /* Match the background color */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for consistency */
 }
 
 #search-modal .modal-close:hover {
-    background-color: var(--wa-green--dark); /* Darken background on hover */
-    color: white; /* Change icon color to white on hover */
+    background-color: #d7d7d8; /* Darken background on hover */
+    color:none; /* Change icon color to white on hover */
 }
 
 #search-modal .modal-title {
@@ -707,9 +710,10 @@
 }
 
 #search-modal .option-button-container .btn:hover {
-    background-color: var(--wa-green--dark);
-    color: white;
+    background-color: #d7d7d8; /* Change to a lighter grey on hover */
+    color: none; /* Ensure text remains readable */
 }
+
 /* Custom Leaflet Popup Background */
 .leaflet-popup-content-wrapper {
     background-color: #a9fe8e !important;

@@ -14,6 +14,8 @@ export const savedLanguage = localStorage.getItem("preferredLanguage") || "en";
 const youtubeOpts = "?rel=0&autoplay=1";
 const whatsappMapsUrl =
 	"https://uclexcites.blog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/";
+const ethio2023 =
+	"https://uclexcites.blog/2023/09/03/wisdom-of-the-crowd-in-the-age-of-ai-water/";
 const GibraltarUrl =
 	"https://dashboards.kapta.earth/?dashboardid=9d9efa9e-5ca4-4cbb-9a5a-99ee9de11238";
 const firstwhatsappMapsUrl =
@@ -21,7 +23,7 @@ const firstwhatsappMapsUrl =
 const whatsappMapsUrlSpanish =
 	"https://uclexcites-blog.translate.goog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/?_x_tr_sl=auto&_x_tr_tl=es&_x_tr_hl=en-US&_x_tr_pto=wapp";
 
-const extremeCitizenUrl = "https://www.youtube.com/watch?v=IgQc7GQ1m_Y";
+const extremeCitizenUrl = "https://uclexcites.blog/2021/07/21/land-use-messaging-mapping-for-collaborative-climate-smart-agriculture-in-south-west-nigeria-the-ecsagri-pilot-project/";
 const excitesUrl = "https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites"
 const marcosUrl =
 	"https://www.linkedin.com/in/marcosmoreubadia";
@@ -64,13 +66,13 @@ i18next.use(initReactI18next).init({
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
 				about: "WhatsApp Maps with Kapta",
-				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a><br />
+				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
 								<br /><strong>What are WhatsApp Business Mappers?</strong> People who make a business creating WhatsApp Maps with their communities.  <br />
-								<br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a><br />`,
-// `,
+								<br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to science. WhatsApp Maps can turn 2.7+ billion WhatsApp users into community mappers sensing what is happening on the ground around the globe. <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
+
 				why: " Case studies",
-				whyContent: `<br /><li><a href='${GibraltarUrl}'>Gibraltar Places</a></li><br><li><a href='${whatsappMapsUrl}'>Water Infrastructure in rural Ethiopia</a></li><br><li><a href='${extremeCitizenUrl}'>Hunter-gatherers in the Congo rainforest</a></li>`,
+				whyContent: `<br /><li><a href='${GibraltarUrl}'>Gibraltar Places (2025)</a></li><br><li><a href='${whatsappMapsUrl}'>Population and Water Infrastructure in rural Ethiopia (2024)</a></li><br><li><a href='${ethio2023}'>Land use in rural Ethiopia (2023)</a></li><br><li><a href='${extremeCitizenUrl}'>Farming in Nigeria (2021)</a></li>`,
 				what: " Disclaimer",
 				whatContent:
 					"Kapta Web: A platform that brings people together to create and share WhatsApp Maps",

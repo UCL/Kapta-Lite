@@ -327,21 +327,36 @@ export function CreateModal({ isOpen, setIsOpen }) {
             >
                 {closeIcon}
             </button>
-            <div className="modal-title">Create WhatsApp Map</div> {/* Title */}
+            <div className="modal-title">Create</div> {/* Title */}
             <div className="modal-content">
                 <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
                 <ol>
-                    <li>Share locations in a<br />WhatsApp Group</li>
-                    <li>Export chat to<br />Kapta Lite app</li>
-                    <li>Share your<br />WhatsApp Map</li>
+                    <li>Share locations in a WhatsApp Group</li>
+                    <li>Export chat to Kapta app</li>
+                    <li>Share your WhatsApp Map</li>
                 </ol>
-                {!isMobileOrTablet() && (
-                    <p>Or if you already have the chat. Upload to convert it.</p>
-                )}
+
+                
+
                 
                 <div className="option-button-container">
-                    
+                    <button
+                        className="btn"
+                        onClick={() =>
+                            window.open(
+                                "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
+                                "_blank"
+                            )
+                        }
+                    >
+                        Open WhatsApp to start
+                    </button>
+
                     {!isMobileOrTablet() && (
+                        <p>Or if you already have the chat. Upload to convert it.</p>
+                    )}
+                    {!isMobileOrTablet() && (
+                        
                     <button
                     className="btn"
                     onClick={() => {
@@ -366,17 +381,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     >
                         Watch Tutorial
                     </button> */}
-                    <button
-                        className="btn"
-                        onClick={() =>
-                            window.open(
-                                "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
-                                "_blank"
-                            )
-                        }
-                    >
-                        Open WhatsApp to start
-                    </button>
+                    
                     <p style={{ marginTop:"-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
                     <button
                     className="btn"
@@ -419,7 +424,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             </button>
             <div className="modal-title"> 
                 {isRegisterMapper
-                    ? ""
+                    ? "Connect"
                     : isPremium
                     ? "Premium"
                     : "Search"}
@@ -444,7 +449,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                <p>No mappers in the area? The Kapta Team can organise the data collection. Get in touch.
+                <p>Explore the map or tell us what you need.  
                 </p>
                 <button
                     className="btn"
@@ -465,7 +470,10 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             <p>
                 {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                 <br />
-                To request a demo for advanced data management and visualization, please fill in this form:
+                The <strong>free version</strong> allows you to visualise the maps in Kapta Lite and download the data to analyse it in QGIS, ArcGIS etc.
+                <br />
+                <strong>Premium</strong> allows you to manage multiple WhatsApp Maps and use CARTO dashboards and AI Agents for advanced visualisation and analysis.
+
             </p>
             <div className="option-button-container">
                 <button
@@ -474,7 +482,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     window.open("https://forms.gle/Br6C8eAueZdo35Y7A", "_blank");
                     }}
                 >
-                    Request premium demo
+                    Request a Premium Demo
                 </button>
             </div>
 
@@ -608,7 +616,7 @@ export function ShareModal({
                 mapperId // Pass the Mapper ID as wabMapperId
             );
 
-            const generatedUrl = `https://lite.kapta.earth/?import=${presignedUrl}`;
+            const generatedUrl = `https://kapta.earth/?import=${presignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("Click here to share directly");
             setButtonDisabled(false);
@@ -693,12 +701,15 @@ export function ShareModal({
                 <>
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
-                        <p style={{ fontWeight: "bold" }}>I want to share this data as:</p>
+                        <p style={{ fontWeight: "bold" }}>Share</p>
                         <div
                             className="checkbox-container"
                             style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}
                         >
-                            <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
+                            <p style={{ fontSize: "1rem", marginTop: "-8px" }}>
+                                Only the people with the map link can view it <br></br> (Encryption with a passphrase is coming soon).
+                            </p> 
+                            {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
                                 <input
                                     type="checkbox"
                                     style={{ width: "20px", height: "20px" }}
@@ -709,7 +720,7 @@ export function ShareModal({
                             </label>
                             <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
                                 (Only people with the link can view)
-                            </p>
+                            </p> */}
 
                             {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
                                 <input
@@ -747,7 +758,7 @@ export function ShareModal({
                             </div>
                         )} */}
 
-                    <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px", opacity: 0.5, cursor: "not-allowed" }}>
+                     {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px", opacity: 0.5, cursor: "not-allowed" }}>
                             <input
                                 type="checkbox"
                                 style={{ width: "20px", height: "20px" }}
@@ -763,8 +774,8 @@ export function ShareModal({
                         </label>
                         <p style={{ fontSize: "0.8rem", marginTop: "-8px", opacity: 0.5 }}>
                             (Encrypt your WhatsApp Map with a password - coming soon)
-                        </p>
-                    </div>
+                        </p> */}
+                      </div>
 
                     </section>
 

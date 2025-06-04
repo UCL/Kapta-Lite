@@ -79,7 +79,7 @@ module.exports = (env, argv) => {
 			}),
 			new HtmlWebpackPlugin({
 				template: "./src/index.html",
-				title: "Kapta Lite",
+				title: "Kapta",
 				favicon: "src/images/icons/favicon.png",
 				meta: {
 					"Content-Type": {
@@ -90,11 +90,11 @@ module.exports = (env, argv) => {
 						"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
 					"og:title": {
 						property: "og:title",
-						content: "Kapta Lite",
+						content: "Kapta",
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Connect with WhatsApp Mappers. Share WhatsApp Maps.",
+						content: "Create WhatsApp Maps. Connect with WhatsApp Mappers",
 					},
 					"og:type": {
 						property: "og:type",
@@ -102,12 +102,12 @@ module.exports = (env, argv) => {
 					},
 					"og:url": {
 						property: "og:url",
-						content: "https://lite.kapta.earth/",
+						content: "https://kapta.earth/",
 					},
 					"og:image": {
 						property: "og:image",
 						itemprop: "image",
-						content: "https://lite.kapta.earth/og-icon.png",
+						content: "https://kapta.earth/og-icon.png",
 					},
 					"og:image:type": {
 						property: "og:image:type",
@@ -135,8 +135,8 @@ module.exports = (env, argv) => {
 				: []),
 			new WebpackPwaManifest({
 				publicPath: "/",
-				name: "Kapta Lite",
-				short_name: "Kapta Lite",
+				name: "Kapta",
+				short_name: "Kapta",
 				lang: "en-GB",
 				theme_color: "#25D366",
 				background_color: "#25D366",
