@@ -175,5 +175,5 @@ export const msgIcon = (
 );
 
 // menu
-export const menuIcon = <FontAwesomeIcon icon={faBars} />;
-export const GHIcon = <FontAwesomeIcon icon={faGithub} />;
+export const menuIcon = <FontAwesomeIcon icon={faBars} style={{ backgroundColor: "#25D366", border:"1px solid #2d2c2c",padding: "8px", borderRadius: "8px",  boxSizing: "content-box"}}/>;
+export const GHIcon = <FontAwesomeIcon icon={faGithub} style={{ color: "black" }} />;

@@ -1,18 +1,32 @@
-# Kapta Lite
+# WhatsApp Maps with Kapta
 
-Kapta is a platform that brings people together to create and share WhatsApp Maps.
-https://lite.kapta.earth
+**What is WhatsApp Maps?**  
+WhatsApp Maps are private community maps made with WhatsApp.
+
+**What is Kapta?**  
+Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.
+
+**What are WhatsApp Business Mappers?**  
+People who make a business creating WhatsApp Maps with their communities.
+
+Kapta is inspired by [Extreme Citizen Science](https://www.ucl.ac.uk/extreme-citizen-science/), an inclusive approach to science. WhatsApp Maps can turn 2.7+ billion WhatsApp users into community mappers sensing what is happening on the ground around the globe. For more information see this UCL Press Release
+[Is this the first-ever WhatsApp Map?](https://www.ucl.ac.uk/geography/news/2024/dec/first-ever-whatsapp-map)
+
+**Kapta is a Progressive Web App** 👉 https://kapta.earth
 
 # Guidance for Developers
 
+Kapta Web and Kapta Infrastructure are not being developed at the moment, but they are still available for reference and will be updated in the future.
+
 - [Kapta Web repository](https://github.com/UCL/kapta-web)
 - [Kapta Infrastructure repository](https://github.com/UCL/kapta-infrastructure)
+- [Kapta first prototypes](https://github.com/MarcosMoreu/Kapta-Prototyping/commit/a06af733f0179d17b44190a7791395d624034477)
+
   
 ## Requirements
 
 - Node.js v20.0.0 or later
 - npm v10.0.0 or later
-- mapbox API key (create an account at https://www.mapbox.com/)
 
 ## Installation
 
@@ -22,27 +36,6 @@ https://lite.kapta.earth
 4. Run `npm run build` to build the project
 5. Run `npm start` to start the development server
 6. Open `http://localhost:8080` in your browser
-
-## Configuration
-
-<!-- need to update to make relevant to env vars -->
-<!-- something like Kapta requires certain environment variables to work, look in globals.js to see what they're called -->
-
-Kapta requires a configuration file to be created in the src directory. The file should be named `config.json` and should contain the following fields:
-
-```json
-{
-	"mapbox": {
-		"accessToken": "YOUR_MAPBOX_ACCESS_TOKEN"
-	},
-	"api": {
-		"invokeUrl": "" // API URL (optional)
-	},
-	"kapta": {
-		"askTheTeamURL": "" // URL for user support e.g. WhatsApp business chat URL (optional)
-	}
-}
-```
 
 # Legal disclaimer
 

@@ -694,7 +694,7 @@ export function ShareModal({
                 {closeIcon}
             </button>
             <div className="modal-title">
-                {importdata ? t("sharingTitle") : "Share WhatsApp Map"}
+                {importdata ? t("sharingTitle") : "Share"}
             </div>
     
             {importdata ? (

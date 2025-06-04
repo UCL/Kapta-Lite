@@ -151,8 +151,8 @@
 
 .btn--burger-menu {
     position: absolute;
-    right: 0.5rem;
-    top: 4vh;
+    right: 0.1rem;
+    top: 2vh;
     background-color: transparent;
     font-size: 1.3rem;
     border: none;

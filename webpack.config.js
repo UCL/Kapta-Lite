@@ -94,7 +94,7 @@ module.exports = (env, argv) => {
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Create WhatsApp Maps. Connect with WhatsApp Mappers",
+						content: "Create Private WhatsApp Maps. Connect with WhatsApp Mappers",
 					},
 					"og:type": {
 						property: "og:type",

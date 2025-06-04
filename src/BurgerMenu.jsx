@@ -70,20 +70,29 @@ export default function BurgerMenu({
 							<ul style={{ margin: 0 }}>
 								<li>
 									<a
-										href="https://docs.google.com/document/d/1cYBeU0ZCSstDyz9QtoJ-CVj81Pj7UHJWOG0Ipjy8n7M/edit?tab=t.0"
+										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Maps_User.png"
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										"I Need WhatsApp Maps"
+										If you need WhatsApp Maps, click here.
 									</a>
 								</li>
 								<li>
 									<a
-										href="https://docs.google.com/document/d/1o3eOP6UNlijLSju-98HJ7U9dRCVJHPeC8M6YUXN7vhU/edit?tab=t.0"
+										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png"
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										"I want to make WhatsApp Maps"
+										If you want to make WhatsApp Maps, click here.
+									</a>
+								</li>
+																<li>
+									<a
+										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Mapper.png"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										If you want to explain how to contribute to a WhatsApp Map, click here.
 									</a>
 								</li>
 							</ul>
@@ -137,7 +146,7 @@ export default function BurgerMenu({
 				<div className="links-disclaimer__wrapper" style={{ textAlign: "center" }}>
 					<div className="bm__item" >
 						<a
-							href="https://github.com/UCL/kapta-mobile"
+							href="https://github.com/UCL/Kapta-Lite"
 							id="gh"
 							className="bm__item__content"
 						>

@@ -25,6 +25,7 @@ const whatsappMapsUrlSpanish =
 
 const extremeCitizenUrl = "https://uclexcites.blog/2021/07/21/land-use-messaging-mapping-for-collaborative-climate-smart-agriculture-in-south-west-nigeria-the-ecsagri-pilot-project/";
 const excitesUrl = "https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites"
+const ecsanvismap = "https://uclexcites.blog/wp-content/uploads/2023/04/excites-projects-world-map-1.jpg"
 const marcosUrl =
 	"https://www.linkedin.com/in/marcosmoreubadia";
 const fabienUrl = "https://www.linkedin.com/in/fabien-moustard-996998227";
@@ -69,16 +70,32 @@ i18next.use(initReactI18next).init({
 				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
 								<br /><strong>What are WhatsApp Business Mappers?</strong> People who make a business creating WhatsApp Maps with their communities.  <br />
-								<br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to science. WhatsApp Maps can turn 2.7+ billion WhatsApp users into community mappers sensing what is happening on the ground around the globe. <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
+								<br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to science. WhatsApp Maps can turn 2.7+ billion WhatsApp users into community mappers sensing what is happening on the ground around the globe. 👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
 
 				why: " Case studies",
-				whyContent: `<br /><li><a href='${GibraltarUrl}'>Gibraltar Places (2025)</a></li><br><li><a href='${whatsappMapsUrl}'>Population and Water Infrastructure in rural Ethiopia (2024)</a></li><br><li><a href='${ethio2023}'>Land use in rural Ethiopia (2023)</a></li><br><li><a href='${extremeCitizenUrl}'>Farming in Nigeria (2021)</a></li>`,
+				whyContent: `<ul style="padding-left: 1.2em; margin: 0;">
+					<li>
+						<a href='${GibraltarUrl}'>Gibraltar Places (2025)</a>
+					</li>
+					<li>
+						<a href='${whatsappMapsUrl}'>Population and Water Infrastructure in rural Ethiopia (2024)</a>
+					</li>
+					<li>
+						<a href='${ethio2023}'>Land use in rural Ethiopia (2023)</a>
+					</li>
+					<li>
+						<a href='${extremeCitizenUrl}'>Farming in Nigeria (2021)</a>
+					</li>
+					<li>
+						<a href='${ecsanvismap}'>World Map of our case studies before WhatsApp Maps with Kapta 2010-2023</a>
+					</li>
+					</ul>`,
 				what: " Disclaimer",
 				whatContent:
 					"Kapta Web: A platform that brings people together to create and share WhatsApp Maps",
 
 				people: "People",
-				peopleContent: `<br />Kapta is being developed by the University College London (UCL) Extreme Citizen Science (ExCiteS) research group and the Advanced Research Computing Centre (UCL ARC), with help from outside partners & contributors.<br>
+				peopleContent: `<br />Kapta is being developed by the <strong>University College London (UCL)</strong> Extreme Citizen Science (ExCiteS) research group and the Advanced Research Computing Centre (UCL ARC), with help from outside partners & contributors.<br>
 					<br />Currently the core Kapta team consists of:<br>
 					<a href='${fabienUrl}'>Fabien Moustard</a>, Founder<br>
 					<a href='${marcosUrl}'>Marcos Moreu</a>, Founder<br>
