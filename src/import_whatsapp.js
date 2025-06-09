@@ -305,7 +305,7 @@ const processMsgMatches = (messageMatches, imgFileRegex) => {
 
 // Regex to match google maps location and capture lat (group 1) and long (group 2)
 const locationRegex =
-	/: https:\/\/maps\.google\.com\/\?q=(-?\d+\.\d+),(-?\d+\.\d+)/; //Without 'location' to be universal - the word in the export file changes based on WA language
+	/https?:\/\/(?:www\.)?maps\.google\.com\/(?:maps\/?\?q=|search\/?\?q=|.*?)?(-?\d+\.\d+),(-?\d+\.\d+)/;
 
 const setImgMsgRegex = (fileType) => {
 	let messageRegex;
@@ -316,21 +316,18 @@ const setImgMsgRegex = (fileType) => {
 	// Capture group 1 = date, group 2 = time, group 3 = sender, group 4 = message content
 	// this has been tweaked for each format but gives the same output
 	if (fileType.match(/\[\d{2}/)) {
-		// console.info("ios format");
 		// iOS format
+		// Adjusted regex for iOS to correctly capture date (DD/MM/YYYY), 24-hour time (HH:MM:SS),
+		// sender (allowing for spaces), and multi-line message content.
+		// The lookahead now specifically checks for the start of a new message line formatted as [DD/MM/YYYY, HH:MM:SS]
 		messageRegex =
-			/\[(\d{2,4}\/\d{2}\/\d{2,4}),\s(\d{1,2}:\d{2}:\d{2}\s(?:AM|PM))\]\s(.*?):\s(.+?)(?=(\n\d{2,4}\/\d{2}\/\d{2,4})|$)/gs;
-		imgFileRegex = /<attached: (\d+-[\w\-_]+\.(jpg|jpeg|png|gif))>/gim;
+			/\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2}:\d{2})\]\s(.*?):\s(.+?)(?=\n\[\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}:\d{2}\]|Z$)/gs;
+		imgFileRegex = /<attached: (\d+-[\w\-_]+\.(?:jpg|jpeg|png|gif))>/gim;
 	} else if (fileType.match(/\d{2}\//)) {
-    // Android format (UK/Europe)
-    messageRegex =
-        /(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
-    imgFileRegex = /([\w\-_]+\.(jpg|jpeg|png|gif))>?/gim;
-	//fix for ios gibraltar
-	    // Android format (UK/Europe)
-    // messageRegex =
-    //     /(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
-    // imgFileRegex = /([\w\-_]+\.(jpg|jpeg|png|gif))>?/gim;
+		// Android format (UK/Europe)
+		messageRegex =
+			/(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
+		imgFileRegex = /([\w\-_]+\.(?:jpg|jpeg|png|gif))>?/gim;
 	} else {
 		console.log("Unknown file type, defaulting to Android format");
 		messageRegex =
@@ -377,6 +374,11 @@ const worldCapitals = [
   ];
 
 const processText = async (text, zipInput = null) => {
+    // Clean the text by removing Unicode control characters
+    // [U+200E] is LEFT-TO-RIGHT MARK
+    // [U+202C] is POP DIRECTIONAL FORMATTING
+    text = text.replace(/[\u200E\u202C]/g, '');
+
     const groupNameRegex = /"([^"]*)"/;
     const groupNameMatches = text.match(groupNameRegex);
     const groupName = groupNameMatches ? groupNameMatches[1] : null;
