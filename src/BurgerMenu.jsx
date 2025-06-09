@@ -74,27 +74,20 @@ export default function BurgerMenu({
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										If you need WhatsApp Maps, click here.
+										💻 If you need WhatsApp Maps, click here.
 									</a>
 								</li>
+								<br></br>
 								<li>
 									<a
 										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png"
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										If you want to make WhatsApp Maps, click here.
+										📱 If you want to make WhatsApp Maps, click here.
 									</a>
 								</li>
-																<li>
-									<a
-										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Mapper.png"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										If you want to explain how to contribute to a WhatsApp Map, click here.
-									</a>
-								</li>
+								
 							</ul>
 						</div>
 					</div>

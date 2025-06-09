@@ -37,6 +37,21 @@ Kapta Web and Kapta Infrastructure are not being developed at the moment, but th
 5. Run `npm start` to start the development server
 6. Open `http://localhost:8080` in your browser
 
+# People
+
+Kapta is being developed at University College London (UCL) by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. Kapta is spining out from UCL.
+
+- [Marcos Moreu](https://www.linkedin.com/in/marcosmoreubadia)
+- [Fabien Moustard](https://www.linkedin.com/in/fabien-moustard-996998227)
+- [Tom Couch](https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch)
+- [Amanda Ho-Lyn](https://www.ucl.ac.uk/advanced-research-computing/people/amanda-ho-lyn)
+- [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/)
+- [Dessalegn Tekle](https://et.linkedin.com/in/dessalegn-tekle-02b848ba)
+- [Muki Haklay](https://www.ucl.ac.uk/geography/muki-haklay-facss)
+- [Claire Ellul](https://www.ucl.ac.uk/civil-environmental-geomatic-engineering/people/dr-claire-ellul)
+- [Jerome Lewis](https://www.ucl.ac.uk/anthropocene/people/dr-jerome-lewis)
+- [Jonathan Cooper](https://www.ucl.ac.uk/advanced-research-computing/people/jonathan-cooper)
+
 # Legal disclaimer
 
 Copyright 2024 University College London (UCL)

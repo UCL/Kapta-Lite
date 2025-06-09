@@ -70,7 +70,7 @@ i18next.use(initReactI18next).init({
 				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
 								<br /><strong>What are WhatsApp Business Mappers?</strong> People who make a business creating WhatsApp Maps with their communities.  <br />
-								<br />Kapta is inspired by <a href='${excitesUrl}'>Extreme Citizen Science</a>, an inclusive approach to science. WhatsApp Maps can turn 2.7+ billion WhatsApp users into community mappers sensing what is happening on the ground around the globe. 👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
+								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
 
 				why: " Case studies",
 				whyContent: `<ul style="padding-left: 1.2em; margin: 0;">
@@ -95,18 +95,19 @@ i18next.use(initReactI18next).init({
 					"Kapta Web: A platform that brings people together to create and share WhatsApp Maps",
 
 				people: "People",
-				peopleContent: `<br />Kapta is being developed by the <strong>University College London (UCL)</strong> Extreme Citizen Science (ExCiteS) research group and the Advanced Research Computing Centre (UCL ARC), with help from outside partners & contributors.<br>
+				peopleContent: `<br />Kapta is being developed at University College London (UCL) by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. Kapta is spining out from UCL.<br>
 					<br />Currently the core Kapta team consists of:<br>
-					<a href='${fabienUrl}'>Fabien Moustard</a>, Founder<br>
-					<a href='${marcosUrl}'>Marcos Moreu</a>, Founder<br>
-					<a href='${tomUrl}'>Tom Couch</a>, Software engineer<br>
-					<a href='${amandaUrl}'>Amanda Ho-Lyn</a>, Software eng<br>
-					<a href='${jedUrl}'>Jed Stevenson</a>, Anthropologist<br>
-					<a href='${desUrl}'>Dessalegn Tekle</a>, Field researcher<br>
-					<a href='${mukiUrl}'>Muki Haklay</a>, Advisor<br>
-					<a href='${claireUrl}'>Claire Ellul</a>, Advisor<br>
-					<a href='${jeromeUrl}'>Jerome Lewis</a>, Advisor<br>
-					<a href='${jonathanUrl}'>Jonathan Cooper</a>, Advisor`,
+					<br />
+					<a href='${marcosUrl}'>Marcos Moreu</a><br>
+					<a href='${fabienUrl}'>Fabien Moustard</a><br>
+					<a href='${tomUrl}'>Tom Couch</a><br>
+					<a href='${amandaUrl}'>Amanda Ho-Lyn</a><br>
+					<a href='${jedUrl}'>Jed Stevenson</a><br>
+					<a href='${desUrl}'>Dessalegn Tekle</a><br>
+					<a href='${mukiUrl}'>Muki Haklay</a><br>
+					<a href='${claireUrl}'>Claire Ellul</a><br>
+					<a href='${jeromeUrl}'>Jerome Lewis</a><br>
+					<a href='${jonathanUrl}'>Jonathan Cooper</a>`,
 				legalDisclaimer: `<br />The Kapta team has made every effort to develop an app that parses WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Kapta cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",
