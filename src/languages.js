@@ -14,16 +14,25 @@ export const savedLanguage = localStorage.getItem("preferredLanguage") || "en";
 const youtubeOpts = "?rel=0&autoplay=1";
 const whatsappMapsUrl =
 	"https://uclexcites.blog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/";
+const ethio2023 =
+	"https://uclexcites.blog/2023/09/03/wisdom-of-the-crowd-in-the-age-of-ai-water/";
+const GibraltarUrl =
+	"https://dashboards.kapta.earth/?dashboardid=9d9efa9e-5ca4-4cbb-9a5a-99ee9de11238";
+const firstwhatsappMapsUrl =
+	"https://www.ucl.ac.uk/geography/news/2024/dec/first-ever-whatsapp-map";
 const whatsappMapsUrlSpanish =
 	"https://uclexcites-blog.translate.goog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/?_x_tr_sl=auto&_x_tr_tl=es&_x_tr_hl=en-US&_x_tr_pto=wapp";
 
-const extremeCitizenUrl = "https://www.youtube.com/watch?v=IgQc7GQ1m_Y";
+const extremeCitizenUrl = "https://uclexcites.blog/2021/07/21/land-use-messaging-mapping-for-collaborative-climate-smart-agriculture-in-south-west-nigeria-the-ecsagri-pilot-project/";
+const excitesUrl = "https://www.ucl.ac.uk/geography/research/research-centres/extreme-citizen-science-excites"
+const ecsanvismap = "https://uclexcites.blog/wp-content/uploads/2023/04/excites-projects-world-map-1.jpg"
 const marcosUrl =
-	"https://www.ucl.ac.uk/geography/people/research-staff/marcos-moreu";
-const fabienUrl = "https://www.ucl.ac.uk/geography/fabien-moustard";
+	"https://www.linkedin.com/in/marcosmoreubadia";
+const fabienUrl = "https://www.linkedin.com/in/fabien-moustard-996998227";
 const tomUrl =
 	"https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch";
 const mukiUrl = "https://www.ucl.ac.uk/geography/muki-haklay-facss";
+const jeromeUrl = "https://www.ucl.ac.uk/anthropocene/people/dr-jerome-lewis";
 const jonathanUrl =
 	"https://www.ucl.ac.uk/advanced-research-computing/people/jonathan-cooper";
 const claireUrl =
@@ -57,27 +66,59 @@ i18next.use(initReactI18next).init({
 				inputgoallabel: "What do you want to achieve with this map?",
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
-				about: "About",
-				aboutContent: `Kapta Mobile is a Progressive Web App to create WhatsApp Maps.`,
-				why: "Why Kapta?",
-				whyContent: `To popularise mapping and connect users and producers of ground information. See our latest blog and where this started in 2010:<br><li><a href='${whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information</a></li><br><li><a href='${extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
-				what: "What's Next?",
+				about: "WhatsApp Maps with Kapta",
+				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
+								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
+								<br /><strong>What are WhatsApp Business Mappers?</strong> People who make a business creating WhatsApp Maps with their communities.  <br />
+								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
+
+				why: " Case studies",
+				whyContent: `<ul style="padding-left: 1.2em; margin: 0;">
+					<li>
+						<a href='${GibraltarUrl}'>Gibraltar Places (2025)</a>
+					</li>
+					<li>
+						<a href='${whatsappMapsUrl}'>Population and Water Infrastructure in rural Ethiopia (2024)</a>
+					</li>
+					<li>
+						<a href='${ethio2023}'>Land use in rural Ethiopia (2023)</a>
+					</li>
+					<li>
+						<a href='${extremeCitizenUrl}'>Farming in Nigeria (2021)</a>
+					</li>
+					<li>
+						<a href='${ecsanvismap}'>World Map of our case studies before WhatsApp Maps with Kapta 2010-2023</a>
+					</li>
+					</ul>`,
+				what: " Disclaimer",
 				whatContent:
 					"Kapta Web: A platform that brings people together to create and share WhatsApp Maps",
 
 				people: "People",
-				peopleContent: `Kapta is being developed by the University College London (UCL) Extreme Citizen Science (ExCiteS) research group and the Advanced Research Computing Centre (UCL ARC), with help from outside partners & contributors.<br>Currently the core Kapta team consists of:<br><ul><li><a href='${marcosUrl}'>Marcos Moreu, UCL Geography</a></li><li><a href='${fabienUrl}'>Fabien Moustard, UCL Geography</a></li><li><a href='${tomUrl}'>Tom Couch, UCL ARC</a></li><li><a href='${mukiUrl}'>Muki Haklay, UCL Geography</a></li><li><a href='${jonathanUrl}'>Jonathan Cooper, UCL ARC</a></li><li><a href='${claireUrl}'>Claire Ellul, UCL CEGE</a></li><li><a href='${amandaUrl}'>Amanda Ho-Lyn, UCL ARC</a></li><li><a href='${jedUrl}'>Jed Stevenson, Durham University</a></li><li><a href='${desUrl}'>Dessalegn Teckle, Addis Ababa University, NGO IPC</a></li></ul>`,
-				legalDisclaimer: `<b>Disclaimer</b>: The Kapta team has made every effort to develop an app that parse WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. If you encounter any issues or have feedback, please reach out to us at ${mailtoElem} or via WhatsApp at <a href=${ASK_URL}>+44 7473522912.</a>`,
+				peopleContent: `<br />Kapta is being developed at University College London (UCL) by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. Kapta is spining out from UCL.<br>
+					<br />Currently the core Kapta team consists of:<br>
+					<br />
+					<a href='${marcosUrl}'>Marcos Moreu</a><br>
+					<a href='${fabienUrl}'>Fabien Moustard</a><br>
+					<a href='${tomUrl}'>Tom Couch</a><br>
+					<a href='${amandaUrl}'>Amanda Ho-Lyn</a><br>
+					<a href='${jedUrl}'>Jed Stevenson</a><br>
+					<a href='${desUrl}'>Dessalegn Tekle</a><br>
+					<a href='${mukiUrl}'>Muki Haklay</a><br>
+					<a href='${claireUrl}'>Claire Ellul</a><br>
+					<a href='${jeromeUrl}'>Jerome Lewis</a><br>
+					<a href='${jonathanUrl}'>Jonathan Cooper</a>`,
+				legalDisclaimer: `<br />The Kapta team has made every effort to develop an app that parses WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Kapta cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",
 				yes: "Yes",
 				no: "No",
-				sharedata: "Share the map DATA",
+				sharedata: "Share map",
 				shareimg: "Share the map IMAGE",
-				uploaddata: "Upload to Kapta Web",
+				uploaddata: "Share map with Task ID",
 				addMetadataTitle: "Describe this map",
-				sharingTitle: "Share this map",
-				addDescription: "Add a title to your map",
+				sharingTitle: "",
+				addDescription: "Search open WhatsApp Maps",
 				updateDescription: "Update map title",
 				copyright: "Kapta by UCL",
 				supportOption: "Get support to improve your map",
@@ -204,7 +245,7 @@ i18next.use(initReactI18next).init({
 				datasovmessage: "በኮምዩኒቲዎ ማገዶ እንዲረዳዎ ካፕታ ቡድን ካርታዎን ማጠቃለያን ትፈቅድለታለህ?",
 				about: "ስለ",
 				aboutContent: `Kapta ሞባይል ሶፍትዌር የእንቅስቃሴ ድህረ-ገጽ (Progressive Web App) ነው። በ3 ሰለስተኛ ደረጃዎች የWhatsApp ካርታዎችን ለመፍጠር ይህን ይጠቀሙ።`,
-				why: "Why Kapta?",
+				why: "Work with us",
 				whyContent: `To connect users and producers of ground information. See our latest blog and where this started in 2010:<br><li><a href='${whatsappMapsUrl}'>WhatsApp Maps? Connecting users and producers of ground information</a></li><br><li><a href='${extremeCitizenUrl}'>Extreme Citizen Science in the Congo rainforest</a></li>`,
 				what: "What's Next?",
 				whatContent:

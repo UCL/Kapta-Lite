@@ -53,6 +53,44 @@ export default function BurgerMenu({
 							dangerouslySetInnerHTML={{ __html: t("aboutContent") }}
 						></div>
 					</div>
+					{/* New "How it works" tab */}
+					<div className="bm__item">
+						<div
+							className="bm__item__summary"
+							onClick={() => toggleSection("howitworks")}
+						>
+							{chevronDown} How it works
+						</div>
+						<div
+							className={`bm__item__content ${
+								openSection === "howitworks" ? "bm__item__content--open" : ""
+							}`}
+							style={{ paddingLeft: "1.2em" }}
+						>
+							<ul style={{ margin: 0 }}>
+								<li>
+									<a
+										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Maps_User.png"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										💻 If you need WhatsApp Maps, click here.
+									</a>
+								</li>
+								<br></br>
+								<li>
+									<a
+										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										📱 If you want to make WhatsApp Maps, click here.
+									</a>
+								</li>
+								
+							</ul>
+						</div>
+					</div>
 					<div className="bm__item">
 						<div
 							className="bm__item__summary"
@@ -71,21 +109,6 @@ export default function BurgerMenu({
 					<div className="bm__item">
 						<div
 							className="bm__item__summary"
-							onClick={() => toggleSection("what")}
-						>
-							{chevronDown}
-							{t("what")}
-						</div>
-						<div
-							className={`bm__item__content ${
-								openSection === "what" ? "bm__item__content--open" : ""
-							}`}
-							dangerouslySetInnerHTML={{ __html: t("whatContent") }}
-						></div>
-					</div>
-					<div className="bm__item">
-						<div
-							className="bm__item__summary"
 							onClick={() => toggleSection("people")}
 						>
 							{chevronDown} {t("people")}
@@ -97,22 +120,38 @@ export default function BurgerMenu({
 							dangerouslySetInnerHTML={{ __html: t("peopleContent") }}
 						></div>
 					</div>
-				</div>
-				<div className="links-disclaimer__wrapper">
 					<div className="bm__item">
+						<div
+							className="bm__item__summary"
+							onClick={() => toggleSection("what")}
+						>
+							{chevronDown}
+							{t("what")}
+						</div>
+						<div
+							className={`bm__item__content ${
+								openSection === "what" ? "bm__item__content--open" : ""
+							}`}
+							dangerouslySetInnerHTML={{ __html: t("legalDisclaimer") }}
+						></div>
+					</div>
+				</div>
+				<div className="links-disclaimer__wrapper" style={{ textAlign: "center" }}>
+					<div className="bm__item" >
 						<a
-							href="https://github.com/UCL/kapta-mobile"
+							href="https://github.com/UCL/Kapta-Lite"
 							id="gh"
 							className="bm__item__content"
 						>
 							{GHIcon}
 						</a>
+						<div className="bm__item__text" style={{ marginTop: "0.5rem" }}>
+							<p>Have feedback or <br />want to get in touch?</p>
+							<p>
+							Contact us on WhatsApp at<br /><a href="https://wa.me/447473522912">+44 7473522912</a> or email us at<br /><a href="mailto:info@kapta.earth">info@kapta.earth</a>.
+							</p>
+						</div>
 					</div>
-					<p
-						className="bm__item"
-						id="disclaimer"
-						dangerouslySetInnerHTML={{ __html: t("legalDisclaimer") }}
-					></p>
 				</div>
 			</div>
 		</div>
