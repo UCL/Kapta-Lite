@@ -488,7 +488,7 @@ const processText = async (text, zipInput = null) => {
 
 		for (const filename of imgFilenames) {
 			const fileData = await zipInput.file(filename).async("blob");
-			const rescaledBlob = await rescaleAndCompressImageBlob(fileData, "image/webp", 800, 0.7);
+			const rescaledBlob = await rescaleAndCompressImageBlob(fileData, "image/webp");
 			// Add the rescaled image to the zip
 			if (rescaledBlob) {
 				zip.file(filename, rescaledBlob);

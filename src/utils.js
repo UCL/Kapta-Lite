@@ -39,7 +39,8 @@ export const sha256 = async (text) => {
 		.join("");
 };
 
-export const rescaleAndCompressImageBlob = async (blob, format = "image/webp", maxWidth = 800, quality = 0.7) => {
+export const rescaleAndCompressImageBlob = async (blob, format = "image/webp", maxWidth = 500, quality = 0.3) => {
+	console.log("Rescaling and compressing image blob...");
 	const img = new Image();
 
 	return new Promise((resolve, reject) => {
