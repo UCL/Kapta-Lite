@@ -2,7 +2,7 @@ import * as JSZip from "jszip";
 import { sha256, slugify } from "./utils.js";
 import React, { useEffect, useCallback } from "react";
 import { uploadProcessedChat } from "./data_submission";
-
+import { rescaleAndCompressImageBlob } from "./utils.js";
 
 
 export const colourPalette = [
@@ -34,7 +34,7 @@ export let enableDownload = false; // To enable download
 
 export function FileParser({ file, onComplete, ...dataDisplayProps }) {
 	enableDownload = true
-	if(!window.location.href.includes('?import=')){
+	if (!window.location.href.includes('?import=')) {
 		importdata = true; // Set to true when FileParser is called from WhatsApp, not from pre-signed URL (to avoid zip file uploads)
 	}
 
@@ -75,90 +75,90 @@ export const allowedExtensions = [".zip", ".txt", ".geojson"];
 
 export let globalProcessedChatFile = null;
 const processFile = (file, setDataDisplayMap) => {
-    if (
-        file instanceof File &&
-        allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
-    ) {
-        try {
-            if (file.name.endsWith(".zip")) {
-                const zip = new JSZip();
-                zip.loadAsync(file).then(function (contents) {
-                    const filenames = Object.keys(contents.files);
+	if (
+		file instanceof File &&
+		allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext))
+	) {
+		try {
+			if (file.name.endsWith(".zip")) {
+				const zip = new JSZip();
+				zip.loadAsync(file).then(function (contents) {
+					const filenames = Object.keys(contents.files);
 
-                    // Detect GeoJSON file
-                    const geojsonFilename = filenames.find((filename) =>
-                        filename.match(/.*\.geojson$/i)
-                    );
+					// Detect GeoJSON file
+					const geojsonFilename = filenames.find((filename) =>
+						filename.match(/.*\.geojson$/i)
+					);
 
-                    // Detect chat file
-                    const chatFilename = filenames.find((filename) =>
-                        filename.match(/.*\.txt$/i)
-                    );
+					// Detect chat file
+					const chatFilename = filenames.find((filename) =>
+						filename.match(/.*\.txt$/i)
+					);
 					if (geojsonFilename) {
-                        zip
-                            .file(geojsonFilename)
-                            .async("string")
-                            .then(async function (geojsonContent) {
-                                try {
-                                    const [data, name] = processGeoJson(geojsonContent);
-                                    setDataDisplayMap(data, name, zip);
+						zip
+							.file(geojsonFilename)
+							.async("string")
+							.then(async function (geojsonContent) {
+								try {
+									const [data, name] = processGeoJson(geojsonContent);
+									setDataDisplayMap(data, name, zip);
 									globalProcessedChatFile = file;
 
-                                } catch (error) {
-                                    console.error("Error processing GeoJSON file:", error);
-                                }
-                            });
-                    }
-                    // Process chat file if it exists
-                    if (chatFilename) {
-                        zip
-                            .file(chatFilename)
-                            .async("string")
-                            .then(async function (fileContent) {
-                                const [data, name, processedChatFile] = await processText(
-                                    fileContent,
-                                    zip
-                                );
-                                setDataDisplayMap(data, name, zip);
+								} catch (error) {
+									console.error("Error processing GeoJSON file:", error);
+								}
+							});
+					}
+					// Process chat file if it exists
+					if (chatFilename) {
+						zip
+							.file(chatFilename)
+							.async("string")
+							.then(async function (fileContent) {
+								const [data, name, processedChatFile] = await processText(
+									fileContent,
+									zip
+								);
+								setDataDisplayMap(data, name, zip);
 								globalProcessedChatFile = processedChatFile;
 
-                                // Pass the processedChatFile to the upload function
-                                // uploadProcessedChat(processedChatFile, (text) => {
-                                //     console.log(text);
-                                // }, (disabled) => {
-                                //     console.log(disabled);
-                                // });
-								
-                            });
-					
-                    }
-                });
-            } else {
-                // Handle text or GeoJSON files directly
-                reader.readAsText(file);
-                reader.onloadend = async function (e) {
-                    const content = e.target.result;
-                    const geoJSONRegex = /^\s*{\s*"type"/;
+								// Pass the processedChatFile to the upload function
+								// uploadProcessedChat(processedChatFile, (text) => {
+								//     console.log(text);
+								// }, (disabled) => {
+								//     console.log(disabled);
+								// });
 
-                    // Process as GeoJSON if the file extension is .geojson or content starts with { "type"
-                    if (file.name.endsWith(".geojson") || geoJSONRegex.test(content)) {
-                        try {
-                            const [data, name] = processGeoJson(content);
-                            setDataDisplayMap(data, name);
-                        } catch (error) {
-                            console.error("Error parsing GeoJSON:", error);
-                        }
-                    } else {
-                        // Process as text
-                        const [data, name] = await processText(e.target.result);
-                        setDataDisplayMap(data, name);
-                    }
-                };
-            }
-        } catch (error) {
-            console.error("Unsupported file or format", error);
-        }
-    }
+							});
+
+					}
+				});
+			} else {
+				// Handle text or GeoJSON files directly
+				reader.readAsText(file);
+				reader.onloadend = async function (e) {
+					const content = e.target.result;
+					const geoJSONRegex = /^\s*{\s*"type"/;
+
+					// Process as GeoJSON if the file extension is .geojson or content starts with { "type"
+					if (file.name.endsWith(".geojson") || geoJSONRegex.test(content)) {
+						try {
+							const [data, name] = processGeoJson(content);
+							setDataDisplayMap(data, name);
+						} catch (error) {
+							console.error("Error parsing GeoJSON:", error);
+						}
+					} else {
+						// Process as text
+						const [data, name] = await processText(e.target.result);
+						setDataDisplayMap(data, name);
+					}
+				};
+			}
+		} catch (error) {
+			console.error("Unsupported file or format", error);
+		}
+	}
 };
 
 const getSenderColour = (senders) => {
@@ -184,7 +184,7 @@ const formatDateString = (date, time) => {
 		} else if (meridiem === "am" && hour === "12") {
 			hour = "00";
 		}
-	} else [hour, min, sec = "00"] = time.split(":"); // 24hr format used already
+	} else[hour, min, sec = "00"] = time.split(":"); // 24hr format used already
 
 	// split date string into parts and then determine which is what
 	let [part1, part2, part3] = date.split("/");
@@ -331,12 +331,12 @@ const setImgMsgRegex = (fileType) => {
 	} else {
 		console.log("Unknown file type, defaulting to Android format");
 		messageRegex =
-		/(\d{1,4}\/\d{1,2}\/\d{1,4}),?\s(\d{1,2}:\d{2}(?::\d{2})?(?:\s?(?:AM|PM|am|pm))?)?\s-\s(.*?):[\t\f\cK ]((.|\n)*?)(?=(\n\d{1,4}\/\d{1,2}\/\d{1,4})|$)/g;
-			// Regex to match and capture image filenames in messages
+			/(\d{1,4}\/\d{1,2}\/\d{1,4}),?\s(\d{1,2}:\d{2}(?::\d{2})?(?:\s?(?:AM|PM|am|pm))?)?\s-\s(.*?):[\t\f\cK ]((.|\n)*?)(?=(\n\d{1,4}\/\d{1,2}\/\d{1,4})|$)/g;
+		// Regex to match and capture image filenames in messages
 		imgFileRegex = /\b([\w\-_]*\.(jpg|jpeg|png|gif))\s\(file attached\)/gim;
 	}
 	return [messageRegex, imgFileRegex];
-	
+
 };
 
 const sortMessages = (messages) => {
@@ -371,26 +371,26 @@ const worldCapitals = [
 	"Tegucigalpa", "Budapest", "Reykjavik", "New Delhi", "Jakarta", "Tehran", "Baghdad", "Dublin", "Jerusalem", "Rome",
 	"Kingston", "Tokyo", "Amman", "Astana", "Nairobi", "Tarawa", "Pristina", "Kuwait City", "Bishkek", "Vientiane",
 	"Riga", "Beirut", "Maseru", "Monrovia", "Tripoli", "Vaduz", "Vilnius", "Luxembourg", "Antananarivo", "Lilongwe"
-  ];
+];
 
 const processText = async (text, zipInput = null) => {
-    // Clean the text by removing Unicode control characters
-    // [U+200E] is LEFT-TO-RIGHT MARK
-    // [U+202C] is POP DIRECTIONAL FORMATTING
-    text = text.replace(/[\u200E\u202C]/g, '');
+	// Clean the text by removing Unicode control characters
+	// [U+200E] is LEFT-TO-RIGHT MARK
+	// [U+202C] is POP DIRECTIONAL FORMATTING
+	text = text.replace(/[\u200E\u202C]/g, '');
 
-    const groupNameRegex = /"([^"]*)"/;
-    const groupNameMatches = text.match(groupNameRegex);
-    const groupName = groupNameMatches ? groupNameMatches[1] : null;
+	const groupNameRegex = /"([^"]*)"/;
+	const groupNameMatches = text.match(groupNameRegex);
+	const groupName = groupNameMatches ? groupNameMatches[1] : null;
 
-    // Check the first 3 characters to determine the format; iOS and Android
-    const fileType = text.substring(0, 3);
-    const [messageRegex, imgFileRegex] = setImgMsgRegex(fileType);
+	// Check the first 3 characters to determine the format; iOS and Android
+	const fileType = text.substring(0, 3);
+	const [messageRegex, imgFileRegex] = setImgMsgRegex(fileType);
 
-    let messageMatches = [...text.matchAll(messageRegex)];
+	let messageMatches = [...text.matchAll(messageRegex)];
 
-    // Convert messageMatches to array of JSON objects and then sort
-    let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
+	// Convert messageMatches to array of JSON objects and then sort
+	let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
 	const shuffledCapitals = [...worldCapitals].sort(() => Math.random() - 0.5);
 
 	const senderToCapital = {};
@@ -398,110 +398,120 @@ const processText = async (text, zipInput = null) => {
 		const capital = shuffledCapitals[i % shuffledCapitals.length];
 		const trimmedSender =
 			sender.length >= 4 ? sender.slice(-4) :
-			sender.length === 3 ? sender.slice(-3) :
-			sender.length === 2 ? sender.slice(-2) :
-			sender;
+				sender.length === 3 ? sender.slice(-3) :
+					sender.length === 2 ? sender.slice(-2) :
+						sender;
 		const observerName = `${capital}-${trimmedSender}`;
 		senderToCapital[sender] = observerName;
 		return `• ${sender} → ${observerName}`;
 	}).join("\n");
-	
+
 	console.log("📍 Assigned Capitals to Observers:\n" + mappingLog);
-    messages = sortMessages(messages);
+	messages = sortMessages(messages);
 
-    // Now loop through messages to create geojson for each location
-    var mapdata = {
-        type: "FeatureCollection",
-        features: [],
-    };
-    let currentFeature = null;
-    let currentSender = null;
+	// Now loop through messages to create geojson for each location
+	var mapdata = {
+		type: "FeatureCollection",
+		features: [],
+	};
+	let currentFeature = null;
+	let currentSender = null;
 
-    const createFeature = (message, groupName, contribID) => {
-        return {
-            type: "Feature",
-            properties: {
-                contributionid: contribID,
-                mainattribute: groupName,
-                observations: "",
-                observer: senderToCapital[message.sender],
-                datetime: message.datetime,
-                markerColour: senders[message.sender],
-                imgFilenames: [],
-            },
-            geometry: message.location
-                ? {
-                        type: "Point",
-                        coordinates: [message.location.long, message.location.lat],
-                  }
-                : null,
-        };
-    };
+	const createFeature = (message, groupName, contribID) => {
+		return {
+			type: "Feature",
+			properties: {
+				contributionid: contribID,
+				mainattribute: groupName,
+				observations: "",
+				observer: senderToCapital[message.sender],
+				datetime: message.datetime,
+				markerColour: senders[message.sender],
+				imgFilenames: [],
+			},
+			geometry: message.location
+				? {
+					type: "Point",
+					coordinates: [message.location.long, message.location.lat],
+				}
+				: null,
+		};
+	};
 
-    for (const message of messages) {
+	for (const message of messages) {
 		// if the content is valid and there is location or different sender, get the current feature or create a new one and push it to mapdata
 		// we assign it to a variable to be sure the validated content is used
 		// const contribID = await sha256(message.datetime + message.sender); // hash a unique contrib id, this is difficult under more nesting
-        const contribID = await sha256(message.datetime + message.sender);
-        if (message.location || message.sender !== currentSender) {
-            if (currentFeature && currentFeature.geometry) {
-                mapdata.features.push(currentFeature);
-            }
-            currentFeature = createFeature(message, groupName, contribID);
-            currentSender = message.sender;
-        }
+		const contribID = await sha256(message.datetime + message.sender);
+		if (message.location || message.sender !== currentSender) {
+			if (currentFeature && currentFeature.geometry) {
+				mapdata.features.push(currentFeature);
+			}
+			currentFeature = createFeature(message, groupName, contribID);
+			currentSender = message.sender;
+		}
 
-        if (currentFeature) {
-            if (message.imgFilenames) {
-                currentFeature.properties.imgFilenames.push(...message.imgFilenames);
-            }
-            currentFeature.properties.observations += message.content + "\n";
-        }
-    }
+		if (currentFeature) {
+			if (message.imgFilenames) {
+				currentFeature.properties.imgFilenames.push(...message.imgFilenames);
+			}
+			currentFeature.properties.observations += message.content + "\n";
+		}
+	}
 	// Push the last message to mapdataz
-    if (currentFeature && currentFeature.geometry) {
-        mapdata.features.push(currentFeature);
-    }
+	if (currentFeature && currentFeature.geometry) {
+		mapdata.features.push(currentFeature);
+	}
 
-    // Create the zip file
-    const zip = new JSZip();
+	// Create the zip file
+	const zip = new JSZip();
 
-    // Collect all original image filenames
-    const imageFilenames = new Set();
+	// Collect all original image filenames
+	const imageFilenames = new Set();
 
-    mapdata.features.forEach((feature) => {
-        if (feature.properties.imgFilenames) {
-            feature.properties.imgFilenames.forEach((name) => imageFilenames.add(name));
-        }
-    });
+	mapdata.features.forEach((feature) => {
+		if (feature.properties.imgFilenames) {
+			feature.properties.imgFilenames.forEach((name) => imageFilenames.add(name));
+		}
+	});
 
-    // Create the GeoJSON file
-    const geojsonBlob = new Blob([JSON.stringify(mapdata, null, 2)], {
-        type: "application/geo+json",
-    });
-    zip.file("map.geojson", geojsonBlob);
+	// Create the GeoJSON file
+	const geojsonBlob = new Blob([JSON.stringify(mapdata, null, 2)], {
+		type: "application/geo+json",
+	});
+	zip.file("map.geojson", geojsonBlob);
 
-    // Add images from zip input
-    if (zipInput) {
-        const filenames = Object.keys(zipInput.files);
-        const imgFilenames = filenames.filter((f) => imageFilenames.has(f));
+	// Add images from zip input
+	if (zipInput) {
+		const filenames = Object.keys(zipInput.files);
+		const imgFilenames = filenames.filter((f) => imageFilenames.has(f));
 
-        for (const filename of imgFilenames) {
-            const fileData = await zipInput.file(filename).async("blob");
-            zip.file(filename, fileData);
-        }
-    }
+		for (const filename of imgFilenames) {
+			const fileData = await zipInput.file(filename).async("blob");
+			const rescaledBlob = await rescaleAndCompressImageBlob(fileData, "image/webp", 800, 0.7);
+			// Add the rescaled image to the zip
+			if (rescaledBlob) {
+				zip.file(filename, rescaledBlob);
+			}
+			// If rescaling fails, add the original image
+			else {
+				console.warn(`Rescaling failed for ${filename}, adding original image.`);
+				// Add the original image to the zip
+				zip.file(filename, fileData);
+			}
+		}
+	}
 
-    // Generate the zip file as a Blob
-    const processedChatBlob = await zip.generateAsync({ type: "blob" });
+	// Generate the zip file as a Blob
+	const processedChatBlob = await zip.generateAsync({ type: "blob" });
 
-    // Convert the Blob to a File object
-    const processedChatFile = new File(
-        [processedChatBlob],
-        `${groupName || "processed_chat"}.zip`,
-        { type: "application/zip" }
-    );
+	// Convert the Blob to a File object
+	const processedChatFile = new File(
+		[processedChatBlob],
+		`${groupName || "processed_chat"}.zip`,
+		{ type: "application/zip" }
+	);
 
-    // Return the map data and the processed chat file
-    return [mapdata, groupName, processedChatFile];
+	// Return the map data and the processed chat file
+	return [mapdata, groupName, processedChatFile];
 };

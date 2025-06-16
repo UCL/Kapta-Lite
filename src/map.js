@@ -37,6 +37,7 @@ import { UploadDialog } from "./UploadDialog.jsx";
 import SuccessModal from "./SuccessModal.jsx";
 import { wamapperslocations } from "./wamapperslocations.js";
 import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
+import { getImageURLFromZip } from "./utils.js"; // Import the utility function to get image URL from zip
 
 /************************************************************************************************
  *   Basemaps (TileLayers)
@@ -102,46 +103,6 @@ function getFriendlyDatetime(datetime) {
 	// Convert the datetime string into a more readable form
 	return datetime.split("T").join(" ").replaceAll("-", "/");
 }
-const getImageURLFromZip = async (zip, imgFilename, maxWidth = 800, quality = 0.7, format = "image/webp") => {
-	try {
-		const file = zip.file(
-			// Match the filename, escaping special characters
-			new RegExp(imgFilename.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") + "$")
-		);
-		if (!file || file.length === 0) {
-			console.error(`File not found in ZIP: ${imgFilename}`);
-			throw new Error(`File not found in ZIP: ${imgFilename}`);
-		}
-		const blob = await file[0].async("blob");
-		const dataUrl = await new Promise((resolve, reject) => {
-			const image = new window.Image();
-			// Resize logic inside onload function to ensure it is loaded before processing
-			image.onload = () => {
-				const scale = Math.min(1, maxWidth / image.width);
-				const width = image.width * scale;
-				const height = image.height * scale;
-				const canvas = document.createElement("canvas"),
-					ctx = canvas.getContext("2d");
-				canvas.width = width;
-				canvas.height = height;
-				ctx.drawImage(image, 0, 0, width, height);
-				URL.revokeObjectURL(image.src); // Clean up the object URL
-				resolve(canvas.toDataURL(format, quality));
-			};
-			image.onerror = (e) => {
-				URL.revokeObjectURL(image.src);
-				reject(new Error(`Failed to load image: ${imgFilename}, Error: ${e.message}`));
-			};
-			image.src = URL.createObjectURL(blob);
-		});
-		return dataUrl;
-	} catch (error) {
-		console.error(`Error extracting file ${imgFilename}:`, error);
-		return null;
-	}
-};
-
-
 
 function MapDataLayer({ data }) {
 	const { t } = useTranslation();

@@ -38,3 +38,47 @@ export const sha256 = async (text) => {
 		.map((byte) => byte.toString(16).padStart(2, "0"))
 		.join("");
 };
+
+export const rescaleAndCompressImageBlob = async (blob, format = "image/webp", maxWidth = 800, quality = 0.7) => {
+	const img = new Image();
+
+	return new Promise((resolve, reject) => {
+		img.onload = () => {
+			const scale = Math.min(1, maxWidth / img.width);
+			const width = img.width * scale;
+			const height = img.height * scale;
+			const canvas = document.createElement("canvas"),
+				ctx = canvas.getContext("2d");
+			canvas.width = width;
+			canvas.height = height;
+			ctx.drawImage(img, 0, 0, width, height);
+			canvas.toBlob(
+				(blob) => {
+					URL.revokeObjectURL(img.src); // Clean up the object URL
+					resolve(blob);
+				},
+				format,
+				quality
+			);
+		};
+		img.onerror = (e) => {
+			URL.revokeObjectURL(image.src);
+			reject(new Error(`Error: Failed to load image: ${e.message}`));
+		};
+		img.src = URL.createObjectURL(blob); // Set the source to trigger loading
+	});
+}
+
+export const getImageURLFromZip = async (zip, imgFilename) => {
+	const file = zip.file(
+		// Match the filename, escaping special characters
+		new RegExp(imgFilename.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") + "$")
+	);
+	if (!file || file.length === 0) {
+		console.error(`File not found in ZIP: ${imgFilename}`);
+		throw new Error(`File not found in ZIP: ${imgFilename}`);
+	}
+
+	const blob = await file[0].async("blob");
+	return URL.createObjectURL(blob);
+}
