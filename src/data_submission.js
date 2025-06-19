@@ -2,7 +2,7 @@ const API_URL = "https://mjbhgmtnxe.execute-api.eu-west-2.amazonaws.com/prod/Kap
 const BUCKET_BASE_URL = "https://s3.eu-west-2.amazonaws.com/kapta-lite-private-maps";
 
 export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, setButtonDisabled, sharingOption, taskId, WhatsAppMapTags, wabMapperId) {
-    setStatusText("Preparing for sharing...");
+    setStatusText("Uploading... Wait");
     setButtonDisabled(true);
 
     try {
@@ -38,7 +38,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
         const { presignedUrl } = await response.json();
 
         // Step 2: Upload the file to S3 using the pre-signed URL
-        setStatusText("Uploading...");
+        setStatusText("Uploading... Wait");
         const uploadResponse = await fetch(presignedUrl, {
             method: "PUT",
             body: file,

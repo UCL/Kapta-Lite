@@ -69,13 +69,13 @@ i18next.use(initReactI18next).init({
 				about: "WhatsApp Maps with Kapta",
 				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
-								<br /><strong>What are WhatsApp Business Mappers?</strong> People who make a business creating WhatsApp Maps with their communities.  <br />
+								<br /><strong>What are WhatsApp Business Mappers?</strong> Community leaders who make a business creating WhatsApp Maps with their communities.  <br />
 								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
 
 				why: " Case studies",
 				whyContent: `<ul style="padding-left: 1.2em; margin: 0;">
 					<li>
-						<a href='${GibraltarUrl}'>Gibraltar Places (2025)</a>
+						<a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>
 					</li>
 					<li>
 						<a href='${whatsappMapsUrl}'>Population and Water Infrastructure in rural Ethiopia (2024)</a>

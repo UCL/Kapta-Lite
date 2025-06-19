@@ -456,7 +456,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     style={{ height:"45px", borderRadius:"15px"}}
                     onClick={() => {
                     window.open(
-                        "https://wa.me/447473522912?text=Hi%2C%20please%20connect%20me%20with%20mappers%20in%20the%20area.%20",
+                        "https://wa.me/447473522912?text=Hi%2C%20I%20need%20WhatsApp%20Maps%20about...",
                         "_blank"
                     );
                     }}
@@ -470,9 +470,9 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             <p>
                 {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                 <br />
-                The <strong>free version</strong> allows you to visualise the maps in Kapta Lite and download the data to analyse it in QGIS, ArcGIS etc.
+                The <strong>free version</strong> allows you to visualise the maps in Kapta and download the data to analyse it in QGIS, ArcGIS etc.
                 <br />
-                <strong>Premium</strong> allows you to manage multiple WhatsApp Maps and use CARTO dashboards and AI Agents for advanced visualisation and analysis.
+                <strong>Premium</strong> allows you to manage multiple WhatsApp Maps and use dashboards and AI Agents for advanced visualisation and analysis.
 
             </p>
             <div className="option-button-container">
@@ -544,7 +544,7 @@ export function ShareModal({
         }
 
         // Generate the URL if it hasn't been generated yet
-        setButtonText("Uploading… Wait a few seconds");
+        setButtonText("Uploading... Wait");
         setButtonDisabled(true);
         // const randomNum = Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)).join('');
 
