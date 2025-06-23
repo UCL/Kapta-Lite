@@ -108,7 +108,7 @@ i18next.use(initReactI18next).init({
 					<a href='${claireUrl}'>Claire Ellul</a><br>
 					<a href='${jeromeUrl}'>Jerome Lewis</a><br>
 					<a href='${jonathanUrl}'>Jonathan Cooper</a>`,
-				legalDisclaimer: `<br />The Kapta team has made every effort to develop an app that parses WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Kapta cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
+				legalDisclaimer: `<br />This site is not affiliated with, endorsed by, or sponsored by WhatsApp Inc. or Meta Platforms, Inc.<br />The Kapta team has made every effort to develop an app that parses WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Kapta cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",
 				yes: "Yes",

@@ -307,36 +307,43 @@ const processMsgMatches = (messageMatches, imgFileRegex) => {
 const locationRegex =
 	/https?:\/\/(?:www\.)?maps\.google\.com\/(?:maps\/?\?q=|search\/?\?q=|.*?)?(-?\d+\.\d+),(-?\d+\.\d+)/;
 
-const setImgMsgRegex = (fileType) => {
-	let messageRegex;
-	let imgFileRegex;
-	// Regex matches a single message including newline characters,
-	// stopping when new line starts with date or text ends
-	// also accounts for if the datetime is wrapped in brackets and has s
-	// Capture group 1 = date, group 2 = time, group 3 = sender, group 4 = message content
-	// this has been tweaked for each format but gives the same output
-	if (fileType.match(/\[\d{2}/)) {
-		// iOS format
-		// Adjusted regex for iOS to correctly capture date (DD/MM/YYYY), 24-hour time (HH:MM:SS),
-		// sender (allowing for spaces), and multi-line message content.
-		// The lookahead now specifically checks for the start of a new message line formatted as [DD/MM/YYYY, HH:MM:SS]
-		messageRegex =
-			/\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2}:\d{2})\]\s(.*?):\s(.+?)(?=\n\[\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}:\d{2}\]|Z$)/gs;
-		imgFileRegex = /<attached: (\d+-[\w\-_]+\.(?:jpg|jpeg|png|gif))>/gim;
-	} else if (fileType.match(/\d{2}\//)) {
-		// Android format (UK/Europe)
-		messageRegex =
-			/(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
-		imgFileRegex = /([\w\-_]+\.(?:jpg|jpeg|png|gif))>?/gim;
-	} else {
-		console.log("Unknown file type, defaulting to Android format");
-		messageRegex =
-			/(\d{1,4}\/\d{1,2}\/\d{1,4}),?\s(\d{1,2}:\d{2}(?::\d{2})?(?:\s?(?:AM|PM|am|pm))?)?\s-\s(.*?):[\t\f\cK ]((.|\n)*?)(?=(\n\d{1,4}\/\d{1,2}\/\d{1,4})|$)/g;
-		// Regex to match and capture image filenames in messages
-		imgFileRegex = /\b([\w\-_]*\.(jpg|jpeg|png|gif))\s\(file attached\)/gim;
-	}
-	return [messageRegex, imgFileRegex];
+const setImgMsg = (text) => {
+    let messageRegex;
+    let imgFileRegex;
 
+    // Condition 1: iOS format 
+    // Detects formats like: [DD/MM/YYYY, HH:MM:SS]
+    if (text.match(/^\[\d{1,2}\/\d{1,2}\/\d{2,4}/)) {
+        console.log("Detected iOS chat format.");
+        messageRegex =
+            /\[(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2}:\d{2})\]\s(.*?):\s(.+?)(?=\n\[\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}:\d{2}\]|Z$)/gs;
+        imgFileRegex = /<attached: (\d+-[\w\-_]+\.(?:jpg|jpeg|png|gif))>/gim;
+    }
+    // Condition 2: Android 24hr format 
+    // Detects formats like: DD/MM/YYYY, HH:MM -
+    else if (text.match(/^\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-/)) {
+        console.log("Detected Android (24hr) chat format.");
+        messageRegex =
+            /(\d{1,2}\/\d{1,2}\/\d{2,4}),\s(\d{1,2}:\d{2})\s-\s([^:]+): (.+?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},\s\d{1,2}:\d{2}\s-\s|$)/gs;
+        imgFileRegex = /([\w\-_]+\.(?:jpg|jpeg|png|gif))>?/gim;
+    }
+    // ----> NEW CONDITION FOR AM/PM <----
+    // Detects formats like: M/D/YY, H:MM AM - by looking for " AM -" or " PM -" in the first 100 characters.
+    else if (text.substring(0, 100).match(/\s[AP]M\s-/i)) {
+        console.log("Detected Android (AM/PM) chat format.");
+        messageRegex =
+            /(\d{1,2}\/\d{1,2}\/\d{2,4}),?\s(\d{1,2}:\d{2}(?::\d{2})?\s?[AP]M)\s-\s([^:]+):\s((?:.|\n)*?)(?=\n\d{1,2}\/\d{1,2}\/\d{2,4},?\s\d{1,2}:\d{2}|Z$)/gi;
+        imgFileRegex = /\b([\w\-_]*\.(?:jpg|jpeg|png|gif))\s\(file attached\)/gim;
+    }
+    // Original Else Block - Now a true fallback for unknown formats
+    else {
+        console.error("Unsupported file format. Could not determine the chat export style. Defaulting to a pattern that will likely fail.");
+        // The original default regex is kept here as a last resort.
+        messageRegex =
+            /(\d{1,4}\/\d{1,2}\/\d{1,4}),?\s(\d{1,2}:\d{2}(?::\d{2})?(?:\s?(?:AM|PM|am|pm))?)?\s-\s(.*?):[\t\f\cK ]((.|\n)*?)(?=(\n\d{1,4}\/\d{1,2}\/\d{1,4})|$)/g;
+        imgFileRegex = /\b([\w\-_]*\.(jpg|jpeg|png|gif))\s\(file attached\)/gim;
+    }
+    return [messageRegex, imgFileRegex];
 };
 
 const sortMessages = (messages) => {
@@ -383,11 +390,22 @@ const processText = async (text, zipInput = null) => {
 	const groupNameMatches = text.match(groupNameRegex);
 	const groupName = groupNameMatches ? groupNameMatches[1] : null;
 
-	// Check the first 3 characters to determine the format; iOS and Android
-	const fileType = text.substring(0, 3);
-	const [messageRegex, imgFileRegex] = setImgMsgRegex(fileType);
+	const [messageRegex, imgFileRegex] = setImgMsg(text); // Using a new name to avoid confusion
 
-	let messageMatches = [...text.matchAll(messageRegex)];
+		// check if the regex was successfully found
+		if (!messageRegex) {
+			console.error("Could not determine chat format. Aborting.");
+			return [null, null, null]; // Exit gracefully
+		}
+
+		let messageMatches = [...text.matchAll(messageRegex)];
+
+		console.log(`Found ${messageMatches.length} messages using the detected format.`);
+
+		if (messageMatches.length === 0) {
+			console.error("The detected format regex did not match any lines in the file. Please check the file content.");
+			return [null, null, null];
+		}
 
 	// Convert messageMatches to array of JSON objects and then sort
 	let [messages, senders] = processMsgMatches(messageMatches, imgFileRegex);
