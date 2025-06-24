@@ -395,10 +395,6 @@ const processText = async (text, zipInput = null) => {
 	// const fileType = text.substring(0, 3);
 	const [messageRegex, imgFileRegex] = setImgMsg(text);
 	// check if the regex was successfully found
-		if (!messageRegex) {
-			console.error("Could not determine chat format. Aborting.");
-			return [null, null, null]; // Exit gracefully
-		}
 
 		let messageMatches = [...text.matchAll(messageRegex)];
 		console.log(`Found ${messageMatches.length} messages using the detected format.`);
