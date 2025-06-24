@@ -179,8 +179,8 @@ export function MapActionArea({
     share,
     connect,
     create,
-    showWaMappers, 
-    setShowWaMappers, 
+    showWaMappers,
+    setShowWaMappers,
     ...dataDisplayProps // Add this to capture the props
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
@@ -246,8 +246,8 @@ export function MapActionArea({
                             <span className="map-action-label" style={{ color: "#3a3a3a", }}>Connect</span>
                         </button>
 
-                         {/* Create Button */}
-                         <button
+                        {/* Create Button */}
+                        <button
                             id="create"
                             type="button"
                             onClick={handleCreate}
@@ -267,18 +267,18 @@ export function MapActionArea({
                             <span className="map-action-label" style={{ color: "#3a3a3a", }}>Share</span>
                         </button>
 
-                       
+
                     </div>
                     {(!isMobileOrTablet()) && (
-                    <button
-                        id="premium"
-                        type="button"
-                        onClick={handlePremium}
-                        className="map-action-btn premium-btn" 
+                        <button
+                            id="premium"
+                            type="button"
+                            onClick={handlePremium}
+                            className="map-action-btn premium-btn"
                         >
-                        <div className="map-action-icon">{premiumIcn}</div>
-                        <span className="map-action-label" style={{ color: "#3a3a3a", }}>Premium</span>
-                    </button>
+                            <div className="map-action-icon">{premiumIcn}</div>
+                            <span className="map-action-label" style={{ color: "#3a3a3a", }}>Premium</span>
+                        </button>
                     )}
                 </div>
             </div>
@@ -308,7 +308,7 @@ export function MapActionArea({
                 setIsOpen={setIsCreateModalOpen}
 
             />
-           
+
         </div>
     );
 }
@@ -336,9 +336,9 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     <li>Share your WhatsApp Map</li>
                 </ol>
 
-                
 
-                
+
+
                 <div className="option-button-container">
                     <button
                         className="btn"
@@ -356,22 +356,22 @@ export function CreateModal({ isOpen, setIsOpen }) {
                         <p>Or if you already have the chat. Upload to convert it.</p>
                     )}
                     {!isMobileOrTablet() && (
-                        
-                    <button
-                    className="btn"
-                    onClick={() => {
-                        const filePickerButton = document.getElementById("filePickerButton");
-                        filePickerButton?.click();
-                        setIsOpen(false); // Close the "Create" modal
 
-                        // Clear the /?import=... in the URL
-                        const url = new URL(window.location.href);
-                        url.searchParams.delete("import"); // Remove the "import" query parameter
-                        window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
-                    }}
-                    >
-                    Convert a chat<br />into a map
-                    </button>
+                        <button
+                            className="btn"
+                            onClick={() => {
+                                const filePickerButton = document.getElementById("filePickerButton");
+                                filePickerButton?.click();
+                                setIsOpen(false); // Close the "Create" modal
+
+                                // Clear the /?import=... in the URL
+                                const url = new URL(window.location.href);
+                                url.searchParams.delete("import"); // Remove the "import" query parameter
+                                window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                            }}
+                        >
+                            Convert a chat<br />into a map
+                        </button>
                     )}
                     {/* <button
                         className="btn"
@@ -381,21 +381,21 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     >
                         Watch Tutorial
                     </button> */}
-                    
-                    <p style={{ marginTop:"-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
+
+                    <p style={{ marginTop: "-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
                     <button
-                    className="btn"
-                    style={{ marginTop:"-15px"}}
-                    onClick={() => {
-                    window.open(
-                        "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
-                        "_blank"
-                    );
-                    }}
-                >
-                    Register
-                </button>
-                    
+                        className="btn"
+                        style={{ marginTop: "-15px" }}
+                        onClick={() => {
+                            window.open(
+                                "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                                "_blank"
+                            );
+                        }}
+                    >
+                        Register
+                    </button>
+
                 </div>
             </div>
         </div>
@@ -422,75 +422,75 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
             >
                 {closeIcon}
             </button>
-            <div className="modal-title"> 
+            <div className="modal-title">
                 {isRegisterMapper
                     ? "Connect"
                     : isPremium
-                    ? "Premium"
-                    : "Search"}
+                        ? "Premium"
+                        : "Search"}
             </div>
             <div className="modal-content">
-    {isRegisterMapper ? (
-        <>
-            <p>
-                {/* Zoom out if you can't find WhatsApp Mappers in this area.
+                {isRegisterMapper ? (
+                    <>
+                        <p>
+                            {/* Zoom out if you can't find WhatsApp Mappers in this area.
                 <br />
                 Or register yourself or others as WhatsApp Mappers. Once registered, anyone can contact you to pay you for creating a WhatsApp Map.<br /> 
                 We recommend you to create a WhatsApp Business account to show your profile.
                 <br />
                 <br />
                 To register, all you need to do is send us a WhatsApp message 👇 */}
-            </p>
-            <div className="option-button-container">
+                        </p>
+                        <div className="option-button-container">
 
-                 {/* <button
+                            {/* <button
                     className="btn"
                     onClick={() => setIsOpen(false)}>
 
                     Connect with<br />mappers in the map
                 </button> */}
-                <p>Explore the map or tell us what you need.  
-                </p>
-                <button
-                    className="btn"
-                    style={{ height:"45px", borderRadius:"15px"}}
-                    onClick={() => {
-                    window.open(
-                        "https://wa.me/447473522912?text=Hi%2C%20I%20need%20WhatsApp%20Maps%20about...",
-                        "_blank"
-                    );
-                    }}
-                >
-                    I need WhatsApp Maps
-                </button>
-            </div>
-        </>
-    ) : isPremium ? (
-        <>
-            <p>
-                {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
-                <br />
-                The <strong>free version</strong> allows you to visualise the maps in Kapta and download the data to analyse it in QGIS, ArcGIS etc.
-                <br />
-                <strong>Premium</strong> allows you to manage multiple WhatsApp Maps and use dashboards and AI Agents for advanced visualisation and analysis.
+                            <p>Explore the map or tell us what you need.
+                            </p>
+                            <button
+                                className="btn"
+                                style={{ height: "45px", borderRadius: "15px" }}
+                                onClick={() => {
+                                    window.open(
+                                        "https://wa.me/447473522912?text=Hi%2C%20I%20need%20WhatsApp%20Maps%20about...",
+                                        "_blank"
+                                    );
+                                }}
+                            >
+                                I need WhatsApp Maps
+                            </button>
+                        </div>
+                    </>
+                ) : isPremium ? (
+                    <>
+                        <p>
+                            {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
+                            <br />
+                            The <strong>free version</strong> allows you to visualise the maps in Kapta and download the data to analyse it in QGIS, ArcGIS etc.
+                            <br />
+                            <strong>Premium</strong> allows you to manage multiple WhatsApp Maps and use dashboards and AI Agents for advanced visualisation and analysis.
 
-            </p>
-            <div className="option-button-container">
-                <button
-                    className="btn"
-                    onClick={() => {
-                    window.open("https://forms.gle/Br6C8eAueZdo35Y7A", "_blank");
-                    }}
-                >
-                    Request a Premium Demo
-                </button>
-            </div>
+                        </p>
+                        <div className="option-button-container">
+                            <button
+                                className="btn"
+                                onClick={() => {
+                                    window.open("https://forms.gle/Br6C8eAueZdo35Y7A", "_blank");
+                                }}
+                            >
+                                Request a Premium Demo
+                            </button>
+                        </div>
 
-        </>
-    ) : (
-        <p>No open WhatsApp Maps have been shared yet. Contribute yours!</p>
-    )}
-</div>
+                    </>
+                ) : (
+                    <p>No open WhatsApp Maps have been shared yet. Contribute yours!</p>
+                )}
+            </div>
 
         </div>
     );
@@ -504,7 +504,7 @@ export function ShareModal({
     dataset,
     ...dataDisplayProps
 }) {
-    
+
     // console.log("ShareModalclick", dataDisplayProps);
     if (!isOpen) return null;
     const shareModalRef = useRef(null);
@@ -513,7 +513,8 @@ export function ShareModal({
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
     const [mapperId, setMapperId] = useState(""); // New state for Mapper ID
-    const [buttonText, setButtonText] = useState(t("sharedata"));
+    const [buttonText, _setButtonText] = useState(t("sharedata"));
+    const setButtonText = translationKey => _setButtonText(t(translationKey));
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [kaptaWaMapUrl, setKaptaWaMapUrl] = useState(""); // Store the generated URL
     const [WhatsAppMapTags, setWhatsAppMapTags] = useState(""); // New state for map description
@@ -544,7 +545,7 @@ export function ShareModal({
         }
 
         // Generate the URL if it hasn't been generated yet
-        setButtonText("Uploading... Wait");
+        setButtonText("uploadPending");
         setButtonDisabled(true);
         // const randomNum = Array.from({ length: 20 }, () => Math.floor(Math.random() * 10)).join('');
 
@@ -556,22 +557,22 @@ export function ShareModal({
         //     return `${hash}.${extension}`;
         //   }
         // const fileName = generateHashedFilename("map.png", "task123", "optionalSecret");
-  
+
         // const date = new Date().toISOString().split("T")[0];
         // const fileNameWAMap = `KaptaWhatsAppMap-${date}-${WhatsAppMapTags.replace(/\s+/g, "_")}-${taskId || "000000"}-${sharingOption || "unknown"}-${randomNum}`;
-        
+
         function generateBase62Id(length = 32) {
             const charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             const charsetLength = charset.length;
             const values = new Uint8Array(length);
             crypto.getRandomValues(values);
-          
+
             return Array.from(values)
-              .map(byte => charset[byte % charsetLength])
-              .join("");
-          }
+                .map(byte => charset[byte % charsetLength])
+                .join("");
+        }
         const randomNum = generateBase62Id(); // Generate a random string of 20 characters
-        console.log("🔐 Base62 ID:",randomNum)
+        console.log("🔐 Base62 ID:", randomNum)
         const fileNameWAMap = `KaptaWhatsAppMap-${randomNum}`; //Reduce parameters to increase security of URL
 
         try {
@@ -618,7 +619,7 @@ export function ShareModal({
 
             const generatedUrl = `https://kapta.earth/?import=${presignedUrl}`;
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
-            setButtonText("Click here to share directly");
+            setButtonText("shareDirectly");
             setButtonDisabled(false);
 
             // Handle sharing
@@ -642,26 +643,26 @@ export function ShareModal({
             }
         } catch (error) {
             console.error("Error during sharing:", error);
-            setButtonText(t("sharedata"));
+            setButtonText("sharedata");
             setButtonDisabled(false);
         }
     };
 
     const handleDownload = () => {
         console.log(globalProcessedChatFile)
-       if (globalProcessedChatFile) {
-    const blob = new Blob([globalProcessedChatFile], {
-      type: "application/zip",
-    });
+        if (globalProcessedChatFile) {
+            const blob = new Blob([globalProcessedChatFile], {
+                type: "application/zip",
+            });
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    const date = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-    link.download = `Kapta_WhatsApp_Map_${date}.zip`;
-    link.click();
-    URL.revokeObjectURL(url);
-  }
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            const date = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
+            link.download = `Kapta_WhatsApp_Map_${date}.zip`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
     };
     const handleShareCurrentUrl = () => {
 
@@ -688,7 +689,7 @@ export function ShareModal({
     useClickOutside(shareModalRef, () => setIsOpen(false));
 
     return (
-        
+
         <div id="sharing-modal" ref={shareModalRef}>
             <button className="modal-close btn" onClick={() => setIsOpen(false)}>
                 {closeIcon}
@@ -696,7 +697,7 @@ export function ShareModal({
             <div className="modal-title">
                 {importdata ? t("sharingTitle") : "Share"}
             </div>
-    
+
             {importdata ? (
                 <>
                     {/* Open WhatsApp Map Section */}
@@ -708,7 +709,7 @@ export function ShareModal({
                         >
                             <p style={{ fontSize: "1rem", marginTop: "-8px" }}>
                                 Only the people with the map link can view it <br></br> (Encryption with a passphrase is coming soon).
-                            </p> 
+                            </p>
                             {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
                                 <input
                                     type="checkbox"
@@ -738,7 +739,7 @@ export function ShareModal({
                                 (Anonymous and anyone can view)
                             </p> */}
 
-                        {/* {showMapperIdField && sharingOption === "open" && (
+                            {/* {showMapperIdField && sharingOption === "open" && (
                             <div style={{ marginTop: "3px", textAlign: "center", alignItems: "center" }}>
                                 <input
                                     type="number"
@@ -758,7 +759,7 @@ export function ShareModal({
                             </div>
                         )} */}
 
-                     {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px", opacity: 0.5, cursor: "not-allowed" }}>
+                            {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px", opacity: 0.5, cursor: "not-allowed" }}>
                             <input
                                 type="checkbox"
                                 style={{ width: "20px", height: "20px" }}
@@ -775,7 +776,7 @@ export function ShareModal({
                         <p style={{ fontSize: "0.8rem", marginTop: "-8px", opacity: 0.5 }}>
                             (Encrypt your WhatsApp Map with a password - coming soon)
                         </p> */}
-                      </div>
+                        </div>
 
                     </section>
 
@@ -796,7 +797,7 @@ export function ShareModal({
                             }}
                         />
                     </section> */}
-    
+
                     {/* Task ID Section */}
                     {/* <section className="modal-section" style={{ textAlign: "center" }}>
                         <p style={{ fontWeight: "bold" }}>Do you have a Task ID?</p>
@@ -836,20 +837,20 @@ export function ShareModal({
                             />
                         )}
                     </section> */}
-    
+
                     {/* Share Button */}
                     <div className="option-button-container">
                         <button
                             className="btn"
                             onClick={handleShareDataClick}
-                            // disabled={
-                            //     isButtonDisabled ||
-                            //     sharingOption === null || // Ensure one of the three checkboxes is selected
-                            //     hasTaskId === null || // Ensure Task ID selection is made
-                            //     (hasTaskId === true && taskId.length < 6) || // Ensure Task ID is valid if selected
-                            //     WhatsAppMapTags.trim().length === 0 || // Ensure the map description is not empty
-                            //     (sharingOption === "open" && mapperId.length <= 6) // Ensure Mapper ID is 6 digits if "Public" is selected
-                            // }
+                        // disabled={
+                        //     isButtonDisabled ||
+                        //     sharingOption === null || // Ensure one of the three checkboxes is selected
+                        //     hasTaskId === null || // Ensure Task ID selection is made
+                        //     (hasTaskId === true && taskId.length < 6) || // Ensure Task ID is valid if selected
+                        //     WhatsAppMapTags.trim().length === 0 || // Ensure the map description is not empty
+                        //     (sharingOption === "open" && mapperId.length <= 6) // Ensure Mapper ID is 6 digits if "Public" is selected
+                        // }
                         >
                             {buttonText}
                         </button>
@@ -862,34 +863,34 @@ export function ShareModal({
                         </div>
                     )}
                 </>
-                ) : (
-                    <>
-                {window.location.href.includes("import=") ? (
-                    <>
-                        <div className="option-button-container">
-                            <button className="btn" onClick={handleShareCurrentUrl}>
-                                Share
-                            </button>
-                        </div>
-                        {!isMobileOrTablet() && (
+            ) : (
+                <>
+                    {window.location.href.includes("import=") ? (
+                        <>
                             <div className="option-button-container">
-                                <button className="btn" onClick={handleDownload}>
-                                    Download WhatsApp Map
+                                <button className="btn" onClick={handleShareCurrentUrl}>
+                                    Share
                                 </button>
                             </div>
-                        )}
-                    </>
-                ) : (
-                    <div className="modal-content">
-                        <p style={{ textAlign: "center" }}>
-                            You need to create a WhatsApp Map before you can share it!
-                        </p>
-                    </div>
-                )}
+                            {!isMobileOrTablet() && (
+                                <div className="option-button-container">
+                                    <button className="btn" onClick={handleDownload}>
+                                        Download WhatsApp Map
+                                    </button>
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div className="modal-content">
+                            <p style={{ textAlign: "center" }}>
+                                You need to create a WhatsApp Map before you can share it!
+                            </p>
+                        </div>
+                    )}
 
 
-                    </>
-                )}
+                </>
+            )}
         </div>
     );
 }
