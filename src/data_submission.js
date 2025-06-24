@@ -1,8 +1,11 @@
+import { useTranslation } from "react-i18next";
+
 const API_URL = "https://mjbhgmtnxe.execute-api.eu-west-2.amazonaws.com/prod/KaptaLite_test";
 const BUCKET_BASE_URL = "https://s3.eu-west-2.amazonaws.com/kapta-lite-private-maps";
 
-export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, setButtonDisabled, sharingOption, taskId, WhatsAppMapTags, wabMapperId) {
-    setStatusText("Preparing for sharing...");
+export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, setButtonDisabled, sharingOption, taskId, WhatsAppMapTags, wabMapperId) {
+
+    setButtonText("uploadPending");
     setButtonDisabled(true);
 
     try {
@@ -38,7 +41,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
         const { presignedUrl } = await response.json();
 
         // Step 2: Upload the file to S3 using the pre-signed URL
-        setStatusText("Uploading...");
+        setButtonText("uploadPending");
         const uploadResponse = await fetch(presignedUrl, {
             method: "PUT",
             body: file,
@@ -79,14 +82,14 @@ export async function uploadProcessedChat(file, fileNameWAMap, setStatusText, se
             console.log("🌍 Public Download URL with prefix rules and referer checks:", downloadUrl);
         }
 
-        setStatusText("Ready to Share!!!");
+        setButtonText("uploadReady");
         setButtonDisabled(false);
 
         return downloadUrl;
 
     } catch (error) {
         console.error("❌ Upload error:", error);
-        setStatusText("Upload failed! See console.");
+        setButtonText("uploadFailed");
         setButtonDisabled(false);
         throw error;
     }
