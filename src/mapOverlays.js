@@ -64,33 +64,56 @@ import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based 
 //         </button>
 //     );
 // }
-const quality = 0.2; // Set the compression parameter
-const compressImageBlob = (blob, quality) => {
+const quality = 0.25; // Set the compression parameter
+const compressImageBlob = (blob, quality = 0.25, maxWidth = 300, maxHeight = 300) => {
     return new Promise((resolve) => {
         const img = new Image();
         const url = URL.createObjectURL(blob);
+
         img.onload = () => {
+            let { width, height } = img;
+
+            // Calculate new size while maintaining aspect ratio
+            const aspectRatio = width / height;
+            if (width > maxWidth || height > maxHeight) {
+                if (width > height) {
+                    width = maxWidth;
+                    height = Math.round(maxWidth / aspectRatio);
+                } else {
+                    height = maxHeight;
+                    width = Math.round(maxHeight * aspectRatio);
+                }
+            }
+
             const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = width;
+            canvas.height = height;
+
             const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0, 0, width, height);
+
             canvas.toBlob(
                 (compressedBlob) => {
                     URL.revokeObjectURL(url);
+                    
                     resolve(compressedBlob);
+                    const ratio = (compressedBlob.size / blob.size).toFixed(2);
+                    console.log(`Compression ratio: ${ratio}`);
                 },
                 "image/jpeg",
                 quality
             );
         };
+
         img.onerror = () => {
             URL.revokeObjectURL(url);
-            resolve(null); // Skip on error
+            resolve(null);
         };
+
         img.src = url;
     });
 };
+
 function InputArea({ setTitle, setPulse, search, currentDataset }) {
     const { t } = useTranslation();
     const [isSubmit, setIsSubmit] = useState(false);
@@ -985,7 +1008,7 @@ const generateCSV = (dataset) => {
                         <>
                             <div className="option-button-container">
                                 <button className="btn" onClick={handleShareCurrentUrl}>
-                                    Share
+                                    Share map link
                                 </button>
                             </div>
                             {!isMobileOrTablet() && (
