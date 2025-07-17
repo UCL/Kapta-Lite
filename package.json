@@ -14,11 +14,13 @@
 		"leaflet": "^1.9.4",
 		"leaflet-easybutton": "^2.4.0",
 		"leaflet-easyprint": "^2.1.9",
+		"proj4": "^2.19.7",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
 		"react-ga4": "^2.1.0",
 		"react-i18next": "^15.0.1",
 		"react-leaflet": "^4.2.1",
+		"utm": "^1.1.1",
 		"webpack": "^5.93.0",
 		"webpack-pwa-manifest": "^4.3.0"
 	},

@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import "./styles/map-etc.css";
 import html2canvas from "html2canvas";
 import * as JSZip from "jszip";
-
+import { saveAs } from "file-saver"; // Import file-saver for downloading files
+import proj4 from "proj4";
+import { fromLatLon, toLatLon } from 'utm';
 import {
     shareIcn,
     closeIcon,
@@ -654,12 +656,20 @@ export function ShareModal({
             const blob = new Blob([globalProcessedChatFile], {
                 type: "application/zip",
             });
-
+            function getDateTime() {
+                const now = new Date();
+                const datePart = now.toISOString().split("T")[0]; // YYYY-MM-DD
+                const timePart = now
+                    .toTimeString()
+                    .split(" ")[0]     // HH:MM:SS
+                    .replace(/:/g, "-"); // Replace colons with hyphens
+                return `${datePart}_${timePart}`; // YYYY-MM-DD_HH-MM-SS
+            }
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
-            const date = new Date().toISOString().split("T")[0]; // Format: YYYY-MM-DD
-            link.download = `Kapta_WhatsApp_Map_${date}.zip`;
+            const dateTime = getDateTime();
+            link.download = `Kapta_WhatsApp_Map_${dateTime}.zip`;
             link.click();
             URL.revokeObjectURL(url);
         }
@@ -685,6 +695,105 @@ export function ShareModal({
                 });
         }
     }
+// Converts decimal degrees to Degrees Minutes Seconds (DMS)
+function toDMS(decimal, isLatitude) {
+    const absolute = Math.abs(decimal);
+    let degrees = Math.floor(absolute);
+    let minutes = Math.floor((absolute - degrees) * 60);
+    let seconds = Math.round((((absolute - degrees) * 60) - minutes) * 60);
+
+    // Adjust if rounding resulted in 60 seconds
+    if (seconds === 60) {
+        minutes++;
+        seconds = 0;
+    }
+    // Adjust if minutes reach 60 after rounding
+    if (minutes === 60) {
+        degrees++;
+        minutes = 0;
+    }
+
+    const direction = isLatitude 
+        ? (decimal >= 0 ? "N" : "S") 
+        : (decimal >= 0 ? "E" : "W");
+        
+    return `${degrees}°${minutes}'${seconds}" ${direction}`;
+}
+
+// Function to generate CSV and trigger download
+const generateCSV = (dataset) => {
+    const headers = [
+        "latitude",
+        "longitude",
+        "latitude (DMS)",
+        "longitude (DMS)",
+        "UTM Zone",
+        "UTM Coordinates",
+        "image ID",
+        "date",
+        "observer",
+        "observation",
+    ];
+
+    // Helper to safely escape CSV values
+    const escapeCSV = (value) => {
+        if (value === null || value === undefined) return '""';
+        return `"${value.toString().replace(/"/g, '""')}"`;
+    };
+
+    const rows = dataset.features.map((feature) => {
+        const { coordinates } = feature.geometry || {};
+        const { imgFilenames, datetime, observer, observations } = feature.properties || {};
+
+        const latDMS = coordinates ? toDMS(coordinates[1], true) : "";
+        const lngDMS = coordinates ? toDMS(coordinates[0], false) : "";
+
+        // Convert latitude/longitude to UTM using named import from 'utm'
+        const utmData = coordinates ? fromLatLon(coordinates[1], coordinates[0]) : {};
+        const utmZone = utmData.zoneNum ? `${utmData.zoneNum}${utmData.zoneLetter}` : "";
+        const utmCoordinates = utmData.easting
+            ? `${utmData.easting.toFixed(2)}, ${utmData.northing.toFixed(2)}`
+            : "";
+
+        return [
+            coordinates ? coordinates[1] : "",             // latitude
+            coordinates ? coordinates[0] : "",             // longitude
+            latDMS,                                        // latitude in DMS
+            lngDMS,                                        // longitude in DMS
+            utmZone,                                       // UTM Zone
+            utmCoordinates,                                // UTM Coordinates
+            imgFilenames ? imgFilenames.join(";") : "",     // image ID(s)
+            datetime || "",                                // date
+            observer || "",                                // observer
+            observations || "",                            // observation
+        ];
+    });
+
+    const csvContent = [headers, ...rows]
+        .map((row) => row.map((value) => escapeCSV(value)).join(","))
+        .join("\n");
+
+  
+    function getDateTime() {
+        const now = new Date();
+        const datePart = now.toISOString().split("T")[0]; // YYYY-MM-DD
+        const timePart = now
+            .toTimeString()
+            .split(" ")[0]     // HH:MM:SS
+            .replace(/:/g, "-"); // Replace colons with hyphens
+        return `${datePart}_${timePart}`; // YYYY-MM-DD_HH-MM-SS
+    }
+
+    // Example usage in the CSV download file name:
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const dateTime = getDateTime();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Kapta_WhatsApp_Map_${dateTime}.csv`; // File name now includes date and time
+    link.click();
+    URL.revokeObjectURL(url);
+};
 
     useClickOutside(shareModalRef, () => setIsOpen(false));
 
@@ -855,13 +964,20 @@ export function ShareModal({
                             {buttonText}
                         </button>
                     </div>
-                    {!isMobileOrTablet() && (
                         <div className="option-button-container">
                             <button className="btn" onClick={handleDownload}>
                                 Download Map
                             </button>
                         </div>
-                    )}
+                    
+                    <div className="option-button-container">
+                        <button
+                            className="btn"
+                            onClick={() => generateCSV(currentDataset)}
+                        >
+                            Download CSV file
+                        </button>
+                    </div>
                 </>
             ) : (
                 <>
@@ -887,6 +1003,7 @@ export function ShareModal({
                             </p>
                         </div>
                     )}
+
 
 
                 </>
