@@ -275,6 +275,10 @@ function MapDataLayer({ data }) {
 									{getFriendlyDatetime(feature.properties.datetime)}
 									<br />
 									{t("observer")}: {feature.properties.observer}
+									<br />
+									<strong>Coordinates:</strong><br />
+									lat {latlng.lat}<br />
+									lng {latlng.lng}
 								</div>
 							</Popup>
 							</Marker>
