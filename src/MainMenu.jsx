@@ -11,6 +11,7 @@ import { menuIcon } from "./icons.js";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 import Loader from "./Loader.jsx"; // Import Loader component
 import checkingPwGif from "./images/checkingPw.gif";
+import { decryptFile, decodePassphrase, isFileEncrypted } from "./encryption.js";
 
 
 function LanguageSelector({ supportedLanguages }) {
@@ -248,12 +249,18 @@ export default function MainMenu({
         setIsBMVisible((prevState) => !prevState);
     };
 
+    const [decryptionPassword, setDecryptionPassword] = useState("");
+    const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+    const [encryptedBlob, setEncryptedBlob] = useState(null);
+    const [decryptionError, setDecryptionError] = useState("");
+    const [isDecrypting, setIsDecrypting] = useState(false);
+
     const handleButtonClick = async () => {
         try {
             setIsLoaderVisible(true); // Show loader
-            const query = window.location.search;
-            const importParam = query.startsWith('?import=') ? query.slice(8) : null;
-            // setImportParam(importParam); // Set importParam state
+            const urlParams = new URLSearchParams(window.location.search);
+            const importParam = urlParams.get('import');
+            
             console.log('Import URL:', importParam);
 
             if (!importParam) {
@@ -277,14 +284,79 @@ export default function MainMenu({
             }
 
             const blob = await response.blob();
-            const file = new File([blob], 'import.zip', { type: 'application/zip' });
-            dataDisplayProps.setFileToParse(file);
+            
+            // Use our utility function to check if the file is encrypted
+            const isEncrypted = await isFileEncrypted(blob);
+            
+            if (isEncrypted) {
+                // For encrypted files, show the password prompt
+                console.log("Encrypted file detected, showing password prompt");
+                setEncryptedBlob(blob);
+                setShowPasswordPrompt(true);
+                ReactGA.event({
+                    category: "Encryption",
+                    action: "Decrypt Prompt Shown",
+                });
+                return;
+            } else {
+                // Not encrypted, process normally
+                const file = new File([blob], 'import.zip', { type: 'application/zip' });
+                dataDisplayProps.setFileToParse(file);
+            }
         } catch (error) {
             console.error('Error fetching or uploading file:', error);
         } finally {
-            setIsLoaderVisible(false); // Hide loader
-            setLoadingMessage(false); // Hide the loading message
-            console.log('Loader hidden');
+            if (!showPasswordPrompt) {
+                setIsLoaderVisible(false); // Hide loader
+                setLoadingMessage(false); // Hide the loading message
+                console.log('Loader hidden');
+            }
+        }
+    };
+    
+    const handleDecryptionSubmit = async () => {
+        if (!decryptionPassword || !encryptedBlob) return;
+        
+        setDecryptionError("");
+        setIsDecrypting(true);
+        setIsLoaderVisible(true);
+        
+        // Track decryption attempt
+        ReactGA.event({
+            category: "Encryption",
+            action: "Decryption Attempted",
+        });
+        
+        try {
+            // Small delay to show the loading state
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const decryptedBlob = await decryptFile(encryptedBlob, decryptionPassword);
+            const file = new File([decryptedBlob], 'import.zip', { type: 'application/zip' });
+            dataDisplayProps.setFileToParse(file);
+            setShowPasswordPrompt(false);
+            
+            // Track successful decryption
+            ReactGA.event({
+                category: "Encryption",
+                action: "Decryption Successful",
+            });
+        } catch (error) {
+            console.error("Decryption failed:", error);
+            setDecryptionError("Wrong password");
+            setIsDecrypting(false);
+            setIsLoaderVisible(false);
+            
+            // Track failed decryption
+            ReactGA.event({
+                category: "Encryption",
+                action: "Decryption Failed",
+                label: error.message,
+            });
+        } finally {
+            setIsDecrypting(false);
+            setIsLoaderVisible(false);
+            setLoadingMessage(false);
         }
     };
 
@@ -325,6 +397,170 @@ export default function MainMenu({
                 />
               </div>
             )}
+            
+            {/* Password Prompt Dialog */}
+            {showPasswordPrompt && (
+                <div className="password-prompt" style={{ 
+                    position: 'fixed', 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '25px',
+                    borderRadius: '12px',
+                    boxShadow: '0 6px 30px rgba(0,0,0,0.25)',
+                    zIndex: 9999,
+                    width: '90%',
+                    maxWidth: '400px',
+                    textAlign: 'center',
+                    fontFamily: 'sans-serif'
+                }}>
+                    <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center', 
+                        marginBottom: '15px'
+                    }}>
+                        <span style={{ 
+                            marginRight: '10px', 
+                            fontSize: '20px', 
+                            color: '#555'
+                        }}>🔒</span>
+                        <h3 style={{ 
+                            margin: 0, 
+                            color: '#333', 
+                            fontWeight: '600' 
+                        }}>This map is private and requires a password to open it.</h3>
+                    </div>
+                    
+                    <p style={{ 
+                        marginBottom: '20px', 
+                        color: '#666', 
+                        fontSize: '15px'
+                    }}>
+                        Enter the password that was shared with you to access this map:
+                    </p>
+                    
+                    <div style={{ marginBottom: '20px' }}>
+                        <input 
+                            type="password"
+                            placeholder="Enter password"
+                            value={decryptionPassword}
+                            onChange={(e) => {
+                                setDecryptionPassword(e.target.value);
+                                if (decryptionError) setDecryptionError("");
+                            }}
+                            style={{ 
+                                width: '100%', 
+                                padding: '12px',
+                                borderRadius: '6px',
+                                border: decryptionError ? '2px solid #e74c3c' : '1px solid #ddd',
+                                marginBottom: '5px',
+                                fontSize: '15px',
+                                boxSizing: 'border-box',
+                                outline: 'none',
+                                transition: 'border 0.2s ease'
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !isDecrypting) {
+                                    handleDecryptionSubmit();
+                                }
+                            }}
+                            disabled={isDecrypting}
+                            autoFocus
+                        />
+                        {decryptionError && (
+                            <p style={{ 
+                                color: '#e74c3c', 
+                                fontSize: '14px', 
+                                textAlign: 'left', 
+                                margin: '8px 0 0 0',
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}>
+                                <span style={{ marginRight: '5px' }}>⚠️</span> {decryptionError}
+                            </p>
+                        )}
+                        
+                        <p style={{ 
+                            fontSize: '13px', 
+                            color: '#888', 
+                            marginTop: '15px', 
+                            textAlign: 'left',
+                            fontStyle: 'italic'
+                        }}>
+                            This password was set by the person who shared this map with you.
+                        </p>
+                    </div>
+                    
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'space-between',
+                        marginTop: '10px' 
+                    }}>
+                        <button 
+                            onClick={() => {
+                                setShowPasswordPrompt(false);
+                                setEncryptedBlob(null);
+                                setDecryptionPassword("");
+                                setDecryptionError("");
+                                setIsLoaderVisible(false);
+                                setLoadingMessage(false);
+                                window.history.pushState({}, document.title, window.location.pathname);
+                            }}
+                            style={{ 
+                                padding: '10px 15px',
+                                backgroundColor: '#f1f1f1',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: isDecrypting ? 'not-allowed' : 'pointer',
+                                fontWeight: '500',
+                                fontSize: '14px',
+                                opacity: isDecrypting ? 0.7 : 1
+                            }}
+                            disabled={isDecrypting}
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={handleDecryptionSubmit}
+                            style={{ 
+                                padding: '10px 20px',
+                                backgroundColor: '#25D366',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: isDecrypting ? 'not-allowed' : 'pointer',
+                                fontWeight: '500',
+                                fontSize: '14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                minWidth: '100px',
+                                transition: 'background-color 0.2s ease',
+                                opacity: isDecrypting || !decryptionPassword ? 0.7 : 1
+                            }}
+                            disabled={isDecrypting || !decryptionPassword}
+                        >
+                            {isDecrypting ? (
+                                <>
+                                    <img
+                                        src={checkingPwGif}
+                                        alt="Decrypting"
+                                        style={{ 
+                                            width: '20px', 
+                                            height: '20px',
+                                            marginRight: '8px'
+                                        }}
+                                    />
+                                    Decrypting...
+                                </>
+                            ) : "Unlock Map"}
+                        </button>
+                    </div>
+                </div>
+            )}
+            
             {errorMessage && (
                 <div className="error-message" style={{top:"300px",backgroundColor: "#3a3a3a",color: "white",textAlign: "center", }}>
                     This map URL has expired
