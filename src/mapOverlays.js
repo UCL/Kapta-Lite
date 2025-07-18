@@ -100,7 +100,7 @@ const compressImageBlob = (blob, quality = 0.25, maxWidth = 300, maxHeight = 300
                     
                     resolve(compressedBlob);
                     const ratio = (compressedBlob.size / blob.size).toFixed(2);
-                    console.log(`Compression ratio: ${ratio}`);
+                    // console.log(`Compression ratio: ${ratio}`);
                 },
                 "image/jpeg",
                 quality
@@ -537,7 +537,7 @@ export function ShareModal({
     
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
-    const [sharingOption, setSharingOption] = useState("private-non-sensitive"); // Default to Private
+    const [sharingOption, setSharingOption] = useState("private-sensitive"); // Default to Private
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
     const [mapperId, setMapperId] = useState(""); // New state for Mapper ID
