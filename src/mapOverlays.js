@@ -549,17 +549,21 @@ export function ShareModal({
     const [showMapperIdField, setShowMapperIdField] = useState(false); // New state for showing Mapper ID field
     const [password, setPassword] = useState(""); // State for encryption password
     const [passwordError, setPasswordError] = useState(""); // State for password validation errors
+    const [decryptError, setDecryptError] = useState(""); // State for decryption errors
     const [showPasswordInput, setShowPasswordInput] = useState(false); // Whether to show the password input
     const [showInfoContent, setShowInfoContent] = useState(false); // Whether to show info content
 
     const handleShareDataClick = async () => {
+        // Reset any previous errors
+        setDecryptError("");
+        
+        // If the URL is already generated, handle re-click behavior
         if (kaptaWaMapUrl) {
-            // If the URL is already generated, handle re-click behavior
             if (navigator.canShare && navigator.share) {
                 navigator
                     .share({
                         title: "#MadeWithKapta",
-                        text: `This is a private WhatsApp Map created with Kapta. 🔐🔑 The password to open it is: ${password}`,
+                        text: `This is a private 🔐 WhatsApp Map created with Kapta. 🔑 The password to open it is: ${password}`,
                         url: kaptaWaMapUrl,
                     })
                     .catch((error) => console.error("Sharing failed", error));
@@ -582,8 +586,8 @@ export function ShareModal({
             return;
         }
         
-        if (password.length < 12) {
-            setPasswordError("Password must be at least 12 characters");
+        if (password.length < 6) {
+            setPasswordError("Password must be at least 6 characters");
             return;
         }
 
@@ -636,20 +640,26 @@ export function ShareModal({
                 
                 // Always apply encryption
                 if (password) {
-                    console.log("Encrypting file with password...");
-                    
-                    // Track encryption event
-                    ReactGA.event({
-                        category: "Encryption",
-                        action: "Map Encrypted",
-                    });
-                    
-                    const encryptedBlob = await encryptFile(globalProcessedChatFileReduced, password);
-                    globalProcessedChatFileReduced = new File(
-                        [encryptedBlob],
-                        globalProcessedChatFile.name,
-                        { type: "application/encrypted" }
-                    );
+                    try {
+                        console.log("Encrypting file with password...");
+                        
+                        // Track encryption event
+                        ReactGA.event({
+                            category: "Encryption",
+                            action: "Map Encrypted",
+                        });
+                        
+                        const encryptedBlob = await encryptFile(globalProcessedChatFileReduced, password);
+                        globalProcessedChatFileReduced = new File(
+                            [encryptedBlob],
+                            globalProcessedChatFile.name,
+                            { type: "application/encrypted" }
+                        );
+                    } catch (error) {
+                        console.error("Encryption error:", error);
+                        setDecryptError("Failed to encrypt the map. Please try again.");
+                        return;
+                    }
                 }
             }
 
@@ -714,8 +724,12 @@ export function ShareModal({
             }
         } catch (error) {
             console.error("Error during sharing:", error);
-            setButtonText("sharedata");
-            setButtonDisabled(false);
+            if (error.message?.includes("decrypt")) {
+                setDecryptError("Incorrect password. Please try again.");
+            } else {
+                setButtonText("sharedata");
+                setButtonDisabled(false);
+            }
         }
     };
 
@@ -880,24 +894,21 @@ const generateCSV = (dataset) => {
                 <>
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
-                        <p style={{ fontWeight: "bold" }}>Share</p>
+                        <p style={{ fontWeight: "bold", marginBottom: "6px", marginTop: "0" }}>Share</p>
                         <div
                             className="checkbox-container"
-                            style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "10px" }}
+                            style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}
                         >
-                            <p style={{ fontSize: "1rem", marginTop: "-8px" }}>
-                                Only the people with the map link can view it
-                            </p>
-                            
+                             
                             {showPasswordInput && (
-                                <div style={{ marginBottom: "15px" }}>
+                                <div style={{ marginBottom: "-15px" }}>
                                     <div style={{ 
-                                        border: "1px solid #25D366", 
+                                        border: "0px solid #25D366", 
                                         borderRadius: "8px", 
-                                        padding: "15px", 
-                                        marginTop: "10px",
-                                        backgroundColor: "#f8f9fa",
-                                        boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
+                                        padding: "10px", 
+                                        marginTop: "5px",
+                                        backgroundColor: "transparent",
+                                        // boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
                                     }}>
                                         <label style={{ 
                                             fontSize: "1rem", 
@@ -907,33 +918,34 @@ const generateCSV = (dataset) => {
                                             gap: "8px",
                                             color: "#333"
                                         }}>
-                                            <span style={{ fontSize: "1.2rem" }}>🔐</span> Map Password Protection
+                                            
                                         </label>
                                         
                                         <p style={{ 
-                                            fontSize: "0.9rem", 
-                                            margin: "10px 0",
-                                            color: "#555",
-                                            lineHeight: "1.4"
+                                            fontSize: "0.95rem", 
+                                            margin: "5px 0",
+                                            color: "black",
+                                            lineHeight: "1.3"
                                         }}>
-                                            Your map will be protected with a password. Only people who know the password can access it.
+                                            🔐 Protect your map with a password.
                                         </p>
                                         
-                                        <div style={{ marginTop: "15px" }}>
-                                            <div style={{ marginBottom: "8px" }}>
+                                        <div style={{ marginTop: "8px" }}>
+                                            <div style={{ marginBottom: "5px" }}>
                                                 <input
                                                     type="password"
-                                                    placeholder="Enter map password (min 12 characters)"
+                                                    placeholder="Create password (min 6 characters)"
                                                     value={password}
                                                     onChange={(e) => {
                                                         setPassword(e.target.value);
                                                         setPasswordError("");
+                                                        setDecryptError(""); // Clear decrypt error when typing
                                                     }}
                                                     style={{ 
                                                         width: "100%", 
                                                         padding: "10px", 
                                                         marginBottom: "8px",
-                                                        border: passwordError ? "1px solid red" : "1px solid #25D366",
+                                                        border: (passwordError || decryptError) ? "1px solid red" : "1px solid #25D366",
                                                         borderRadius: "4px",
                                                         outline: "none",
                                                         boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
@@ -941,30 +953,19 @@ const generateCSV = (dataset) => {
                                                     autoFocus
                                                 />
                                             </div>
-                                            {passwordError && (
+                                            {(passwordError || decryptError) && (
                                                 <p style={{ 
                                                     color: "#e74c3c", 
                                                     fontSize: "0.8rem", 
-                                                    marginTop: "8px",
+                                                    marginTop: "4px",
+                                                    marginBottom: "4px",
                                                     display: "flex",
                                                     alignItems: "center",
                                                     gap: "5px"
                                                 }}>
-                                                    <span>⚠️</span> {passwordError}
+                                                    <span>⚠️</span> {passwordError || decryptError}
                                                 </p>
                                             )}
-                                            <p style={{ 
-                                                fontSize: "0.8rem", 
-                                                marginTop: "10px", 
-                                                color: "#555",
-                                                fontStyle: "italic",
-                                                backgroundColor: "#e9f7ef",
-                                                padding: "10px",
-                                                borderRadius: "6px",
-                                                border: "1px solid #d0f0df"
-                                            }}>
-                                                <strong>Important:</strong> This password will be included in the share message. The password cannot be recovered if lost.
-                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -1099,7 +1100,7 @@ const generateCSV = (dataset) => {
                     </section> */}
 
                     {/* Share Button */}
-                    <div className="option-button-container">
+                    <div className="option-button-container" style={{ marginBottom: "8px" }}>
                         <button
                             className="btn"
                             onClick={() => {
@@ -1112,7 +1113,7 @@ const generateCSV = (dataset) => {
                                 }
                             }}
                             style={{ 
-                                height: "42px", 
+                                height: "40px", 
                                 display: "flex", 
                                 alignItems: "center", 
                                 justifyContent: "center",
@@ -1123,27 +1124,27 @@ const generateCSV = (dataset) => {
                             {!showPasswordInput ? "Share map link" : buttonText}
                         </button>
                     </div>
-                        <div className="option-button-container">
+                        <div className="option-button-container" style={{ marginBottom: "8px" }}>
                             <button 
                                 className="btn" 
                                 onClick={handleDownload}
                                 style={{ 
-                                    height: "38px", 
+                                    height: "36px", 
                                     display: "flex", 
                                     alignItems: "center", 
                                     justifyContent: "center" 
                                 }}
                             >
-                                Download Map
+                                Download WhatsApp Map
                             </button>
                         </div>
                     
-                    <div className="option-button-container">
+                    <div className="option-button-container" style={{ marginBottom: "8px" }}>
                         <button
                             className="btn"
                             onClick={() => generateCSV(currentDataset)}
                             style={{ 
-                                height: "38px", 
+                                height: "36px", 
                                 display: "flex", 
                                 alignItems: "center", 
                                 justifyContent: "center" 
@@ -1154,19 +1155,26 @@ const generateCSV = (dataset) => {
                     </div>
                     
                     {showInfoContent ? (
-                        <div style={{ marginTop: "20px", padding: "15px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
-                            <div style={{ fontSize: "0.85rem", lineHeight: "1.5", color: "#555" }}>
-                                <p>Kapta Lite is a privacy-focused tool for sharing WhatsApp map data securely. All maps are password-protected by default with the following security features:</p>
-                                <ul style={{ paddingLeft: "20px", marginTop: "10px" }}>
-                                    <li>End-to-end encryption using AES-256</li>
+                        <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
+                            <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
+                                <p style={{ marginBottom: "6px" }}>Kapta Lite is a privacy-focused tool for sharing WhatsApp Maps. All maps are password-protected by default with the following security features:</p>
+                                <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
+                                    <li>Client-side encryption using AES-256. Not even the Kapta team can view your maps.</li>
                                     <li>Passwords never stored on our servers</li>
-                                    <li>Files automatically expire after 30 days</li>
+                                    {/* <li>Files automatically expire after 30 days</li> */}
                                     <li>No user registration or personal data collection</li>
                                 </ul>
-                                <p style={{ marginTop: "10px" }}>Choose a strong password (minimum 12 characters) and share it separately from the map link for maximum security.</p>
+                                <p style={{ marginBottom: "4px" }}>Download buttons</p>
+                                <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
+                                    <li>The CSV file contains the coordinates and other map information</li>
+                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kapta, select the zip file, then click 'Share' and select Kapta.</li>
+                                    <li>The map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
+                                    <li>If you need help to process the map data, feel free to reach out to us.</li>
+                                </ul>
+                                <p style={{ marginTop: "8px", marginBottom: "0" }}>Choose a strong password (minimum 6 characters. 12 recommended) and share it separately from the map link for maximum security.</p>
                             </div>
                             <div style={{ textAlign: "right", marginTop: "15px" }}>
-                                <button 
+                                {/* <button 
                                     onClick={() => setShowInfoContent(false)}
                                     style={{
                                         backgroundColor: "#25D366",
@@ -1179,21 +1187,18 @@ const generateCSV = (dataset) => {
                                     }}
                                 >
                                     Back to sharing options
-                                </button>
+                                </button> */}
                             </div>
                         </div>
                     ) : (
-                        <div style={{ position: "relative", marginTop: "15px" }}>
+                        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
                             <button 
                                 onClick={() => setShowInfoContent(true)}
                                 style={{
-                                    position: "absolute",
-                                    right: "0",
-                                    bottom: "0",
-                                    width: "26px",
+                                    width: "100px",
                                     height: "26px",
-                                    borderRadius: "50%",
-                                    backgroundColor: "#25D366",
+                                    borderRadius: "13px",
+                                    backgroundColor: "#525553ff",
                                     color: "white",
                                     border: "none",
                                     fontSize: "14px",
@@ -1204,7 +1209,7 @@ const generateCSV = (dataset) => {
                                     justifyContent: "center"
                                 }}
                             >
-                                i
+                                More info
                             </button>
                         </div>
                     )}
@@ -1214,25 +1219,110 @@ const generateCSV = (dataset) => {
                     {window.location.href.includes("import=") ? (
                         <>
                             <div className="option-button-container">
-                                <button className="btn" onClick={handleShareCurrentUrl}>
+                                <button className="btn" onClick={handleShareCurrentUrl} style={{ 
+                                    height: "40px", 
+                                    display: "flex", 
+                                    alignItems: "center", 
+                                    justifyContent: "center",
+                                    backgroundColor: "#25D366" 
+                                }}>
                                     Share map link
                                 </button>
                             </div>
-                            {!isMobileOrTablet() && (
                                 <div className="option-button-container">
-                                    <button className="btn" onClick={handleDownload}>
+                                    <button className="btn" onClick={handleDownload}
+                                        style={{ 
+                                        height: "36px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center" 
+                                    }}>
                                         Download WhatsApp Map
                                     </button>
                                 </div>
-                            )}
+                                <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                    <button
+                                        className="btn"
+                                        onClick={() => generateCSV(currentDataset)}
+                                        style={{ 
+                                            height: "36px", 
+                                            display: "flex", 
+                                            alignItems: "center", 
+                                            justifyContent: "center" 
+                                        }}
+                                    >
+                                        Download CSV file
+                                    </button>
+                             </div>
+                             {showInfoContent ? (
+                        <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
+                            <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
+                                <p style={{ marginBottom: "6px" }}>Kapta Lite is a privacy-focused tool for sharing WhatsApp Maps. All maps are password-protected by default with the following security features:</p>
+                                <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
+                                    <li>Client-side encryption using AES-256. Not even the Kapta team can view your maps.</li>
+                                    <li>Passwords never stored on our servers</li>
+                                    {/* <li>Files automatically expire after 30 days</li> */}
+                                    <li>No user registration or personal data collection</li>
+                                </ul>
+                                <p style={{ marginBottom: "4px" }}>Download buttons</p>
+                                <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
+                                    <li>The CSV file contains the coordinates and other map information</li>
+                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kapta, select the zip file, then click 'Share' and select Kapta.</li>
+                                    <li>The map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
+                                    <li>If you need help to process the map data, feel free to reach out to us.</li>
+                                </ul>
+                                <p style={{ marginTop: "8px", marginBottom: "0" }}>Choose a strong password (minimum 6 characters. 12 recommended) and share it separately from the map link for maximum security.</p>
+                            </div>
+                            <div style={{ textAlign: "right", marginTop: "15px" }}>
+                                {/* <button 
+                                    onClick={() => setShowInfoContent(false)}
+                                    style={{
+                                        backgroundColor: "#25D366",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        padding: "8px 16px",
+                                        fontSize: "0.9rem",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    Back to sharing options
+                                </button> */}
+                            </div>
+                        </div>
+                    ) : (
+                        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+                            <button 
+                                onClick={() => setShowInfoContent(true)}
+                                style={{
+                                    width: "100px",
+                                    height: "26px",
+                                    borderRadius: "13px",
+                                    backgroundColor: "#525553ff",
+                                    color: "white",
+                                    border: "none",
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                    cursor: "pointer",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center"
+                                }}
+                            >
+                                More info
+                            </button>
+                        </div>
+                    )}
+                             
                         </>
                     ) : (
                         <div className="modal-content">
                             <p style={{ textAlign: "center" }}>
-                                You need to create a WhatsApp Map before you can share it!
+                                You need to create or load a WhatsApp Map before you can share it!
                             </p>
                         </div>
                     )}
+                    
 
 
 

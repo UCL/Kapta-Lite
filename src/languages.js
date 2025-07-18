@@ -116,7 +116,7 @@ i18next.use(initReactI18next).init({
 				sharedata: "Share map link",
 				shareimg: "Share the map IMAGE",
 				uploaddata: "Share map with Task ID",
-				uploadPending: "Uploading... Wait ⌛",
+				uploadPending: "Encrypting & Uploading... Wait ⌛",
 				uploadReady: "Ready to Share!!!",
 				uploadFailed: "Upload failed! See console.",
 				shareDirectly: "Click here to share directly",

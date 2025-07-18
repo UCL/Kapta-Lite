@@ -34,6 +34,12 @@ export const decryptFile = async (encryptedBlob, password) => {
     // Decrypt the data
     const decrypted = CryptoJS.AES.decrypt(encryptedText, password);
     
+    // Check if decryption was successful by verifying the output
+    // If the password is wrong, decrypted.sigBytes will likely be 0 or very small
+    if (!decrypted || decrypted.sigBytes === 0) {
+      throw new Error('Wrong password');
+    }
+    
     // Convert to Uint8Array
     const bytes = decrypted.words;
     const byteArray = new Uint8Array(decrypted.sigBytes);
@@ -45,6 +51,14 @@ export const decryptFile = async (encryptedBlob, password) => {
       byteArray[i] = (bytes[bytePosition] >>> byteShift) & 0xff;
     }
     
+    // Basic validation that the decrypted data looks like a ZIP file
+    // Check for the ZIP file signature "PK" in the first two bytes
+    if (byteArray.length > 2) {
+      if (!(byteArray[0] === 80 && byteArray[1] === 75)) {
+        throw new Error('Wrong password. Decrypted data is not a valid ZIP file.');
+      }
+    }
+    
     // Create a blob from the array
     return new Blob([byteArray], { type: 'application/zip' });
   } catch (error) {
@@ -53,12 +67,13 @@ export const decryptFile = async (encryptedBlob, password) => {
     // Provide more specific error messages based on the type of error
     if (error.message.includes('Malformed UTF-8') || 
         error.message.includes('pad block') ||
-        error.message.includes('bad decrypt')) {
+        error.message.includes('bad decrypt') ||
+        error.message.includes('Wrong password')) {
       throw new Error('Wrong password');
     } else if (error.message.includes('is not defined') || error.message.includes('cannot read property')) {
       throw new Error('Decryption failed. The file may be corrupted or not properly encrypted.');
     } else {
-      throw new Error('Failed to decrypt file. Please check your passphrase and try again.');
+      throw new Error('Failed to decrypt file. Please check your password and try again.');
     }
   }
 };

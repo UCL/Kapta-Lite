@@ -254,6 +254,7 @@ export default function MainMenu({
     const [encryptedBlob, setEncryptedBlob] = useState(null);
     const [decryptionError, setDecryptionError] = useState("");
     const [isDecrypting, setIsDecrypting] = useState(false);
+    const [shakeAnimation, setShakeAnimation] = useState(false);
 
     const handleButtonClick = async () => {
         try {
@@ -315,7 +316,12 @@ export default function MainMenu({
     };
     
     const handleDecryptionSubmit = async () => {
-        if (!decryptionPassword || !encryptedBlob) return;
+        if (!decryptionPassword || !encryptedBlob) {
+            setDecryptionError("Please enter a password.");
+            setShakeAnimation(true);
+            setTimeout(() => setShakeAnimation(false), 600);
+            return;
+        }
         
         setDecryptionError("");
         setIsDecrypting(true);
@@ -331,21 +337,60 @@ export default function MainMenu({
             // Small delay to show the loading state
             await new Promise(resolve => setTimeout(resolve, 500));
             
-            const decryptedBlob = await decryptFile(encryptedBlob, decryptionPassword);
-            const file = new File([decryptedBlob], 'import.zip', { type: 'application/zip' });
-            dataDisplayProps.setFileToParse(file);
-            setShowPasswordPrompt(false);
+            // Wrap the decryption in a try-catch to specifically catch decryption errors
+            let decryptedBlob;
+            try {
+                decryptedBlob = await decryptFile(encryptedBlob, decryptionPassword);
+            } catch (decryptError) {
+                console.error("Decryption error:", decryptError);
+                throw new Error("Decryption failed: Wrong password");
+            }
             
-            // Track successful decryption
-            ReactGA.event({
-                category: "Encryption",
-                action: "Decryption Successful",
-            });
+            // Only proceed if decryption was successful
+            try {
+                const file = new File([decryptedBlob], 'import.zip', { type: 'application/zip' });
+                
+                // Add an event handler to catch any errors during file parsing
+                const originalSetFileToParse = dataDisplayProps.setFileToParse;
+                const wrappedSetFileToParse = async (fileToProcess) => {
+                    try {
+                        // Attempt to validate the zip file first
+                        const jsZip = await import('jszip');
+                        await jsZip.default.loadAsync(fileToProcess);
+                        
+                        // If we get here, the zip file is valid
+                        originalSetFileToParse(fileToProcess);
+                        
+                        // Only close the password prompt on successful decryption
+                        setShowPasswordPrompt(false);
+                        
+                        // Track successful decryption
+                        ReactGA.event({
+                            category: "Encryption",
+                            action: "Decryption Successful",
+                        });
+                    } catch (zipError) {
+                        console.error("ZIP validation error:", zipError);
+                        throw new Error("Wrong password. The decrypted file is not a valid map.");
+                    }
+                };
+                
+                // Try to process the file
+                await wrappedSetFileToParse(file);
+            } catch (fileError) {
+                console.error("File processing error:", fileError);
+                throw new Error("Invalid map data. The password may be incorrect.");
+            }
         } catch (error) {
-            console.error("Decryption failed:", error);
-            setDecryptionError("Wrong password");
+            console.error("Operation failed:", error);
+            // Show error message but keep the modal open
+            setDecryptionError("Wrong password. Please try again.");
             setIsDecrypting(false);
             setIsLoaderVisible(false);
+            
+            // Trigger shake animation
+            setShakeAnimation(true);
+            setTimeout(() => setShakeAnimation(false), 600); // Animation duration
             
             // Track failed decryption
             ReactGA.event({
@@ -410,7 +455,7 @@ export default function MainMenu({
                     borderRadius: '12px',
                     boxShadow: '0 6px 30px rgba(0,0,0,0.25)',
                     zIndex: 9999,
-                    width: '90%',
+                    width: '70%',
                     maxWidth: '400px',
                     textAlign: 'center',
                     fontFamily: 'sans-serif'
@@ -430,7 +475,7 @@ export default function MainMenu({
                             margin: 0, 
                             color: '#333', 
                             fontWeight: '600' 
-                        }}>This map is private and requires a password to open it.</h3>
+                        }}>This WhatsApp Map is password protected</h3>
                     </div>
                     
                     <p style={{ 
@@ -438,7 +483,7 @@ export default function MainMenu({
                         color: '#666', 
                         fontSize: '15px'
                     }}>
-                        Enter the password that was shared with you to access this map:
+                        Enter the password that was shared with you to view the map:
                     </p>
                     
                     <div style={{ marginBottom: '20px' }}>
@@ -450,6 +495,7 @@ export default function MainMenu({
                                 setDecryptionPassword(e.target.value);
                                 if (decryptionError) setDecryptionError("");
                             }}
+                            className={shakeAnimation ? 'shake-animation' : ''}
                             style={{ 
                                 width: '100%', 
                                 padding: '12px',
@@ -476,9 +522,15 @@ export default function MainMenu({
                                 textAlign: 'left', 
                                 margin: '8px 0 0 0',
                                 display: 'flex',
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                backgroundColor: '#ffeeee',
+                                padding: '8px 12px',
+                                borderRadius: '4px',
+                                border: '1px solid #e74c3c',
+                                fontWeight: '600',
+                                boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
                             }}>
-                                <span style={{ marginRight: '5px' }}>⚠️</span> {decryptionError}
+                                <span style={{ marginRight: '8px', fontSize: '16px' }}>⚠️</span> {decryptionError}
                             </p>
                         )}
                         
@@ -558,6 +610,20 @@ export default function MainMenu({
                             ) : "Unlock Map"}
                         </button>
                     </div>
+                    
+                    {/* Clear visual indication for incorrect password attempts */}
+                    {decryptionError && (
+                        <div style={{ 
+                            width: '100%', 
+                            height: '4px', 
+                            backgroundColor: '#e74c3c',
+                            position: 'absolute',
+                            bottom: '0',
+                            left: '0',
+                            borderBottomLeftRadius: '12px',
+                            borderBottomRightRadius: '12px'
+                        }}></div>
+                    )}
                 </div>
             )}
             
