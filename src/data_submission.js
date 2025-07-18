@@ -68,19 +68,18 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
         let downloadUrl;
 
         if (visibility === "private-sensitive") {
+            // Step 3a: Fetch the pre-signed download URL
+            const downloadResponse = await fetch(`${API_URL}/download-url?fileName=${fileNameWAMap}&visibility=${visibility}&taskIdFolder=${taskIdFolder}&tagsFolder=${tagsFolder}`);
 
+            if (!downloadResponse.ok) throw new Error(`Failed to get download URL: ${await downloadResponse.text()}`);
+
+            const result = await downloadResponse.json();
+            downloadUrl = result.presignedUrl;
+            console.log("✅ Pre-signed Download URL:", downloadUrl);
+        } else {
+            // Step 3b: Generate permanent URL manually
             downloadUrl = `${BUCKET_BASE_URL}/uploads/${visibility}/${taskIdFolder}/${tagsFolder}/${fileNameWAMap}`;
             console.log("🌍 Public Download URL with prefix rules and referer checks:", downloadUrl);
-        } else {
-            // // Step 3a: Fetch the pre-signed download URL
-            // const downloadResponse = await fetch(`${API_URL}/download-url?fileName=${fileNameWAMap}&visibility=${visibility}&taskIdFolder=${taskIdFolder}&tagsFolder=${tagsFolder}`);
-
-            // if (!downloadResponse.ok) throw new Error(`Failed to get download URL: ${await downloadResponse.text()}`);
-
-            // const result = await downloadResponse.json();
-            // downloadUrl = result.presignedUrl;
-            // console.log("✅ Pre-signed Download URL:", downloadUrl);
-            //             // Step 3b: Generate permanent URL manually
         }
 
         setButtonText("uploadReady");

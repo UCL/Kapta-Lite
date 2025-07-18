@@ -537,7 +537,7 @@ export function ShareModal({
     
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
-    const [sharingOption, setSharingOption] = useState("private-sensitive"); // Default to Private
+    const [sharingOption, setSharingOption] = useState("private-non-sensitive"); // Default to Private
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
     const [mapperId, setMapperId] = useState(""); // New state for Mapper ID
