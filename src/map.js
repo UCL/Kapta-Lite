@@ -6,6 +6,8 @@ import "leaflet-easyprint";
 import { useTranslation } from "react-i18next";
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import "./styles/map-etc.css";
+import "./styles/image-viewer.css";
+import "./styles/image-popup.css";
 import { isMobileOrTablet } from "./main.js";
 
 import L from "leaflet";
@@ -136,7 +138,13 @@ function MapDataLayer({ data }) {
 		iconSize: [30, 30], // Adjust size as needed
 		iconAnchor: [15, 30], // Anchor point for the icon
 	});
-	if (geoJSON.features.length == 0) {
+	
+	// Check if it's the old WhatsApp format with features array or new format with locations object
+	const isOldFormat = geoJSON.hasOwnProperty('features');
+	const isNewImageFormat = !isOldFormat && geoJSON.hasOwnProperty('locations');
+	
+	// If it's the old format with no features
+	if (isOldFormat && geoJSON.features.length === 0) {
 		// need translation
 		return <ErrorPopup
   error={
@@ -182,7 +190,8 @@ function MapDataLayer({ data }) {
 
 	const handleMarkerClick = useCallback(
 		async (feature) => {
-			if (imgZip && feature.properties.imgFilenames.length > 0) {
+			// Handle WhatsApp style image zip
+			if (imgZip && feature.properties?.imgFilenames?.length > 0) {
 				// will want to map over imgFilenames when we support multiple
 				feature.properties.imgFilenames.map(async (filename) =>
 					// check the image isn't already loaded
@@ -201,6 +210,51 @@ function MapDataLayer({ data }) {
 		[imgZip, featureImages]
 	);
 
+	// If it's the new image format with locations object
+	if (isNewImageFormat) {
+		return (
+			<>
+				{Object.values(geoJSON.locations).map((location, index) => {
+					const latlng = { lat: location.latitude, lng: location.longitude };
+					boundsRef.current.push([latlng.lat, latlng.lng]);
+					
+					return (
+						<Marker
+							key={index}
+							position={latlng}
+							icon={WhatsAppMarkerIcon}
+						>
+							<Popup offset={L.point(2, -15)} maxWidth={300} maxHeight={400}>
+								<div className="map-popup-body">
+									{location.imageUrl && (
+										<div className="feature-images">
+											<img
+												src={location.imageUrl}
+												alt="Geotagged image"
+												style={{ display: "block", maxWidth: "100%" }}
+											/>
+										</div>
+									)}
+									<p>{location.address || "Geotagged image location"}</p>
+								</div>
+								<div className="map-popup-footer">
+									{t("date")}: {location.timestamp ? new Date(location.timestamp).toLocaleString() : "-"}
+									<br />
+									{t("observer")}: {geoJSON.people[location.sender]?.name || "Unknown"}
+									<br />
+									<strong>Coordinates:</strong><br />
+									lat {latlng.lat.toFixed(6)}<br />
+									lng {latlng.lng.toFixed(6)}
+								</div>
+							</Popup>
+						</Marker>
+					);
+				})}
+			</>
+		);
+	}
+
+	// Handle old WhatsApp format
 	return (
 		<>
 			{geoJSON.features.map((feature, index) => {

@@ -1,0 +1,315 @@
+import React, { useCallback } from "react";
+import { sha256, slugify } from "./utils.js";
+import { uploadProcessedChat } from "./data_submission";
+
+// Function to extract exif data from an image - exported for reuse
+export const extractExifData = async (imageFile) => {
+  return new Promise((resolve, reject) => {
+    console.log("Starting to extract EXIF data from", imageFile.name);
+    
+    // Check if it's an image file
+    if (!imageFile.type.startsWith('image/')) {
+      console.log("Not an image file:", imageFile.name, imageFile.type);
+      return resolve({
+        hasGeoData: false,
+        file: imageFile
+      });
+    }
+    
+    // Use FileReader with readAsArrayBuffer for EXIF extraction
+    const reader = new FileReader();
+    
+    reader.onload = async (e) => {
+      try {
+        // Use exif-parser to extract metadata from the buffer
+        const buffer = e.target.result;
+        const exifParser = require('exif-parser').create(buffer);
+        const result = exifParser.parse();
+        
+        // Check if we have GPS data
+        if (result && result.tags && 
+            typeof result.tags.GPSLatitude !== 'undefined' && 
+            typeof result.tags.GPSLongitude !== 'undefined') {
+          
+          console.log(`GPS data found for ${imageFile.name}:`, 
+            result.tags.GPSLatitude, result.tags.GPSLongitude);
+          
+          // Get the date from EXIF if available, or fallback to current date
+          let timestamp;
+          if (result.tags.DateTimeOriginal) {
+            // Convert EXIF date format to ISO string
+            const exifDate = new Date(result.tags.DateTimeOriginal * 1000);
+            timestamp = exifDate.toISOString();
+          } else {
+            timestamp = new Date().toISOString();
+          }
+          
+          resolve({
+            latitude: result.tags.GPSLatitude,
+            longitude: result.tags.GPSLongitude,
+            timestamp: timestamp,
+            file: imageFile,
+            hasGeoData: true,
+            // Include additional metadata for potential future use
+            altitude: result.tags.GPSAltitude,
+            make: result.tags.Make,
+            model: result.tags.Model
+          });
+        } else {
+          console.log("No GPS data found in:", imageFile.name);
+          resolve({
+            hasGeoData: false,
+            file: imageFile
+          });
+        }
+      } catch (error) {
+        console.error("Error extracting EXIF data:", error, "for file:", imageFile.name);
+        resolve({
+          hasGeoData: false,
+          file: imageFile
+        });
+      }
+    };
+    
+    reader.onerror = (error) => {
+      console.error("FileReader error:", error);
+      resolve({
+        hasGeoData: false,
+        file: imageFile
+      });
+    };
+    
+    // Read the image as an ArrayBuffer for EXIF parsing
+    reader.readAsArrayBuffer(imageFile);
+  });
+};
+
+// Generate a unique ID for each image point
+const generateImageId = async (latitude, longitude, timestamp) => {
+  const hash = await sha256(`${latitude}_${longitude}_${timestamp}`);
+  return hash.substring(0, 10);
+};
+
+// Alternative non-async ID generator using a simple hash function
+const generateSimpleId = (str) => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  // Convert to hex string and take first 10 chars
+  return Math.abs(hash).toString(16).substring(0, 10);
+};
+
+// Create a URL for the image to use in the map popup
+const createImageUrl = (file) => {
+  return URL.createObjectURL(file);
+};
+
+// Convert image data to the same format used by WhatsApp chat maps
+export const convertImageToMapData = (processedImages) => {
+  const mapData = {
+    locations: {},
+    people: {},
+    liveLocations: {},
+    isImageData: true, // Add flag to identify this as image data
+  };
+  
+  // Generate a timestamp for the entire batch
+  const batchTimestamp = new Date().toISOString();
+  // Use simple ID generation instead of async sha256
+  const batchId = generateSimpleId(batchTimestamp);
+
+  // Create a sender ID for the batch of images
+  const sender = {
+    id: `image_sender_${batchId}`,
+    name: "Geotagged Images",
+    colorIndex: 0
+  };
+  
+  mapData.people[sender.id] = sender;
+  
+  // Process each image with location metadata
+  // processedImages should already have the EXIF data extracted
+  processedImages.forEach((imageData, index) => {
+    const { latitude, longitude, timestamp, file, make, model, altitude } = imageData;
+    // Use simple ID generation instead of async generateImageId
+    const id = generateSimpleId(`${latitude}_${longitude}_${timestamp}`);
+    const imageUrl = createImageUrl(file);
+    
+    // Format the date for display
+    const dateObject = new Date(timestamp);
+    const formattedDate = dateObject.toLocaleDateString();
+    const formattedTime = dateObject.toLocaleTimeString();
+    
+    // Create a description with image metadata
+    const description = `
+      <div class="image-popup">
+        <div class="image-container">
+          <img src="${imageUrl}" alt="${file.name}" style="max-width: 200px; max-height: 200px; display: block; margin: 0 auto;">
+        </div>
+        <div class="image-details">
+          <p><strong>Name:</strong> ${file.name}</p>
+          <p><strong>Date:</strong> ${formattedDate} ${formattedTime}</p>
+          ${make ? `<p><strong>Camera:</strong> ${make} ${model || ''}</p>` : ''}
+          <p><strong>Coordinates:</strong> ${latitude.toFixed(6)}, ${longitude.toFixed(6)}</p>
+          ${altitude ? `<p><strong>Altitude:</strong> ${altitude.toFixed(1)}m</p>` : ''}
+        </div>
+      </div>
+    `;
+    
+    // Add to the locations object with all necessary fields for the map
+    mapData.locations[id] = {
+      id,
+      latitude,
+      longitude,
+      timestamp,
+      created: timestamp,
+      batch: batchId,
+      imageUrl: imageUrl, // Use imageUrl property name to match map.js expectations
+      image: imageUrl,    // Keep image property for compatibility
+      name: file.name,
+      make: make || '',
+      model: model || '',
+      altitude: altitude || null,
+      senderId: sender.id,
+      sender: sender.id,   // Include both for compatibility
+      description: description,
+      message: description, // Include message field for compatibility with map.js popup handling
+      address: `Photo: ${file.name}` // Add an address field for display in popups
+    };
+  });
+  
+  return mapData;
+};
+
+// Main component to handle image file parsing
+export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDisplayProps }) {
+  const { setMapData, showMap, setFileToParse } = dataDisplayProps;
+
+  const setDataDisplayMap = useCallback(
+    (data, name) => {
+      // Update any mapData if needed before setting
+      setMapData({ 
+        data, 
+        isImageData: true // Ensure isImageData flag is set in the dataset object
+      });
+      showMap(true);
+      
+      // Call onComplete callback after parsing is done
+      if (onComplete) {
+        onComplete(data, name);
+      }
+    },
+    [setMapData, showMap, onComplete]
+  );
+
+  // Process image files and extract geotagged information
+  const processImageFiles = async (files) => {
+    try {
+      console.log("Processing", files.length, "image files");
+      // Convert FileList to array
+      const fileArray = Array.from(files);
+      
+      // Extract EXIF data from all images
+      const imageDataPromises = fileArray.map(extractExifData);
+      const imageDataResults = await Promise.all(imageDataPromises);
+      
+      // Filter only images with geo data
+      const geotaggedImages = imageDataResults.filter(img => img.hasGeoData);
+      console.log("Found", geotaggedImages.length, "images with geo data out of", fileArray.length);
+      
+      // Show alert if no geotagged images were found
+      if (geotaggedImages.length === 0 && fileArray.length > 0) {
+        alert(`None of the ${fileArray.length} selected images contain location data. Please select images with GPS metadata.`);
+      }
+      
+      // Create statistics
+      const stats = {
+        totalProcessed: fileArray.length,
+        withLocation: geotaggedImages.length
+      };
+      
+      // Call the processing complete callback with stats
+      if (onProcessingComplete) {
+        onProcessingComplete(stats);
+      }
+      
+      if (geotaggedImages.length === 0) {
+        return;
+      }
+      
+      // Convert to mapData format - pass the already processed images
+      const mapData = convertImageToMapData(geotaggedImages);
+      
+      // Set the data to be displayed on the map
+      const fileName = `geotagged_images_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.json`;
+      setDataDisplayMap(mapData, fileName);
+      
+    } catch (error) {
+      console.error("Error processing image files:", error);
+      if (onProcessingComplete) {
+        onProcessingComplete({ totalProcessed: 0, withLocation: 0, error: error.message });
+      }
+    }
+  };
+
+  // Process files when component mounts
+  React.useEffect(() => {
+    if (files && files.length > 0) {
+      console.log("ImageParser received", files.length, "files:", 
+        Array.from(files).map(f => f.name).join(", "));
+      processImageFiles(files);
+    } else {
+      console.log("ImageParser: No files received or files array is empty");
+    }
+  }, [files]);
+
+  return null; // This component does not render anything
+}
+
+// Function to prepare image data for export
+export const prepareImageDataForExport = async (mapData) => {
+  // Create a blob from the map data (excluding actual images)
+  const exportData = JSON.parse(JSON.stringify(mapData));
+  
+  // Remove image URLs which are blob URLs and not suitable for export
+  Object.keys(exportData.locations).forEach(key => {
+    const location = exportData.locations[key];
+    if (location.imageUrl) {
+      delete location.imageUrl;
+    }
+    if (location.originalFile) {
+      delete location.originalFile;
+    }
+  });
+  
+  const jsonString = JSON.stringify(exportData);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  
+  return {
+    blob,
+    fileName: `geotagged_images_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.json`
+  };
+};
+
+// Export images to the server
+export const uploadImageData = async (mapData, sharingOption, taskId, tags, mapperId, setButtonText, setButtonDisabled) => {
+  try {
+    const { blob, fileName } = await prepareImageDataForExport(mapData);
+    return await uploadProcessedChat(
+      blob, 
+      fileName, 
+      setButtonText, 
+      setButtonDisabled, 
+      sharingOption, 
+      taskId, 
+      tags, 
+      mapperId
+    );
+  } catch (error) {
+    console.error("Error uploading image data:", error);
+    throw error;
+  }
+};

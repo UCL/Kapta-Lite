@@ -28,6 +28,7 @@ import { isMobileOrTablet } from "./main.js";
 import { useUserStore } from "./UserContext.jsx";
 import { ASK_URL, hasCognito } from "../globals.js";
 import { uploadProcessedChat } from "./data_submission.js";
+import { uploadImageData } from "./import_images.js";
 import { globalProcessedChatFile } from "./import_whatsapp";
 // import BurgerMenu from "./BurgerMenu.jsx";
 // import { handleConnect } from "./ConnectButton.js";
@@ -382,7 +383,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     {!isMobileOrTablet() && (
                         <p>Or if you already have the chat. Upload to convert it.</p>
                     )}
-                    {!isMobileOrTablet() && (
+                    {/* {!isMobileOrTablet() && ( */}
 
                         <button
                             className="btn"
@@ -399,7 +400,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                         >
                             Convert a chat<br />into a map
                         </button>
-                    )}
+                    {/* )} */}
                     {/* <button
                         className="btn"
                         onClick={() =>
@@ -535,6 +536,9 @@ export function ShareModal({
     // console.log("ShareModalclick", dataDisplayProps);
     if (!isOpen) return null;
     
+    // Helper function to check if we're dealing with image data
+    const checkIsImageData = () => dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData;
+    
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
     const [sharingOption, setSharingOption] = useState("private-non-sensitive"); // Default to Private
@@ -663,20 +667,36 @@ export function ShareModal({
                 }
             }
 
-            // Pass the sharingOption and wabMapperId to data_submission
-            const presignedUrl = await uploadProcessedChat(
-                globalProcessedChatFileReduced,
-                fileNameWAMap,
-                setButtonText,
-                setButtonDisabled,
-                sharingOption, // Pass the sharing option
-                taskId,
-                WhatsAppMapTags,
-                mapperId // Pass the Mapper ID as wabMapperId
-            );
+            // Check if we're handling image data or WhatsApp chat data
+            let presignedUrl;
+            
+            if (checkIsImageData()) {
+                // Use uploadImageData for image data
+                presignedUrl = await uploadImageData(
+                    dataDisplayProps.dataset.data,
+                    sharingOption,
+                    taskId,
+                    WhatsAppMapTags,
+                    mapperId,
+                    setButtonText,
+                    setButtonDisabled
+                );
+            } else {
+                // Use uploadProcessedChat for WhatsApp chat data
+                presignedUrl = await uploadProcessedChat(
+                    globalProcessedChatFileReduced,
+                    fileNameWAMap,
+                    setButtonText,
+                    setButtonDisabled,
+                    sharingOption,
+                    taskId,
+                    WhatsAppMapTags,
+                    mapperId
+                );
+            }
 
             // Generate URL without passphrase in it
-            let generatedUrl = `https://kapta.earth/?import=${presignedUrl}`;
+            let generatedUrl = `https://staging.d1aatc9qjk4pwp.amplifyapp.com/?import=${presignedUrl}`;
             
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");
@@ -686,8 +706,11 @@ export function ShareModal({
             let shareTitle = "#MadeWithKapta";
             let shareText;
             
+            // Choose appropriate message text based on data type
             // Always include password in the share message with a lock and key emoji
-            shareText = `This is a private WhatsApp Map created with Kapta �. Password: 🔑 ${password}`;
+            shareText = checkIsImageData()
+                ? `This is a private Geotagged Images Map created with Kapta 🔐. Password: 🔑 ${password}`
+                : `This is a private WhatsApp Map created with Kapta 🔐. Password: 🔑 ${password}`;
 
             // Handle sharing
             if (navigator.canShare && navigator.share) {
@@ -752,18 +775,28 @@ export function ShareModal({
             const link = document.createElement("a");
             link.href = url;
             const dateTime = getDateTime();
-            link.download = `Kapta_WhatsApp_Map_${dateTime}.zip`;
+            // Use different filename for image data vs WhatsApp map
+            link.download = checkIsImageData() 
+                ? `Kapta_Geotagged_Images_${dateTime}.zip` 
+                : `Kapta_WhatsApp_Map_${dateTime}.zip`;
             link.click();
             URL.revokeObjectURL(url);
         }
     };
     const handleShareCurrentUrl = () => {
 
+        const shareText = checkIsImageData() 
+            ? "This is a Geotagged Images Map created with Kapta" 
+            : "This is a WhatsApp Map created with Kapta";
+        const alertText = checkIsImageData() 
+            ? "The Geotagged Images Map link has been copied to clipboard!" 
+            : "The WhatsApp Map link has been copied to clipboard!";
+            
         if (navigator.canShare && navigator.share) {
             navigator
                 .share({
                     title: "#MadeWithKapta",
-                    text: "This is a WhatsApp Map created with Kapta",
+                    text: shareText,
                     url: window.location.href,
                 })
                 .catch((error) => console.error("Sharing failed", error));
@@ -771,7 +804,7 @@ export function ShareModal({
             navigator.clipboard
                 .writeText(window.location.href)
                 .then(() => {
-                    alert("The WhatsApp Map link has been copied to clipboard!");
+                    alert(alertText);
                 })
                 .catch((err) => {
                     console.error("Failed to copy link: ", err);
@@ -1135,7 +1168,7 @@ const generateCSV = (dataset) => {
                                     justifyContent: "center" 
                                 }}
                             >
-                                Download WhatsApp Map
+                                Download {dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData ? "Geotagged Images" : "WhatsApp Map"}
                             </button>
                         </div>
                     
@@ -1216,7 +1249,7 @@ const generateCSV = (dataset) => {
                 </>
             ) : (
                 <>
-                    {window.location.href.includes("import=") ? (
+                    {window.location.href.includes("import=") || dataDisplayProps.dataset ? (
                         <>
                             <div className="option-button-container">
                                 <button className="btn" onClick={handleShareCurrentUrl} style={{ 
@@ -1237,7 +1270,7 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         justifyContent: "center" 
                                     }}>
-                                        Download WhatsApp Map
+                                        Download {checkIsImageData() ? "Geotagged Images" : "WhatsApp Map"}
                                     </button>
                                 </div>
                                 <div className="option-button-container" style={{ marginBottom: "8px" }}>

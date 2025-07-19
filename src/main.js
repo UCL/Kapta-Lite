@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { i18next } from "./languages.js";
 import ReactDOM from "react-dom/client";
 import { FileParser } from "./import_whatsapp.js";
+import { ImageParser } from "./import_images.js";
 import { Map } from "./map.js";
 import InstallDialog from "./Install.jsx";
 import MainMenu from "./MainMenu.jsx";
 import Loader from "./Loader.jsx";
+import ImageInfoModal from "./ImageInfoModal.jsx";
 import "./styles/main.css";
+import "./styles/image-popup.css";
 import ReactGA from "react-ga4";
 import { UserProvider } from "./UserContext.jsx";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
@@ -66,8 +69,11 @@ function initServiceWorker(setFileToParse) {
     }
 
     navigator.serviceWorker.addEventListener("message", (event) => {
-        if (event.data.action !== "load-map") return;
-        return setFileToParse(event.data.file);
+        if (event.data.action === "load-map") {
+            return setFileToParse(event.data.file);
+        } else if (event.data.action === "load-images") {
+            return setImagesToParse(event.data.files);
+        }
     });
 
     navigator.serviceWorker.controller?.postMessage("share-ready");
@@ -75,6 +81,9 @@ function initServiceWorker(setFileToParse) {
 
 function App() {
     const [fileToParse, setFileToParse] = useState(null);
+    const [imagesToParse, setImagesToParse] = useState(null);
+    const [imageStats, setImageStats] = useState({ totalProcessed: 0, withLocation: 0 });
+    const [isImageInfoVisible, setIsImageInfoVisible] = useState(false);
 
     useEffect(() => {
         // Initialize GA and SW
@@ -98,6 +107,7 @@ function App() {
         setMapData,
         showMap,
         setFileToParse,
+        setImagesToParse,
     }; // setting these in an object so they're easier to pass and update
 
     return (
@@ -133,6 +143,21 @@ function App() {
             />
             
             {fileToParse && <FileParser file={fileToParse} {...dataDisplayProps} />}
+            {imagesToParse && imagesToParse.length > 0 && (
+                <ImageParser 
+                    files={imagesToParse} 
+                    onProcessingComplete={(stats) => {
+                        setImageStats(stats);
+                        setIsImageInfoVisible(true);
+                    }}
+                    {...dataDisplayProps} 
+                />
+            )}
+            <ImageInfoModal 
+                isVisible={isImageInfoVisible}
+                setIsVisible={setIsImageInfoVisible}
+                imageStats={imageStats}
+            />
 
         </UserProvider>
     );

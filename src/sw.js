@@ -34,8 +34,26 @@ self.addEventListener('fetch', (event) => {
                 await nextMessage('share-ready');
                 const client = await self.clients.get(event.resultingClientId);
                 const data = await formDataPromise;
+                
+                // Check for files to handle
                 const file = data.get('file');
-                client.postMessage({ file, action: 'load-map' });
+                
+                // Get all image files
+                const imageFiles = [];
+                // Check for any images in the files array
+                for (const [key, value] of data.entries()) {
+                    if (value instanceof File && value.type.startsWith('image/')) {
+                        imageFiles.push(value);
+                    }
+                }
+                
+                if (imageFiles.length > 0) {
+                    // If we have images, send them to the client
+                    client.postMessage({ files: imageFiles, action: 'load-images' });
+                } else if (file) {
+                    // Otherwise, handle as before (ZIP file)
+                    client.postMessage({ file, action: 'load-map' });
+                }
             })(),
         );
     }

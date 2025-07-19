@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { i18next, savedLanguage, supportedLanguages } from "./languages.js";
 import { FileParser, allowedExtensions } from "./import_whatsapp.js";
+import { ImageParser } from "./import_images.js";
 import "./styles/menu.css";
 import { isIOS, isMobileOrTablet } from "./main.js";
 import ReactGA from "react-ga4";
@@ -124,14 +125,43 @@ function RecentMapButton({ showMap }) {
 }
 export function FilePicker(dataDisplayProps) {
     const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState(null);
     const fileInputRef = useRef(null);
     const [loadingMessage, setLoadingMessage] = useState(false);
 
     const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        file && setSelectedFile(file);
+        console.log("File input change detected:", event.target.files?.length, "files");
+        
+        // Check if any files were selected
+        if (!event.target.files || event.target.files.length === 0) {
+            console.log("No files selected");
+            return;
+        }
+        
+        // Check if multiple image files are selected
+        if (event.target.files.length > 1 && 
+            Array.from(event.target.files).every(file => file.type.startsWith('image/'))) {
+            // Handle multiple image files
+            console.log("Multiple image files selected:", event.target.files.length);
+            const files = Array.from(event.target.files);
+            setSelectedFiles(files);
+            setLoadingMessage(true); // Show the loading message
+        } else {
+            // Handle single file (original behavior)
+            const file = event.target.files[0];
+            console.log("Single file selected:", file?.name, file?.type);
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    console.log("Single image file selected, treating as image");
+                    setSelectedFiles([file]); // Treat single image as an array for ImageParser
+                } else {
+                    console.log("Non-image file selected, using WhatsApp parser");
+                    setSelectedFile(file);
+                }
+                setLoadingMessage(true); // Show the loading message
+            }
+        }
         event.target.value = null; // Clear the input value
-        setLoadingMessage(true); // Show the loading message
     };
 
     const handleFilePick = () => {
@@ -166,13 +196,14 @@ export function FilePicker(dataDisplayProps) {
             )}
             <input
                 type="file"
-                accept={allowedExtensions.join(",")}
+                accept={isMobileOrTablet() && !isIOS() ? "image/*" : allowedExtensions.join(",")}
                 ref={fileInputRef}
                 style={{ display: "none" }}
                 onChange={handleFileChange}
+                multiple
             />
             <button id="filePickerButton" onClick={handleFilePick}>
-                {t("selectFile")}
+                {isMobileOrTablet() && !isIOS() ? t("selectImages") : t("selectFile")}
             </button>
             {selectedFile && (
                 <FileParser
@@ -180,6 +211,16 @@ export function FilePicker(dataDisplayProps) {
                     {...dataDisplayProps}
                     onComplete={() => {
                         setSelectedFile(null); // Reset selected file
+                        setLoadingMessage(false); // Hide the loading message
+                    }}
+                />
+            )}
+            {selectedFiles && selectedFiles.length > 0 && (
+                <ImageParser
+                    files={selectedFiles}
+                    {...dataDisplayProps}
+                    onComplete={() => {
+                        setSelectedFiles(null); // Reset selected files
                         setLoadingMessage(false); // Hide the loading message
                     }}
                 />
@@ -678,9 +719,8 @@ export default function MainMenu({
                     showMap={dataDisplayProps.showMap}
                     hasCurrentDataset={dataset}
                 />
-                {(!isMobileOrTablet() || isIOS()) && (
-                    <FilePicker {...dataDisplayProps} />
-                )}
+                {/* Enable FilePicker for all devices */}
+                <FilePicker {...dataDisplayProps} />
                 <Copyright />
             </div>
         </>
