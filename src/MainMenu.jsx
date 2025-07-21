@@ -186,7 +186,7 @@ export function FilePicker(dataDisplayProps) {
                         gap: "0.5rem",
                     }}
                 >
-                    <span style={{color: "#3a3a3a"}}>Your WhatsApp Map is loading. This might take a few seconds.</span>
+                    <span style={{color: "#3a3a3a"}}>Your Map is loading. This might take a few seconds.</span>
                     <img
                         src={checkingPwGif}
                         alt="Loading animation"
@@ -475,7 +475,7 @@ export default function MainMenu({
                 }}
               >
 
-                <span style={{color: "#3a3a3a"}}>Your WhatsApp Map is loading. This might take a few seconds.</span>
+                <span style={{color: "#3a3a3a"}}>Your Map is loading. This might take a few seconds.</span>
                 <img
                   src={checkingPwGif}
                   alt="Loading animation"

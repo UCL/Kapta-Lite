@@ -368,7 +368,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             onClick={() => setActiveOption('whatsapp')}
                             style={{ height: '45px' }}
                         >
-                            WhatsApp
+                            WhatsApp Map
                         </button>
                         
                         <button
@@ -376,7 +376,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             onClick={() => setActiveOption('photos')}
                             style={{ height: '45px' }}
                         >
-                            Google Photos
+                            Photos Map
                         </button>
                         
                         <button
@@ -389,7 +389,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             }}
                             style={{ height: '45px' }}
                         >
-                            Register
+                            Register as Kapta Mapper
                         </button>
                     </div>
                 )}
@@ -450,11 +450,11 @@ export function CreateModal({ isOpen, setIsOpen }) {
                     </>
                 )}
                 
-                {/* Google Photos option content */}
+                {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p>To upload Google Photos, select image files from your device that contain location data (geotags).</p>
-                        <p>Kapta will extract the GPS coordinates and create a map from your photos.</p>
+                        <p>To create a Photos Map, select image files from your device.</p>
+                        <p>Note that only the images that were taken with the "Location" ON in your device will be shown in the map.</p>
                         
                         <div className="option-button-container">
                             <button
@@ -548,7 +548,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p>Explore the map or tell us what you need.
+                            <p>Explore the map or tell us what map data you need.
                             </p>
                             <button
                                 className="btn"
@@ -560,7 +560,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                                     );
                                 }}
                             >
-                                I need WhatsApp Maps
+                                Contact us
                             </button>
                         </div>
                     </>
@@ -638,7 +638,7 @@ export function ShareModal({
                 navigator
                     .share({
                         title: "#MadeWithKapta",
-                        text: `This is a private 🔐 WhatsApp Map created with Kapta. 🔑 The password to open it is: ${password}`,
+                        text: `This is a Private Map created with Kapta. 🔐 The password to open it is: ${password}`,
                         url: kaptaWaMapUrl,
                     })
                     .catch((error) => console.error("Sharing failed", error));
@@ -767,7 +767,7 @@ export function ShareModal({
             }
 
             // Generate URL without passphrase in it
-            let generatedUrl = `https://staging.d1aatc9qjk4pwp.amplifyapp.com/?import=${presignedUrl}`;
+            let generatedUrl = `https://staging.d1260g649u28p8.amplifyapp.com/?import=${presignedUrl}`;
             
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");
@@ -780,8 +780,8 @@ export function ShareModal({
             // Choose appropriate message text based on data type
             // Always include password in the share message with a lock and key emoji
             shareText = checkIsImageData()
-                ? `This is a private Geotagged Images Map created with Kapta 🔐. Password: 🔑 ${password}`
-                : `This is a private WhatsApp Map created with Kapta 🔐. Password: 🔑 ${password}`;
+                ? `This is a Private Map created with Kapta. 🔐 The password to open it is: ${password}`
+                : `This is a Private Map created with Kapta. 🔐 The password to open it is: ${password}`;
 
             // Handle sharing
             if (navigator.canShare && navigator.share) {
@@ -1115,7 +1115,8 @@ const generateCSV = (dataset) => {
                                     justifyContent: "center" 
                                 }}
                             >
-                                Download {dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData ? "Geotagged Images" : "WhatsApp Map"}
+                                {/* Download {dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData ? "Geotagged Images" : "WhatsApp Map"} */}
+                                Download Map
                             </button>
                         </div>
                     
@@ -1148,7 +1149,7 @@ const generateCSV = (dataset) => {
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information</li>
                                     <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kapta, select the zip file, then click 'Share' and select Kapta.</li>
-                                    <li>The map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
+                                    <li>The Map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
                                     <li>If you need help to process the map data, feel free to reach out to us.</li>
                                 </ul>
                                 <p style={{ marginTop: "8px", marginBottom: "0" }}>Choose a strong password (minimum 6 characters. 12 recommended) and share it separately from the map link for maximum security.</p>
@@ -1199,7 +1200,7 @@ const generateCSV = (dataset) => {
                     
                         <div className="modal-content">
                             <p style={{ textAlign: "center" }}>
-                                You need to create or load a WhatsApp Map before you can share it!
+                                You need to create or load a Map before you can share it!
                             </p>
                         </div>
 

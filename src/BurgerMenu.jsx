@@ -74,7 +74,7 @@ export default function BurgerMenu({
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										💻 If you need WhatsApp Maps, click here.
+										💻 If you need Maps, click here.
 									</a>
 								</li>
 								<br></br>

@@ -67,10 +67,11 @@ i18next.use(initReactI18next).init({
 				inputgoallabel: "What do you want to achieve with this map?",
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
-				about: "WhatsApp Maps with Kapta",
+				about: "WhatsApp Maps and Photo Maps",
 				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
-								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.<br />
-								<br /><strong>What are WhatsApp Business Mappers?</strong> Community leaders who make a business creating WhatsApp Maps with their communities.  <br />
+								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos. <br />
+								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps and Photos Maps. <br />
+								<br /><strong>What are Kapta Business Mappers?</strong> Community leaders who make a business creating maps with Kapta. <br />
 								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
 
 				why: " Case studies",
@@ -127,7 +128,7 @@ i18next.use(initReactI18next).init({
 				updateDescription: "Update map title",
 				copyright: "Kapta by UCL",
 				supportOption: "Get support to improve your map",
-				installPrompt: "Install Kapta to create WhatsApp Maps",
+				installPrompt: "Install Kapta if you're using Google Chrome",
 				installClickMessage:
 					"Kapta is now being added to your home screen. This might take a few seconds",
 				desktoporiosPrompt:
