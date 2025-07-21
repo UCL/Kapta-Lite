@@ -115,6 +115,7 @@ export const convertImageToMapData = (processedImages) => {
     locations: {},
     people: {},
     liveLocations: {},
+    features: [], // Add features array to match WhatsApp data structure
     isImageData: true, // Add flag to identify this as image data
   };
   
@@ -181,6 +182,28 @@ export const convertImageToMapData = (processedImages) => {
       message: description, // Include message field for compatibility with map.js popup handling
       address: `Photo: ${file.name}` // Add an address field for display in popups
     };
+    
+    // Also add a GeoJSON feature to the features array to match WhatsApp data structure
+    mapData.features.push({
+      type: "Feature",
+      properties: {
+        contributionid: batchId,
+        mainattribute: "Geotagged Images",
+        name: file.name,
+        datetime: timestamp,
+        observer: sender.name,
+        observations: description,
+        markerColour: "0", // Default color
+        imgFilenames: [file.name],
+        make: make || '',
+        model: model || '',
+        altitude: altitude ? String(altitude) : ''
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [longitude, latitude]
+      }
+    });
   });
   
   return mapData;
@@ -254,18 +277,25 @@ export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDi
       // Create a ZIP file containing both GeoJSON data and original images
       const zip = new JSZip();
       
-      // Convert mapData to GeoJSON structure
+      // Convert mapData to GeoJSON structure matching the schema from import_whatsapp.js
       const geojsonData = {
         type: "FeatureCollection",
         features: Object.values(mapData.locations).map(location => {
           return {
             type: "Feature",
             properties: {
+              contributionid: location.batch || generateSimpleId(location.timestamp),
+              mainattribute: "Geotagged Images",
               name: location.name,
               datetime: location.timestamp,
               observer: mapData.people[location.senderId]?.name || "Unknown",
-              observations: location.description,
-              imgFilenames: [location.name]
+              observations: location.description || "",
+              markerColour: "0", // Default color
+              imgFilenames: [location.name],
+              // Add additional metadata properties from the image
+              make: location.make || "",
+              model: location.model || "",
+              altitude: location.altitude ? String(location.altitude) : ""
             },
             geometry: {
               type: "Point",
