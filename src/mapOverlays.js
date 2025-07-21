@@ -460,14 +460,26 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             <button
                                 className="btn"
                                 onClick={() => {
-                                   const filePickerButton = document.getElementById("filePickerButton");
-                                            filePickerButton?.click();
-                                            setIsOpen(false); // Close the "Create" modal
+                                    // Get the filePickerButton, but modify it to only accept images
+                                    const fileInput = document.querySelector('input[type="file"]');
+                                    const originalAccept = fileInput.accept;
+                                    // Force it to only accept images
+                                    fileInput.accept = "image/*";
+                                    fileInput.multiple = true;
+                                    
+                                    const filePickerButton = document.getElementById("filePickerButton");
+                                    filePickerButton?.click();
+                                    setIsOpen(false); // Close the "Create" modal
 
-                                            // Clear the /?import=... in the URL
-                                            const url = new URL(window.location.href);
-                                            url.searchParams.delete("import"); // Remove the "import" query parameter
-                                            window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                                    // Clear the /?import=... in the URL
+                                    const url = new URL(window.location.href);
+                                    url.searchParams.delete("import"); // Remove the "import" query parameter
+                                    window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                                    
+                                    // Reset the accept attribute after dialog opens
+                                    setTimeout(() => {
+                                        fileInput.accept = originalAccept;
+                                    }, 1000);
                                 }}
                             >
                                 Convert images into a map
