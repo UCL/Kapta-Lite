@@ -922,14 +922,13 @@ const generateCSV = (dataset) => {
                 {closeIcon}
             </button>
             <div className="modal-title">
-                {importdata ? t("sharingTitle") : "Share"}
+                {"Share"}
             </div>
 
             {(importdata || importdataimages) ? (
                 <>
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
-                        <p style={{ fontWeight: "bold", marginBottom: "6px", marginTop: "0" }}>Share</p>
                         <div
                             className="checkbox-container"
                             style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}
