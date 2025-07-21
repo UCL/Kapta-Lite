@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { sha256, slugify } from "./utils.js";
 import { uploadProcessedChat } from "./data_submission";
+import * as JSZip from "jszip";
+import { setGlobalProcessedChatFile } from "./import_whatsapp.js";
 
 // Function to extract exif data from an image - exported for reuse
 export const extractExifData = async (imageFile) => {
@@ -185,6 +187,7 @@ export const convertImageToMapData = (processedImages) => {
 };
 
 // Main component to handle image file parsing
+
 export let importdataimages = false;
 export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDisplayProps }) {
   const { setMapData, showMap, setFileToParse } = dataDisplayProps;
@@ -193,11 +196,12 @@ export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDi
       importdataimages = true; // Set to true when FileParser is called from WhatsApp, not from pre-signed URL (to avoid zip file uploads)
     }
   const setDataDisplayMap = useCallback(
-    (data, name) => {
+    (data, name, imgZip = null) => {
       // Update any mapData if needed before setting
       setMapData({ 
         data, 
-        isImageData: true // Ensure isImageData flag is set in the dataset object
+        isImageData: true, // Ensure isImageData flag is set in the dataset object
+        imgZip: imgZip
       });
       showMap(true);
       
@@ -247,9 +251,56 @@ export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDi
       // Convert to mapData format - pass the already processed images
       const mapData = convertImageToMapData(geotaggedImages);
       
+      // Create a ZIP file containing both GeoJSON data and original images
+      const zip = new JSZip();
+      
+      // Convert mapData to GeoJSON structure
+      const geojsonData = {
+        type: "FeatureCollection",
+        features: Object.values(mapData.locations).map(location => {
+          return {
+            type: "Feature",
+            properties: {
+              name: location.name,
+              datetime: location.timestamp,
+              observer: mapData.people[location.senderId]?.name || "Unknown",
+              observations: location.description,
+              imgFilenames: [location.name]
+            },
+            geometry: {
+              type: "Point",
+              coordinates: [location.longitude, location.latitude]
+            }
+          };
+        })
+      };
+      
+      // Add GeoJSON to zip
+      const geojsonBlob = new Blob([JSON.stringify(geojsonData, null, 2)], {
+        type: "application/geo+json"
+      });
+      zip.file("map.geojson", geojsonBlob);
+      
+      // Add all geotagged images to the zip
+      for (const imgData of geotaggedImages) {
+        zip.file(imgData.file.name, imgData.file);
+      }
+      
+      // Generate the ZIP file
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      
+      // Create File object from blob
+      const fileName = `geotagged_images_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.zip`;
+      const zipFile = new File([zipBlob], fileName, { type: "application/zip" });
+      
+      // Use the function from import_whatsapp.js to set the global variable
+      setGlobalProcessedChatFile(zipFile);
+      
+      // Also set it as a window property for compatibility with any code that might use it
+      window.globalProcessedChatFile = zipFile;
+      
       // Set the data to be displayed on the map
-      const fileName = `geotagged_images_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.json`;
-      setDataDisplayMap(mapData, fileName);
+      setDataDisplayMap(mapData, fileName, zip);
       
     } catch (error) {
       console.error("Error processing image files:", error);
@@ -301,17 +352,36 @@ export const prepareImageDataForExport = async (mapData) => {
 // Export images to the server
 export const uploadImageData = async (mapData, sharingOption, taskId, tags, mapperId, setButtonText, setButtonDisabled) => {
   try {
-    const { blob, fileName } = await prepareImageDataForExport(mapData);
-    return await uploadProcessedChat(
-      blob, 
-      fileName, 
-      setButtonText, 
-      setButtonDisabled, 
-      sharingOption, 
-      taskId, 
-      tags, 
-      mapperId
-    );
+    // Import the variable here to get its latest value
+    const { globalProcessedChatFile } = await import('./import_whatsapp.js');
+    
+    // Use the global zip file that we created in processImageFiles
+    if (globalProcessedChatFile) {
+      const fileName = `geotagged_images_${new Date().toISOString().split('T')[0].replace(/-/g, '')}.zip`;
+      return await uploadProcessedChat(
+        globalProcessedChatFile,
+        fileName,
+        setButtonText,
+        setButtonDisabled,
+        sharingOption,
+        taskId,
+        tags,
+        mapperId
+      );
+    } else {
+      // Fallback to the old method if globalProcessedChatFile is not available
+      const { blob, fileName } = await prepareImageDataForExport(mapData);
+      return await uploadProcessedChat(
+        blob, 
+        fileName, 
+        setButtonText, 
+        setButtonDisabled, 
+        sharingOption, 
+        taskId, 
+        tags, 
+        mapperId
+      );
+    }
   } catch (error) {
     console.error("Error uploading image data:", error);
     throw error;

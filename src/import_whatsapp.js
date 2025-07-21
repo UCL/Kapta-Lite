@@ -74,6 +74,10 @@ const updateMapdata = (data, groupName = null) => {
 export const allowedExtensions = [".zip", ".txt", ".geojson"];
 
 export let globalProcessedChatFile = null;
+// Function to set globalProcessedChatFile from other modules
+export const setGlobalProcessedChatFile = (file) => {
+    globalProcessedChatFile = file;
+};
 const processFile = (file, setDataDisplayMap) => {
     if (
         file instanceof File &&
