@@ -192,11 +192,10 @@ export const convertImageToMapData = (processedImages) => {
         name: file.name,
         datetime: timestamp,
         observer: sender.name,
-        observations: description,
+        observations: "image_no_observation", // Standardized observation text
         markerColour: "0", // Default color
         imgFilenames: [file.name],
-        make: make || '',
-        model: model || '',
+        // Removed make and model properties
         altitude: altitude ? String(altitude) : ''
       },
       geometry: {
@@ -289,12 +288,10 @@ export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDi
               name: location.name,
               datetime: location.timestamp,
               observer: mapData.people[location.senderId]?.name || "Unknown",
-              observations: location.description || "",
+              observations: "image_no_observation", // Set standardized observation text
               markerColour: "0", // Default color
               imgFilenames: [location.name],
-              // Add additional metadata properties from the image
-              make: location.make || "",
-              model: location.model || "",
+              // Removed make and model properties
               altitude: location.altitude ? String(location.altitude) : ""
             },
             geometry: {
