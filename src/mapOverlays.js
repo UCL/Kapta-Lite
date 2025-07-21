@@ -439,12 +439,12 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             )}
                             
                             {/* Back button */}
-                            <button 
+                             <button 
                                 className="btn" 
                                 onClick={() => setActiveOption(null)}
-                                style={{ marginTop: '10px' }}
+                                style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent' } }
                             >
-                                Back
+                                Go back
                             </button>
                         </div>
                     </>
@@ -464,7 +464,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                     const fileInput = document.querySelector('input[type="file"]');
                                     const originalAccept = fileInput.accept;
                                     // Force it to only accept images
-                                    fileInput.accept = "image/*";
+                                    fileInput.accept = "*/*";
                                     fileInput.multiple = true;
                                     
                                     const filePickerButton = document.getElementById("filePickerButton");
@@ -489,9 +489,9 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             <button 
                                 className="btn" 
                                 onClick={() => setActiveOption(null)}
-                                style={{ marginTop: '10px' }}
+                                style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent' } }
                             >
-                                Back
+                                Go back
                             </button>
                         </div>
                     </>
