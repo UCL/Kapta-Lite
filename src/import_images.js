@@ -185,9 +185,13 @@ export const convertImageToMapData = (processedImages) => {
 };
 
 // Main component to handle image file parsing
+export let importdataimages = false;
 export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDisplayProps }) {
   const { setMapData, showMap, setFileToParse } = dataDisplayProps;
-
+  
+  if(!window.location.href.includes('?import=')){
+      importdataimages = true; // Set to true when FileParser is called from WhatsApp, not from pre-signed URL (to avoid zip file uploads)
+    }
   const setDataDisplayMap = useCallback(
     (data, name) => {
       // Update any mapData if needed before setting

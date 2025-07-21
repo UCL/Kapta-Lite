@@ -34,6 +34,8 @@ import { globalProcessedChatFile } from "./import_whatsapp";
 // import { handleConnect } from "./ConnectButton.js";
 import { handleSearch } from "./SearchBar.js";
 import { importdata, enableDownload } from "./import_whatsapp.js";
+import { importdataimages } from "./import_images.js";
+
 import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based on your project structure
 // import { createHash } from "crypto";
 import { encryptFile, encodePassphrase } from "./encryption.js";
@@ -923,7 +925,7 @@ const generateCSV = (dataset) => {
                 {importdata ? t("sharingTitle") : "Share"}
             </div>
 
-            {importdata ? (
+            {(importdata || importdataimages) ? (
                 <>
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
@@ -1004,135 +1006,12 @@ const generateCSV = (dataset) => {
                                 </div>
                             )}
                             
-                            {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }}
-                                    checked={sharingOption === "private-non-sensitive"}
-                                    onChange={() => setSharingOption("private-non-sensitive")}
-                                />
-                                <strong>Private</strong>
-                            </label>
-                            <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
-                                (Only people with the link can view)
-                            </p> */}
-
-                            {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }}
-                                    checked={sharingOption === "open"}
-                                    onChange={() => {
-                                        setSharingOption("open");
-                                        setShowMapperIdField(true);
-                                    }}
-                                />
-                                <strong>Public</strong>
-                            </label>
-                            <p style={{ fontSize: "0.8rem", marginTop: "-8px" }}>
-                                (Anonymous and anyone can view)
-                            </p> */}
-
-                            {/* {showMapperIdField && sharingOption === "open" && (
-                            <div style={{ marginTop: "3px", textAlign: "center", alignItems: "center" }}>
-                                <input
-                                    type="number"
-                                    placeholder="Your Mapper ID."
-                                    value={mapperId}
-                                    onChange={(e) => setMapperId(e.target.value)}
-                                    style={{
-                                        padding: "5px",
-                                        fontSize: "1rem",
-                                        width: "80%",
-                                        textAlign: "center",
-                                    }}
-                                />
-                                <p style={{ fontSize: "0.8rem" }}>
-                                    No ID? Go to "Connect" and register
-                                </p>
-                            </div>
-                        )} */}
-
-                            {/* <label style={{ fontSize: "1rem", display: "flex", alignItems: "center", gap: "10px", opacity: 0.5, cursor: "not-allowed" }}>
-                            <input
-                                type="checkbox"
-                                style={{ width: "20px", height: "20px" }}
-                                checked={sharingOption === "private-sensitive"}
-                                disabled
-                                readOnly
-                                // onChange={() => {
-                                //     setSharingOption("private-sensitive");
-                                //     setShowMapperIdField(false);
-                                // }}
-                            />
-                            <strong>Extra-Private </strong>
-                        </label>
-                        <p style={{ fontSize: "0.8rem", marginTop: "-8px", opacity: 0.5 }}>
-                            (Encrypt your WhatsApp Map with a password - coming soon)
-                        </p> */}
+                          
                         </div>
 
                     </section>
 
-                    {/* Map Description Section */}
-                    {/* <section className="modal-section" style={{ textAlign: "center" }}>
-                        <p style={{ fontWeight: "bold" }}>Describe your map in max. 3 words:</p>
-                        <input
-                            type="text"
-                            placeholder="e.g. water pumps"
-                            value={WhatsAppMapTags}
-                            onChange={(e) => setWhatsAppMapTags(e.target.value)}
-                            style={{
-                                marginTop: "1px",
-                                padding: "5px",
-                                fontSize: "1rem",
-                                width: "80%",
-                                textAlign: "center",
-                            }}
-                        />
-                    </section> */}
-
-                    {/* Task ID Section */}
-                    {/* <section className="modal-section" style={{ textAlign: "center" }}>
-                        <p style={{ fontWeight: "bold" }}>Do you have a Task ID?</p>
-                        <div className="checkbox-container" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" }}>
-                            <label style={{ fontSize: "1rem" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={hasTaskId === true}
-                                    onChange={() => setHasTaskId(true)}
-                                />{" "}
-                                Yes
-                            </label>
-                            <label style={{ fontSize: "1rem" }}>
-                                <input
-                                    type="checkbox"
-                                    style={{ width: "20px", height: "20px" }} // Make the checkbox slightly bigger
-                                    checked={hasTaskId === false}
-                                    onChange={() => setHasTaskId(false)}
-                                />{" "}
-                                No
-                            </label>
-                        </div>
-                        {hasTaskId === true && (
-                            <input
-                                type="text"
-                                placeholder="Enter Task ID"
-                                value={taskId}
-                                onChange={(e) => setTaskId(e.target.value)}
-                                style={{
-                                    marginTop: "10px",
-                                    padding: "5px",
-                                    fontSize: "1rem",
-                                    width: "80%",
-                                    textAlign: "center",
-                                }}
-                            />
-                        )}
-                    </section> */}
-
-                    {/* Share Button */}
+                 
                     <div className="option-button-container" style={{ marginBottom: "8px" }}>
                         <button
                             className="btn"
@@ -1249,115 +1128,12 @@ const generateCSV = (dataset) => {
                 </>
             ) : (
                 <>
-                    {window.location.href.includes("import=") || dataDisplayProps.dataset ? (
-                        <>
-                            <div className="option-button-container">
-                                <button className="btn" onClick={handleShareCurrentUrl} style={{ 
-                                    height: "40px", 
-                                    display: "flex", 
-                                    alignItems: "center", 
-                                    justifyContent: "center",
-                                    backgroundColor: "#25D366" 
-                                }}>
-                                    Share map link
-                                </button>
-                            </div>
-                                <div className="option-button-container">
-                                    <button className="btn" onClick={handleDownload}
-                                        style={{ 
-                                        height: "36px", 
-                                        display: "flex", 
-                                        alignItems: "center", 
-                                        justifyContent: "center" 
-                                    }}>
-                                        Download {checkIsImageData() ? "Geotagged Images" : "WhatsApp Map"}
-                                    </button>
-                                </div>
-                                <div className="option-button-container" style={{ marginBottom: "8px" }}>
-                                    <button
-                                        className="btn"
-                                        onClick={() => generateCSV(currentDataset)}
-                                        style={{ 
-                                            height: "36px", 
-                                            display: "flex", 
-                                            alignItems: "center", 
-                                            justifyContent: "center" 
-                                        }}
-                                    >
-                                        Download CSV file
-                                    </button>
-                             </div>
-                             {showInfoContent ? (
-                        <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
-                            <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
-                                <p style={{ marginBottom: "6px" }}>Kapta Lite is a privacy-focused tool for sharing WhatsApp Maps. All maps are password-protected by default with the following security features:</p>
-                                <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
-                                    <li>Client-side encryption using AES-256. Not even the Kapta team can view your maps.</li>
-                                    <li>Passwords never stored on our servers</li>
-                                    {/* <li>Files automatically expire after 30 days</li> */}
-                                    <li>No user registration or personal data collection</li>
-                                </ul>
-                                <p style={{ marginBottom: "4px" }}>Download buttons</p>
-                                <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
-                                    <li>The CSV file contains the coordinates and other map information</li>
-                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kapta, select the zip file, then click 'Share' and select Kapta.</li>
-                                    <li>The map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
-                                    <li>If you need help to process the map data, feel free to reach out to us.</li>
-                                </ul>
-                                <p style={{ marginTop: "8px", marginBottom: "0" }}>Choose a strong password (minimum 6 characters. 12 recommended) and share it separately from the map link for maximum security.</p>
-                            </div>
-                            <div style={{ textAlign: "right", marginTop: "15px" }}>
-                                {/* <button 
-                                    onClick={() => setShowInfoContent(false)}
-                                    style={{
-                                        backgroundColor: "#25D366",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "4px",
-                                        padding: "8px 16px",
-                                        fontSize: "0.9rem",
-                                        cursor: "pointer"
-                                    }}
-                                >
-                                    Back to sharing options
-                                </button> */}
-                            </div>
-                        </div>
-                    ) : (
-                        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-                            <button 
-                                onClick={() => setShowInfoContent(true)}
-                                style={{
-                                    width: "100px",
-                                    height: "26px",
-                                    borderRadius: "13px",
-                                    backgroundColor: "#525553ff",
-                                    color: "white",
-                                    border: "none",
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }}
-                            >
-                                More info
-                            </button>
-                        </div>
-                    )}
-                             
-                        </>
-                    ) : (
+                    
                         <div className="modal-content">
                             <p style={{ textAlign: "center" }}>
                                 You need to create or load a WhatsApp Map before you can share it!
                             </p>
                         </div>
-                    )}
-                    
-
-
 
                 </>
             )}
