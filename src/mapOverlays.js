@@ -346,6 +346,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
     if (!isOpen) return null;
 
     const createModalRef = useRef(null);
+    const [activeOption, setActiveOption] = useState(null); // Track which option is active: 'whatsapp', 'photos', or null
 
     useClickOutside(createModalRef, () => setIsOpen(false)); // Close modal when clicking outside
 
@@ -359,74 +360,130 @@ export function CreateModal({ isOpen, setIsOpen }) {
             </button>
             <div className="modal-title">Create</div> {/* Title */}
             <div className="modal-content">
-                <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
-                <ol>
-                    <li>Share locations in a WhatsApp Group</li>
-                    <li>Export chat to Kapta app</li>
-                    <li>Share your WhatsApp Map</li>
-                </ol>
-
-
-
-
-                <div className="option-button-container">
-                    <button
-                        className="btn"
-                        onClick={() =>
-                            window.open(
-                                "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
-                                "_blank"
-                            )
-                        }
-                    >
-                        Open WhatsApp to start
-                    </button>
-
-                    {!isMobileOrTablet() && (
-                        <p>Or if you already have the chat. Upload to convert it.</p>
-                    )}
-                    {/* {!isMobileOrTablet() && ( */}
-
+                {/* Initial three button view */}
+                {!activeOption && (
+                    <div className="option-button-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <button
+                            className="btn"
+                            onClick={() => setActiveOption('whatsapp')}
+                            style={{ height: '45px' }}
+                        >
+                            WhatsApp
+                        </button>
+                        
+                        <button
+                            className="btn"
+                            onClick={() => setActiveOption('photos')}
+                            style={{ height: '45px' }}
+                        >
+                            Google Photos
+                        </button>
+                        
                         <button
                             className="btn"
                             onClick={() => {
-                                const filePickerButton = document.getElementById("filePickerButton");
-                                filePickerButton?.click();
-                                setIsOpen(false); // Close the "Create" modal
-
-                                // Clear the /?import=... in the URL
-                                const url = new URL(window.location.href);
-                                url.searchParams.delete("import"); // Remove the "import" query parameter
-                                window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                                window.open(
+                                    "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
+                                    "_blank"
+                                );
                             }}
+                            style={{ height: '45px' }}
                         >
-                            Convert a chat<br />into a map
+                            Register
                         </button>
-                    {/* )} */}
-                    {/* <button
-                        className="btn"
-                        onClick={() =>
-                            window.open("https://youtu.be/cE30c18ipfU", "_blank")
-                        }
-                    >
-                        Watch Tutorial
-                    </button> */}
+                    </div>
+                )}
+                
+                {/* WhatsApp option content */}
+                {activeOption === 'whatsapp' && (
+                    <>
+                        <p>Create WhatsApp Maps with Kapta in 3 simple steps:</p>
+                        <ol>
+                            <li>Share locations in a WhatsApp Group</li>
+                            <li>Export chat to Kapta app</li>
+                            <li>Share your WhatsApp Map</li>
+                        </ol>
+                        
+                        <div className="option-button-container">
+                            <button
+                                className="btn"
+                                onClick={() =>
+                                    window.open(
+                                        "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
+                                        "_blank"
+                                    )
+                                }
+                            >
+                                Open WhatsApp to start
+                            </button>
 
-                    <p style={{ marginTop: "-5px", textAlign: "center" }}>Not yet registered as WhatsApp Business Mapper?</p>
-                    <button
-                        className="btn"
-                        style={{ marginTop: "-15px" }}
-                        onClick={() => {
-                            window.open(
-                                "https://wa.me/447473522912?text=Hi,%20I%20would%20like%20to%20register%20as%20WhatsApp%20Mapper.",
-                                "_blank"
-                            );
-                        }}
-                    >
-                        Register
-                    </button>
+                            {!isMobileOrTablet() && (
+                                <>
+                                    <p>Or if you already have the chat. Upload to convert it.</p>
+                                    <button
+                                        className="btn"
+                                        onClick={() => {
+                                            const filePickerButton = document.getElementById("filePickerButton");
+                                            filePickerButton?.click();
+                                            setIsOpen(false); // Close the "Create" modal
 
-                </div>
+                                            // Clear the /?import=... in the URL
+                                            const url = new URL(window.location.href);
+                                            url.searchParams.delete("import"); // Remove the "import" query parameter
+                                            window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                                        }}
+                                    >
+                                        Convert a chat<br />into a map
+                                    </button>
+                                </>
+                            )}
+                            
+                            {/* Back button */}
+                            <button 
+                                className="btn" 
+                                onClick={() => setActiveOption(null)}
+                                style={{ marginTop: '10px' }}
+                            >
+                                Back
+                            </button>
+                        </div>
+                    </>
+                )}
+                
+                {/* Google Photos option content */}
+                {activeOption === 'photos' && (
+                    <>
+                        <p>To upload Google Photos, select image files from your device that contain location data (geotags).</p>
+                        <p>Kapta will extract the GPS coordinates and create a map from your photos.</p>
+                        
+                        <div className="option-button-container">
+                            <button
+                                className="btn"
+                                onClick={() => {
+                                   const filePickerButton = document.getElementById("filePickerButton");
+                                            filePickerButton?.click();
+                                            setIsOpen(false); // Close the "Create" modal
+
+                                            // Clear the /?import=... in the URL
+                                            const url = new URL(window.location.href);
+                                            url.searchParams.delete("import"); // Remove the "import" query parameter
+                                            window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
+                                }}
+                            >
+                                Convert images into a map
+                            </button>
+                            
+                            {/* Back button */}
+                            <button 
+                                className="btn" 
+                                onClick={() => setActiveOption(null)}
+                                style={{ marginTop: '10px' }}
+                            >
+                                Back
+                            </button>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
