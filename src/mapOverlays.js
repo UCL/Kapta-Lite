@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./styles/map-etc.css";
@@ -6,6 +7,8 @@ import * as JSZip from "jszip";
 import { saveAs } from "file-saver"; // Import file-saver for downloading files
 import proj4 from "proj4";
 import { fromLatLon, toLatLon } from 'utm';
+import checkingPwGif from "./images/checkingPw.gif";
+
 import {
     shareIcn,
     closeIcon,
@@ -69,6 +72,18 @@ import ReactGA from "react-ga4";
 //         </button>
 //     );
 // }
+
+// Loading spinner for uploadPending state
+function LoadingSpinner({ text }) {
+    return (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5em' }}>
+            {text}
+            <img src={checkingPwGif} alt="loading" style={{ height: '1.2em', verticalAlign: 'middle' }} />
+            
+        </span>
+    );
+}
+
 const quality = 0.25; // Set the compression parameter
 const compressImageBlob = (blob, quality = 0.25, maxWidth = 300, maxHeight = 300) => {
     return new Promise((resolve) => {
@@ -994,7 +1009,7 @@ const generateCSV = (dataset) => {
                 {"Share"}
             </div>
 
-            {(importdata || importdataimages) ? (
+            {(importdata || importdataimages || window.location.href.includes("import=")) ? (
                 <>
                     {/* Open WhatsApp Map Section */}
                     <section className="modal-section" style={{ textAlign: "center" }}>
@@ -1030,14 +1045,14 @@ const generateCSV = (dataset) => {
                                             color: "black",
                                             lineHeight: "1.3"
                                         }}>
-                                            🔐 Protect your map with a password.
+                                            Create a password for your map 🔐 
                                         </p>
                                         
                                         <div style={{ marginTop: "8px" }}>
                                             <div style={{ marginBottom: "5px" }}>
                                                 <input
                                                     type="password"
-                                                    placeholder="Create password (min 6 characters)"
+                                                    placeholder="Create password"
                                                     value={password}
                                                     onChange={(e) => {
                                                         setPassword(e.target.value);
@@ -1045,9 +1060,9 @@ const generateCSV = (dataset) => {
                                                         setDecryptError(""); // Clear decrypt error when typing
                                                     }}
                                                     style={{ 
-                                                        width: "100%", 
+                                                        width: "80%", 
                                                         padding: "10px", 
-                                                        marginBottom: "8px",
+                                                        margin: "0 auto 8px auto",
                                                         border: (passwordError || decryptError) ? "1px solid red" : "1px solid #25D366",
                                                         borderRadius: "4px",
                                                         outline: "none",
@@ -1084,13 +1099,18 @@ const generateCSV = (dataset) => {
                         <button
                             className="btn"
                             onClick={() => {
-                                if (!showPasswordInput) {
-                                    // First click, show password input
-                                    setShowPasswordInput(true);
-                                } else {
-                                    // Second click, proceed with sharing
-                                    handleShareDataClick();
-                                }
+                                if(!window.location.href.includes("import=")){
+                                    if (!showPasswordInput) {
+                                        // First click, show password input
+                                        setShowPasswordInput(true);
+                                    } else {
+                                        // Second click, proceed with sharing
+                                        handleShareDataClick();
+                                    }
+                                }else if(window.location.href.includes("import=")){
+                                    handleShareCurrentUrl()
+                                }      
+               
                             }}
                             style={{ 
                                 height: "40px", 
@@ -1101,7 +1121,11 @@ const generateCSV = (dataset) => {
                                 fontWeight: "500"
                             }}
                         >
-                            {!showPasswordInput ? "Share map link" : buttonText}
+                            {!showPasswordInput ? "Share Map link" :
+                                buttonText === "uploadPending"
+                                    ? <LoadingSpinner text="Encrypting & Uploading" />
+                                    : buttonText
+                            }
                         </button>
                     </div>
                         <div className="option-button-container" style={{ marginBottom: "8px" }}>

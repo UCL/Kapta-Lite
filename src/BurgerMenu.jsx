@@ -74,7 +74,7 @@ export default function BurgerMenu({
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										💻 If you need Maps, click here.
+										💻💬 If you need WhatsApp Maps, click here.
 									</a>
 								</li>
 								<br></br>
@@ -84,7 +84,27 @@ export default function BurgerMenu({
 										target="_blank"
 										rel="noopener noreferrer"
 									>
-										📱 If you want to make WhatsApp Maps, click here.
+										📱💬 If you want to make WhatsApp Maps, click here.
+									</a>
+								</li>
+								<br></br>
+								<li>
+									<a
+										// href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Maps_User.png"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										💻📷 If you need Photos Maps, click here (doc under development).
+									</a>
+								</li>
+								<br></br>
+								<li>
+									<a
+										// href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										📱📷 If you want to make Photos Maps, click here (doc under development).
 									</a>
 								</li>
 								

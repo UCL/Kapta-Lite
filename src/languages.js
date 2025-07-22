@@ -67,7 +67,7 @@ i18next.use(initReactI18next).init({
 				inputgoallabel: "What do you want to achieve with this map?",
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
-				about: "WhatsApp Maps and Photo Maps",
+				about: "WhatsApp Maps and Photos Maps",
 				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos. <br />
 								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps and Photos Maps. <br />
@@ -115,13 +115,13 @@ i18next.use(initReactI18next).init({
 				confirm: "Confirm",
 				yes: "Yes",
 				no: "No",
-				sharedata: "Share map link",
+				sharedata: "Click to share",
 				shareimg: "Share the map IMAGE",
 				uploaddata: "Share map with Task ID",
-				uploadPending: "Encrypting & Uploading... Wait ⌛",
+			   uploadPending: `uploadPending`,
 				uploadReady: "Ready to Share!!!",
 				uploadFailed: "Upload failed! See console.",
-				shareDirectly: "Click here to share directly",
+				shareDirectly: "Click to share",
 				addMetadataTitle: "Describe this map",
 				sharingTitle: "",
 				addDescription: "Search open WhatsApp Maps",
