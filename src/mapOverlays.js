@@ -863,8 +863,8 @@ export function ShareModal({
             const dateTime = getDateTime();
             // Use different filename for image data vs WhatsApp map
             link.download = checkIsImageData() 
-                ? `Kapta_Geotagged_Images_${dateTime}.zip` 
-                : `Kapta_WhatsApp_Map_${dateTime}.zip`;
+                ? `Kapta_Private_Map_${dateTime}.zip` 
+                : `Kapta_Private_Map_${dateTime}.zip`;
             link.click();
             URL.revokeObjectURL(url);
         }
@@ -872,11 +872,11 @@ export function ShareModal({
     const handleShareCurrentUrl = () => {
 
         const shareText = checkIsImageData() 
-            ? "This is a Geotagged Images Map created with Kapta" 
-            : "This is a WhatsApp Map created with Kapta";
+            ? "This is a Private Map created with Kapta" 
+            : "This is a Private Map created with Kapta";
         const alertText = checkIsImageData() 
-            ? "The Geotagged Images Map link has been copied to clipboard!" 
-            : "The WhatsApp Map link has been copied to clipboard!";
+            ? "The Private Map link has been copied to clipboard!" 
+            : "The Private Map link has been copied to clipboard!";
             
         if (navigator.canShare && navigator.share) {
             navigator
