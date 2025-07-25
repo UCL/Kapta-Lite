@@ -201,7 +201,7 @@
 
 .map-popup-body {
     /* overflow-y: scroll; */
-    
+    padding-right: 8px;
 }
 
 .map-action-btn {
@@ -732,6 +732,7 @@
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: #77d96c #a9fe8e; /* Firefox fallback */
+    margin-right: 16px;
   }
   
   /* WebKit scrollbar styling */
