@@ -128,7 +128,7 @@ i18next.use(initReactI18next).init({
 				updateDescription: "Update map title",
 				copyright: "Kapta by UCL",
 				supportOption: "Get support to improve your map",
-				installPrompt: "Install Kapta if you're using Google Chrome",
+				installPrompt: "Install Kapta if you're using 👉 Google Chrome 👈",
 				installClickMessage:
 					"Kapta is now being added to your home screen. This might take a few seconds",
 				desktoporiosPrompt:
