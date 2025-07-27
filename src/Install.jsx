@@ -12,7 +12,7 @@ export default function InstallDialog() {
 
 	const { t } = useTranslation();
 	const [installPrompt, setInstallPrompt] = useState(null);
-	const [isVisible, setIsVisible] = useState(true);
+	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
 		const handleBeforeInstallPrompt = (e) => {
@@ -22,11 +22,17 @@ export default function InstallDialog() {
 
 		window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
+		const handleLoad = () => {
+			setTimeout(() => setIsVisible(true), 2000);
+		};
+		window.addEventListener("load", handleLoad);
+
 		return () => {
 			window.removeEventListener(
 				"beforeinstallprompt",
 				handleBeforeInstallPrompt
 			);
+			window.removeEventListener("load", handleLoad);
 		};
 	}, []);
 
