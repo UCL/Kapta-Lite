@@ -642,6 +642,8 @@ export function ShareModal({
     const [decryptError, setDecryptError] = useState(""); // State for decryption errors
     const [showPasswordInput, setShowPasswordInput] = useState(false); // Whether to show the password input
     const [showInfoContent, setShowInfoContent] = useState(false); // Whether to show info content
+    const [showTaskIdUpload, setShowTaskIdUpload] = useState(false); // Whether to show task ID upload interface
+    const [taskIdInput, setTaskIdInput] = useState(""); // Task ID input value
 
     const handleShareDataClick = async () => {
         // Reset any previous errors
@@ -839,6 +841,55 @@ export function ShareModal({
                 setButtonText("sharedata");
                 setButtonDisabled(false);
             }
+        }
+    };
+
+    const handleTaskIdUpload = async () => {
+        // Check if task ID is provided
+        if (!taskIdInput || taskIdInput.trim() === "") {
+            alert("Please enter a Task ID before uploading.");
+            return;
+        }
+
+        setButtonText("uploadPending");
+        setButtonDisabled(true);
+
+        try {
+            // Check if we're handling image data or WhatsApp chat data
+            if (checkIsImageData()) {
+                // Use uploadImageData for image data with the task ID
+                await uploadImageData(
+                    dataDisplayProps.dataset.data,
+                    "private-non-sensitive", // Default sharing option for task ID uploads
+                    taskIdInput.trim(),
+                    WhatsAppMapTags,
+                    mapperId,
+                    setButtonText,
+                    setButtonDisabled
+                );
+            } else {
+                // Use uploadProcessedChat for WhatsApp chat data with the task ID
+                await uploadProcessedChat(
+                    globalProcessedChatFile,
+                    `TaskID_${taskIdInput.trim()}_${new Date().toISOString().split('T')[0].replace(/-/g, '')}`,
+                    setButtonText,
+                    setButtonDisabled,
+                    "private-non-sensitive", // Default sharing option for task ID uploads
+                    taskIdInput.trim(),
+                    WhatsAppMapTags,
+                    mapperId
+                );
+            }
+
+            setButtonText("Upload Complete");
+            setButtonDisabled(false);
+            alert(`Map successfully uploaded with Task ID: ${taskIdInput.trim()}`);
+            
+        } catch (error) {
+            console.error("Error during task ID upload:", error);
+            setButtonText("Upload with Task ID");
+            setButtonDisabled(false);
+            alert("Upload failed. Please try again.");
         }
     };
 
@@ -1095,71 +1146,209 @@ const generateCSV = (dataset) => {
                     </section>
 
                  
-                    <div className="option-button-container" style={{ marginBottom: "8px" }}>
-                        <button
-                            className="btn"
-                            onClick={() => {
-                                if(!window.location.href.includes("import=")){
-                                    if (!showPasswordInput) {
-                                        // First click, show password input
-                                        setShowPasswordInput(true);
-                                    } else {
-                                        // Second click, proceed with sharing
+                    {!showTaskIdUpload && !showPasswordInput ? (
+                        <>
+                            <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        if(!window.location.href.includes("import=")){
+                                            // Show password input and hide other buttons
+                                            setShowPasswordInput(true);
+                                        }else if(window.location.href.includes("import=")){
+                                            handleShareCurrentUrl()
+                                        }      
+                       
+                                    }}
+                                    style={{ 
+                                        height: "40px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: "#25D366",
+                                        fontWeight: "500"
+                                    }}
+                                >
+                                    Share Map link
+                                </button>
+                            </div>
+
+                            <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={() => setShowTaskIdUpload(true)}
+                                    style={{ 
+                                        height: "40px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: "#ffc107",
+                                        fontWeight: "500"
+                                    }}
+                                >
+                                    Upload with taskID
+                                </button>
+                            </div>
+
+                            <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                <button 
+                                    className="btn" 
+                                    onClick={handleDownload}
+                                    style={{ 
+                                        height: "36px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center" 
+                                    }}
+                                >
+                                    {/* Download {dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData ? "Geotagged Images" : "WhatsApp Map"} */}
+                                    Download Map
+                                </button>
+                            </div>
+                        
+                            <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={() => generateCSV(currentDataset)}
+                                    style={{ 
+                                        height: "36px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center" 
+                                    }}
+                                >
+                                    Download CSV file
+                                </button>
+                            </div>
+                        </>
+                    ) : showPasswordInput && !showTaskIdUpload ? (
+                        <>
+                            {/* Share Map Link Interface with Password Input */}
+                            <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        // Proceed with sharing
                                         handleShareDataClick();
+                                    }}
+                                    style={{ 
+                                        height: "40px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: "#25D366",
+                                        fontWeight: "500"
+                                    }}
+                                >
+                                    {buttonText === "uploadPending"
+                                        ? <LoadingSpinner text="Encrypting & Uploading" />
+                                        : buttonText
                                     }
-                                }else if(window.location.href.includes("import=")){
-                                    handleShareCurrentUrl()
-                                }      
-               
-                            }}
-                            style={{ 
-                                height: "40px", 
-                                display: "flex", 
-                                alignItems: "center", 
-                                justifyContent: "center",
-                                backgroundColor: "#25D366",
-                                fontWeight: "500"
-                            }}
-                        >
-                            {!showPasswordInput ? "Share Map link" :
-                                buttonText === "uploadPending"
-                                    ? <LoadingSpinner text="Encrypting & Uploading" />
-                                    : buttonText
-                            }
-                        </button>
-                    </div>
-                        <div className="option-button-container" style={{ marginBottom: "8px" }}>
-                            <button 
-                                className="btn" 
-                                onClick={handleDownload}
-                                style={{ 
-                                    height: "36px", 
-                                    display: "flex", 
-                                    alignItems: "center", 
-                                    justifyContent: "center" 
-                                }}
-                            >
-                                {/* Download {dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData ? "Geotagged Images" : "WhatsApp Map"} */}
-                                Download Map
-                            </button>
-                        </div>
+                                </button>
+                            </div>
+
+                            <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        setShowPasswordInput(false);
+                                        setPassword("");
+                                        setPasswordError("");
+                                        setDecryptError("");
+                                        setButtonText("sharedata");
+                                        setButtonDisabled(false);
+                                    }}
+                                    style={{ 
+                                        height: "36px", 
+                                        width: "80px",
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: "#e9ecef",
+                                        color: "#495057"
+                                    }}
+                                >
+                                    ← Back
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* Task ID Upload Interface */}
+                            <div style={{ marginBottom: "20px" }}>
+                                <div style={{ marginBottom: "10px" }}>
+                                    <label style={{ 
+                                        fontSize: "1rem", 
+                                        fontWeight: "bold",
+                                        display: "block",
+                                        marginBottom: "5px",
+                                        color: "#333"
+                                    }}>
+                                        Enter Task ID:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter your task ID"
+                                        value={taskIdInput}
+                                        onChange={(e) => setTaskIdInput(e.target.value)}
+                                        style={{ 
+                                            width: "90%", 
+                                            padding: "10px", 
+                                            border: "1px solid #007bff",
+                                            borderRadius: "4px",
+                                            outline: "none",
+                                            boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+                                        }}
+                                        autoFocus
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="option-button-container" style={{ marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={handleTaskIdUpload}
+                                    disabled={!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled}
+                                    style={{ 
+                                        height: "40px", 
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: (!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled) ? "#ccc" : "#ffc107",
+                                        fontWeight: "500",
+                                        cursor: (!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled) ? "not-allowed" : "pointer"
+                                    }}
+                                >
+                                    {buttonText === "uploadPending" ? <LoadingSpinner text="Uploading..." /> : "Click here to upload"}
+                                </button>
+                            </div>
+
+                            <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        setShowTaskIdUpload(false);
+                                        setTaskIdInput("");
+                                        setButtonText("sharedata");
+                                        setButtonDisabled(false);
+                                    }}
+                                    style={{ 
+                                        height: "36px", 
+                                        width: "80px",
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: "#e9ecef",
+                                        color: "#495057"
+                                    }}
+                                >
+                                    ← Back
+                                </button>
+                            </div>
+                        </>
+                    )}
                     
-                    <div className="option-button-container" style={{ marginBottom: "8px" }}>
-                        <button
-                            className="btn"
-                            onClick={() => generateCSV(currentDataset)}
-                            style={{ 
-                                height: "36px", 
-                                display: "flex", 
-                                alignItems: "center", 
-                                justifyContent: "center" 
-                            }}
-                        >
-                            Download CSV file
-                        </button>
-                    </div>
-                    
-                    {showInfoContent ? (
+                    {showInfoContent && (
                         <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
                             <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
                                 <p style={{ marginBottom: "6px" }}>Kapta Lite is a privacy-focused tool for sharing WhatsApp Maps. All maps are password-protected by default with the following security features:</p>
@@ -1195,29 +1384,29 @@ const generateCSV = (dataset) => {
                                 </button> */}
                             </div>
                         </div>
-                    ) : (
-                        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-                            <button 
-                                onClick={() => setShowInfoContent(true)}
-                                style={{
-                                    width: "100px",
-                                    height: "26px",
-                                    borderRadius: "13px",
-                                    backgroundColor: "#525553ff",
-                                    color: "white",
-                                    border: "none",
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }}
-                            >
-                                More info
-                            </button>
-                        </div>
                     )}
+                    
+                    <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+                        <button 
+                            onClick={() => setShowInfoContent(!showInfoContent)}
+                            style={{
+                                width: "100px",
+                                height: "26px",
+                                borderRadius: "13px",
+                                backgroundColor: "#525553ff",
+                                color: "white",
+                                border: "none",
+                                fontSize: "14px",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
+                        >
+                            {showInfoContent ? "Hide info" : "More info"}
+                        </button>
+                    </div>
                 </>
             ) : (
                 <>
