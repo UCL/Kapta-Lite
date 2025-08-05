@@ -219,6 +219,7 @@ export function FilePicker(dataDisplayProps) {
                 <ImageParser
                     files={selectedFiles}
                     {...dataDisplayProps}
+                    setLoadingMessage={setLoadingMessage}
                     onComplete={() => {
                         setSelectedFiles(null); // Reset selected files
                         setLoadingMessage(false); // Hide the loading message

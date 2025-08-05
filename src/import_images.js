@@ -211,7 +211,7 @@ export const convertImageToMapData = (processedImages) => {
 // Main component to handle image file parsing
 
 export let importdataimages = false;
-export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDisplayProps }) {
+export function ImageParser({ files, onComplete, setLoadingMessage, onProcessingComplete, ...dataDisplayProps }) {
   const { setMapData, showMap, setFileToParse } = dataDisplayProps;
   
   if(!window.location.href.includes('?import=')){
@@ -253,6 +253,8 @@ export function ImageParser({ files, onComplete, onProcessingComplete, ...dataDi
       // Show alert if no geotagged images were found
       if (geotaggedImages.length === 0 && fileArray.length > 0) {
         alert(`None of the ${fileArray.length} selected images contain location data. Please select images with GPS metadata.`);
+        setLoadingMessage(false); // Hide the loading message
+
       }
       
       // Create statistics
