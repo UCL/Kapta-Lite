@@ -4,6 +4,20 @@ import { uploadProcessedChat } from "./data_submission";
 import * as JSZip from "jszip";
 import { setGlobalProcessedChatFile } from "./import_whatsapp.js";
 
+
+const worldCapitals = [
+	"Kabul", "Tirana", "Algiers", "Andorra la Vella", "Luanda", "Buenos Aires", "Yerevan", "Canberra", "Vienna", "Baku",
+	"Nassau", "Manama", "Dhaka", "Bridgetown", "Minsk", "Brussels", "Belmopan", "Porto-Novo", "Thimphu", "Sucre",
+	"Sarajevo", "Gaborone", "Brasília", "Bandar Seri Begawan", "Sofia", "Ouagadougou", "Gitega", "Phnom Penh", "Yaoundé", "Ottawa",
+	"Praia", "Bangui", "N'Djamena", "Santiago", "Beijing", "Bogotá", "Moroni", "Kinshasa", "Brazzaville", "San José",
+	"Zagreb", "Havana", "Nicosia", "Prague", "Copenhagen", "Djibouti", "Roseau", "Santo Domingo", "Quito", "Cairo",
+	"San Salvador", "Malabo", "Asmara", "Tallinn", "Addis Ababa", "Suva", "Helsinki", "Paris", "Libreville", "Banjul",
+	"Tbilisi", "Berlin", "Accra", "Athens", "St. George's", "Guatemala City", "Conakry", "Bissau", "Georgetown", "Port-au-Prince",
+	"Tegucigalpa", "Budapest", "Reykjavik", "New Delhi", "Jakarta", "Tehran", "Baghdad", "Dublin", "Jerusalem", "Rome",
+	"Kingston", "Tokyo", "Amman", "Astana", "Nairobi", "Tarawa", "Pristina", "Kuwait City", "Bishkek", "Vientiane",
+	"Riga", "Beirut", "Maseru", "Monrovia", "Tripoli", "Vaduz", "Vilnius", "Luxembourg", "Antananarivo", "Lilongwe"
+  ];
+
 // Function to extract exif data from an image - exported for reuse
 export const extractExifData = async (imageFile) => {
   return new Promise((resolve, reject) => {
@@ -124,10 +138,13 @@ export const convertImageToMapData = (processedImages) => {
   // Use simple ID generation instead of async sha256
   const batchId = generateSimpleId(batchTimestamp);
 
+  // Select a random capital from the worldCapitals array
+  const randomCapital = worldCapitals[Math.floor(Math.random() * worldCapitals.length)];
+
   // Create a sender ID for the batch of images
   const sender = {
     id: `image_sender_${batchId}`,
-    name: "Geotagged Images",
+    name: randomCapital,
     colorIndex: 0
   };
   
