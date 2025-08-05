@@ -714,15 +714,8 @@ export default function MainMenu({
                 setIsWelcomeVisible={setIsWelcomeVisible}
             />
             <div id="menuContainer">
-                <LanguageSelector supportedLanguages={supportedLanguages} />
-                <Instructions />
-                <ButtonArea
-                    showMap={dataDisplayProps.showMap}
-                    hasCurrentDataset={dataset}
-                />
                 {/* Enable FilePicker for all devices */}
                 <FilePicker {...dataDisplayProps} />
-                <Copyright />
             </div>
         </>
     );
