@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./styles/map-etc.css";
 import html2canvas from "html2canvas";
@@ -84,8 +84,48 @@ function LoadingSpinner({ text }) {
     );
 }
 
-const quality = 0.25; // Set the compression parameter
-const compressImageBlob = (blob, quality = 0.25, maxWidth = 300, maxHeight = 300) => {
+let qualityPic = 0.25; // Set the compression parameter
+let maxWidthPic = 300; // Set the maximum width for the image
+let maxHeightPic = 300; // Set the maximum height for the image
+
+// Function to calculate total size of all images in a zip file
+const calculateTotalImageSize = async (zipFile) => {
+    if (!zipFile) return 0;
+    
+    try {
+        const zip = await JSZip.loadAsync(zipFile);
+        const filenames = Object.keys(zip.files);
+        let totalSize = 0;
+        
+        for (const filename of filenames) {
+            const file = zip.file(filename);
+            if (file && /\.(jpg|jpeg|png|gif)$/i.test(filename)) {
+                const fileData = await file.async("blob");
+                totalSize += fileData.size;
+            }
+        }
+        
+        return totalSize;
+    } catch (error) {
+        console.error("Error calculating total image size:", error);
+        return 0;
+    }
+};
+
+// Function to get dynamic quality based on total image size
+const getDynamicQuality = (totalSizeBytes) => {
+    const totalSizeMB = totalSizeBytes / (1024 * 1024);
+    
+    if (totalSizeMB < 2) {
+        return 0.75;
+    } else if (totalSizeMB < 5) {
+        return 0.5;
+    } else {
+        return 0.25; // Default quality for larger files
+    }
+};
+
+const compressImageBlob = (blob, quality = qualityPic, maxWidth = maxWidthPic, maxHeight = maxHeightPic) => {
     return new Promise((resolve) => {
         const img = new Image();
         const url = URL.createObjectURL(blob);
@@ -648,6 +688,56 @@ export function ShareModal({
     const [showInfoContent, setShowInfoContent] = useState(false); // Whether to show info content
     const [showTaskIdUpload, setShowTaskIdUpload] = useState(false); // Whether to show task ID upload interface
     const [taskIdInput, setTaskIdInput] = useState(""); // Task ID input value
+    const [totalImageSize, setTotalImageSize] = useState(0); // Total size of all images in bytes
+    const [isImageSizeCalculated, setIsImageSizeCalculated] = useState(false); // Whether image size has been calculated
+    const [isMapTooLarge, setIsMapTooLarge] = useState(false); // Whether map exceeds 50MB limit
+
+    // Calculate total image size when modal opens or when globalProcessedChatFile changes
+    useEffect(() => {
+        const calculateImageSize = async () => {
+            if (isOpen && !isImageSizeCalculated) {
+                setIsImageSizeCalculated(true);
+                let totalSize = 0;
+                
+                // Handle different data types
+                if (checkIsImageData() && dataDisplayProps.dataset?.data) {
+                    // For image data, calculate size from the dataset
+                    const imageFeatures = dataDisplayProps.dataset.data.features || [];
+                    for (const feature of imageFeatures) {
+                        if (feature.properties?.imageBlob) {
+                            totalSize += feature.properties.imageBlob.size;
+                        }
+                    }
+                } else if (globalProcessedChatFile) {
+                    // For WhatsApp chat data, calculate size from zip file
+                    totalSize = await calculateTotalImageSize(globalProcessedChatFile);
+                }
+                
+                setTotalImageSize(totalSize);
+                
+                // Check if map is too large (50MB = 50 * 1024 * 1024 bytes)
+                const maxSizeBytes = 50 * 1024 * 1024;
+                setIsMapTooLarge(totalSize > maxSizeBytes);
+                
+                // Update quality based on total size
+                const newQuality = getDynamicQuality(totalSize);
+                qualityPic = newQuality;
+                
+                console.log(`Total image size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
+                console.log(`Dynamic quality set to: ${newQuality}`);
+                console.log(`Map too large: ${totalSize > maxSizeBytes}`);
+            }
+        };
+        
+        if (isOpen) {
+            calculateImageSize();
+        } else {
+            // Reset states when modal closes
+            setIsImageSizeCalculated(false);
+            setTotalImageSize(0);
+            setIsMapTooLarge(false);
+        }
+    }, [isOpen, globalProcessedChatFile, isImageSizeCalculated, checkIsImageData, dataDisplayProps.dataset]);
 
     const handleShareDataClick = async () => {
         // Reset any previous errors
@@ -713,11 +803,14 @@ export function ShareModal({
                 const zip = await JSZip.loadAsync(globalProcessedChatFile);
                 const filenames = Object.keys(zip.files);
 
+                // Use dynamic quality based on total image size
+                const dynamicQuality = getDynamicQuality(totalImageSize);
+
                 const compressionPromises = filenames.map(async (filename) => {
                     const file = zip.file(filename);
                     if (file && /\.(jpg|jpeg|png|gif)$/i.test(filename)) {
                         const fileData = await file.async("blob");
-                        const compressedBlob = await compressImageBlob(fileData, quality);
+                        const compressedBlob = await compressImageBlob(fileData, dynamicQuality);
                         if (compressedBlob) {
                             zip.file(filename, compressedBlob);
                         }
@@ -1152,6 +1245,25 @@ const generateCSV = (dataset) => {
                  
                     {!showTaskIdUpload && !showPasswordInput ? (
                         <>
+                            {/* Show warning message if map is too large */}
+                            {isMapTooLarge && (
+                                <div style={{ 
+                                    backgroundColor: "#ffebee", 
+                                    border: "1px solid #f44336", 
+                                    borderRadius: "8px", 
+                                    padding: "12px", 
+                                    marginBottom: "16px",
+                                    color: "#d32f2f"
+                                }}>
+                                    <p style={{ margin: "0", fontSize: "0.9rem", fontWeight: "bold" }}>
+                                        ⚠️ The map you are trying to share is too big ({(totalImageSize / (1024 * 1024)).toFixed(2)} MB).
+                                    </p>
+                                    <p style={{ margin: "8px 0 0 0", fontSize: "0.85rem" }}>
+                                        Contact us for Premium plans or Download the zip file and share it via a messaging app.
+                                    </p>
+                                </div>
+                            )}
+
                             <div className="option-button-container" style={{ marginBottom: "8px" }}>
                                 <button
                                     className="btn"
@@ -1164,13 +1276,16 @@ const generateCSV = (dataset) => {
                                         }      
                        
                                     }}
+                                    disabled={isMapTooLarge}
                                     style={{ 
                                         height: "40px", 
                                         display: "flex", 
                                         alignItems: "center", 
                                         justifyContent: "center",
-                                        backgroundColor: "#25D366",
-                                        fontWeight: "500"
+                                        backgroundColor: isMapTooLarge ? "#ccc" : "#25D366",
+                                        fontWeight: "500",
+                                        cursor: isMapTooLarge ? "not-allowed" : "pointer",
+                                        opacity: isMapTooLarge ? 0.6 : 1
                                     }}
                                 >
                                     Share Map link
@@ -1181,13 +1296,16 @@ const generateCSV = (dataset) => {
                                 <button
                                     className="btn"
                                     onClick={() => setShowTaskIdUpload(true)}
+                                    disabled={isMapTooLarge}
                                     style={{ 
                                         height: "40px", 
                                         display: "flex", 
                                         alignItems: "center", 
                                         justifyContent: "center",
-                                        backgroundColor: "#ffc107",
-                                        fontWeight: "500"
+                                        backgroundColor: isMapTooLarge ? "#ccc" : "#ffc107",
+                                        fontWeight: "500",
+                                        cursor: isMapTooLarge ? "not-allowed" : "pointer",
+                                        opacity: isMapTooLarge ? 0.6 : 1
                                     }}
                                 >
                                     Upload with taskID
