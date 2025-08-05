@@ -726,6 +726,17 @@ export function Map({
     // Drag and drop state
     const [isDragOver, setIsDragOver] = useState(false);
 
+    // Wrapper function to calculate size before parsing
+    const setFileToParseWithSizeCalc = async (file) => {
+        if (file && file.name.endsWith('.zip')) {
+            // Calculate and store image size information immediately
+            if (window.calculateAndStoreImageSize) {
+                await window.calculateAndStoreImageSize(file);
+            }
+        }
+        setFileToParse(file);
+    };
+
     // Prevent default drag behavior on the document
     useEffect(() => {
         const preventDefaults = (e) => {
@@ -889,6 +900,11 @@ export function Map({
                 
                 // Update the global file
                 setGlobalProcessedChatFile(updatedFile);
+                
+                // Calculate and store image size information immediately
+                if (window.calculateAndStoreImageSize) {
+                    await window.calculateAndStoreImageSize(updatedFile);
+                }
             }
         } catch (error) {
             console.error("Error updating global data file:", error);
@@ -1285,18 +1301,18 @@ export function Map({
                     console.log("Merging single zip with existing data...");
                     const mergedFile = await mergeMultipleZipFiles(zipFiles, data);
                     if (mergedFile) {
-                        setFileToParse(mergedFile);
+                        setFileToParseWithSizeCalc(mergedFile);
                     }
                 } else {
                     // No existing data, just load the single file
-                    setFileToParse(zipFiles[0]);
+                    setFileToParseWithSizeCalc(zipFiles[0]);
                 }
             } else {
                 // Handle multiple zip files - merge them with existing data if available
                 console.log("Dropped multiple zip files:", zipFiles.length);
                 const mergedFile = await mergeMultipleZipFiles(zipFiles, data);
                 if (mergedFile) {
-                    setFileToParse(mergedFile);
+                    setFileToParseWithSizeCalc(mergedFile);
                 }
             }
         } else if (files.length === 1) {
@@ -1315,7 +1331,7 @@ export function Map({
                     // For now, just replace - but this could be enhanced to merge in the future
                     console.log("Loading file (will replace existing data):", file.name);
                 }
-                setFileToParse(file);
+                setFileToParseWithSizeCalc(file);
             } else {
                 alert("Please drop a valid file (.zip, .txt, .geojson) or image files.");
             }

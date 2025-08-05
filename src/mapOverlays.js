@@ -125,6 +125,61 @@ const getDynamicQuality = (totalSizeBytes) => {
     }
 };
 
+// Global storage for image size information
+window.globalImageSizeInfo = {
+    totalSize: 0,
+    isCalculated: false,
+    isMapTooLarge: false,
+    dynamicQuality: 0.25
+};
+
+// Global function to calculate and store image size information
+window.calculateAndStoreImageSize = async (zipFile) => {
+    if (!zipFile) {
+        window.globalImageSizeInfo = {
+            totalSize: 0,
+            isCalculated: false,
+            isMapTooLarge: false,
+            dynamicQuality: 0.25
+        };
+        return;
+    }
+    
+    try {
+        console.log("Calculating image size for uploaded/generated zip...");
+        const totalSize = await calculateTotalImageSize(zipFile);
+        const maxSizeBytes = 50 * 1024 * 1024; // 50MB
+        const isMapTooLarge = totalSize > maxSizeBytes;
+        const dynamicQuality = getDynamicQuality(totalSize);
+        
+        // Store globally
+        window.globalImageSizeInfo = {
+            totalSize,
+            isCalculated: true,
+            isMapTooLarge,
+            dynamicQuality
+        };
+        
+        // Update the quality parameter
+        qualityPic = dynamicQuality;
+        
+        console.log(`Image size calculated: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
+        console.log(`Dynamic quality: ${dynamicQuality}`);
+        console.log(`Map too large: ${isMapTooLarge}`);
+        
+        return window.globalImageSizeInfo;
+    } catch (error) {
+        console.error("Error calculating image size:", error);
+        window.globalImageSizeInfo = {
+            totalSize: 0,
+            isCalculated: false,
+            isMapTooLarge: false,
+            dynamicQuality: 0.25
+        };
+        return window.globalImageSizeInfo;
+    }
+};
+
 const compressImageBlob = (blob, quality = qualityPic, maxWidth = maxWidthPic, maxHeight = maxHeightPic) => {
     return new Promise((resolve) => {
         const img = new Image();
@@ -698,34 +753,54 @@ export function ShareModal({
             if (isOpen && !isImageSizeCalculated) {
                 setIsImageSizeCalculated(true);
                 let totalSize = 0;
+                let isMapTooLarge = false;
                 
-                // Handle different data types
-                if (checkIsImageData() && dataDisplayProps.dataset?.data) {
-                    // For image data, calculate size from the dataset
-                    const imageFeatures = dataDisplayProps.dataset.data.features || [];
-                    for (const feature of imageFeatures) {
-                        if (feature.properties?.imageBlob) {
-                            totalSize += feature.properties.imageBlob.size;
+                // First check if we have pre-calculated values
+                if (window.globalImageSizeInfo && window.globalImageSizeInfo.isCalculated) {
+                    console.log("Using pre-calculated image size info");
+                    totalSize = window.globalImageSizeInfo.totalSize;
+                    isMapTooLarge = window.globalImageSizeInfo.isMapTooLarge;
+                    qualityPic = window.globalImageSizeInfo.dynamicQuality;
+                } else {
+                    // Fall back to calculating now (for compatibility)
+                    console.log("Calculating image size on modal open (fallback)");
+                    
+                    // Handle different data types
+                    if (checkIsImageData() && dataDisplayProps.dataset?.data) {
+                        // For image data, calculate size from the dataset
+                        const imageFeatures = dataDisplayProps.dataset.data.features || [];
+                        for (const feature of imageFeatures) {
+                            if (feature.properties?.imageBlob) {
+                                totalSize += feature.properties.imageBlob.size;
+                            }
                         }
+                    } else if (globalProcessedChatFile) {
+                        // For WhatsApp chat data, calculate size from zip file
+                        totalSize = await calculateTotalImageSize(globalProcessedChatFile);
                     }
-                } else if (globalProcessedChatFile) {
-                    // For WhatsApp chat data, calculate size from zip file
-                    totalSize = await calculateTotalImageSize(globalProcessedChatFile);
+                    
+                    // Check if map is too large (50MB = 50 * 1024 * 1024 bytes)
+                    const maxSizeBytes = 50 * 1024 * 1024;
+                    isMapTooLarge = totalSize > maxSizeBytes;
+                    
+                    // Update quality based on total size
+                    const newQuality = getDynamicQuality(totalSize);
+                    qualityPic = newQuality;
+                    
+                    // Store the calculated values globally for future use
+                    window.globalImageSizeInfo = {
+                        totalSize,
+                        isCalculated: true,
+                        isMapTooLarge,
+                        dynamicQuality: newQuality
+                    };
                 }
                 
                 setTotalImageSize(totalSize);
-                
-                // Check if map is too large (50MB = 50 * 1024 * 1024 bytes)
-                const maxSizeBytes = 50 * 1024 * 1024;
-                setIsMapTooLarge(totalSize > maxSizeBytes);
-                
-                // Update quality based on total size
-                const newQuality = getDynamicQuality(totalSize);
-                qualityPic = newQuality;
+                setIsMapTooLarge(isMapTooLarge);
                 
                 console.log(`Total image size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
-                console.log(`Dynamic quality set to: ${newQuality}`);
-                console.log(`Map too large: ${totalSize > maxSizeBytes}`);
+                console.log(`Map too large: ${isMapTooLarge}`);
             }
         };
         

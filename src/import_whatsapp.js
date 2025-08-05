@@ -107,6 +107,11 @@ const processFile = (file, setDataDisplayMap) => {
                                     const [data, name] = processGeoJson(geojsonContent);
                                     setDataDisplayMap(data, name, zip);
 									globalProcessedChatFile = file;
+									
+									// Calculate and store image size information immediately
+									if (window.calculateAndStoreImageSize) {
+										window.calculateAndStoreImageSize(file);
+									}
 
                                 } catch (error) {
                                     console.error("Error processing GeoJSON file:", error);
@@ -125,6 +130,11 @@ const processFile = (file, setDataDisplayMap) => {
                                 );
                                 setDataDisplayMap(data, name, zip);
 								globalProcessedChatFile = processedChatFile;
+								
+								// Calculate and store image size information immediately
+								if (window.calculateAndStoreImageSize) {
+									window.calculateAndStoreImageSize(processedChatFile);
+								}
 
                                 // Pass the processedChatFile to the upload function
                                 // uploadProcessedChat(processedChatFile, (text) => {
