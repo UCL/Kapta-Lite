@@ -958,7 +958,171 @@ export function Map({
         setIsDragOver(false);
     };
 
-    const handleDrop = (e) => {
+    // Function to merge multiple zip files
+    const mergeMultipleZipFiles = async (zipFiles) => {
+        try {
+            console.log(`Starting merge process for ${zipFiles.length} zip files...`);
+            const mergedZip = new JSZip();
+            const allFeatures = [];
+            let imageCounter = 0;
+            
+            for (let i = 0; i < zipFiles.length; i++) {
+                try {
+                    const zipFile = zipFiles[i];
+                    console.log(`Processing zip file ${i + 1}: ${zipFile.name}`);
+                    
+                    const zip = await JSZip.loadAsync(zipFile);
+                    console.log(`Loaded zip ${i + 1} successfully`);
+                    
+                    // Look for GeoJSON data file
+                    const geoJsonFile = zip.file("map.geojson") || zip.file("data.json");
+                    if (geoJsonFile) {
+                        try {
+                            const geoJsonContent = await geoJsonFile.async("string");
+                            const geoData = JSON.parse(geoJsonContent);
+                            console.log(`Parsed GeoJSON from zip ${i + 1}:`, geoData.type);
+                            
+                            // Add features to the merged collection
+                            if (geoData.features && Array.isArray(geoData.features)) {
+                                console.log(`Adding ${geoData.features.length} features from zip ${i + 1}`);
+                                allFeatures.push(...geoData.features);
+                            } else if (geoData.locations) {
+                                console.log(`Converting ${Object.keys(geoData.locations).length} locations from zip ${i + 1}`);
+                                // Handle new image format - convert to features
+                                Object.values(geoData.locations).forEach(location => {
+                                    const observer = (geoData.people && geoData.people[location.senderId]) 
+                                        ? geoData.people[location.senderId].name 
+                                        : "Unknown";
+                                    
+                                    allFeatures.push({
+                                        type: "Feature",
+                                        properties: {
+                                            contributionid: location.batch || location.id,
+                                            mainattribute: "Geotagged Images",
+                                            name: location.name,
+                                            datetime: location.timestamp,
+                                            observer: observer,
+                                            observations: location.description || location.address || "image_no_observation",
+                                            markerColour: "0",
+                                            imgFilenames: [location.name],
+                                            altitude: (location.altitude && location.altitude.toString) ? location.altitude.toString() : "0"
+                                        },
+                                        geometry: {
+                                            type: "Point",
+                                            coordinates: [location.longitude, location.latitude]
+                                        }
+                                    });
+                                });
+                            }
+                        } catch (parseError) {
+                            console.error(`Error parsing GeoJSON from zip ${i + 1}:`, parseError);
+                            // Continue with other zips even if one fails to parse
+                        }
+                    } else {
+                        console.warn(`No GeoJSON data found in zip ${i + 1}`);
+                    }
+                    
+                    // Copy all image files with unique names - collect promises first
+                    const imagePromises = [];
+                    const filenameMapping = new window.Map();
+                    
+                    zip.forEach((relativePath, file) => {
+                        if (relativePath !== "map.geojson" && relativePath !== "data.json" && !file.dir) {
+                            try {
+                                // Add prefix to avoid filename conflicts
+                                const pathParts = relativePath.split('.');
+                                const fileExtension = pathParts.length > 1 ? pathParts.pop() : '';
+                                const baseName = pathParts.join('.');
+                                const uniqueName = fileExtension 
+                                    ? `${baseName}_${i}_${imageCounter++}.${fileExtension}`
+                                    : `${baseName}_${i}_${imageCounter++}`;
+                                
+                                // Store the mapping for later filename updates
+                                filenameMapping.set(relativePath, uniqueName);
+                                
+                                // Create promise to copy the file
+                                const imagePromise = file.async("blob").then(blob => {
+                                    mergedZip.file(uniqueName, blob);
+                                    console.log(`Added image: ${uniqueName} from zip ${i + 1}`);
+                                    return uniqueName;
+                                }).catch(error => {
+                                    console.error(`Error copying file ${relativePath} from zip ${i + 1}:`, error);
+                                    return null;
+                                });
+                                
+                                imagePromises.push(imagePromise);
+                            } catch (fileError) {
+                                console.error(`Error processing file ${relativePath} from zip ${i + 1}:`, fileError);
+                            }
+                        }
+                    });
+                    
+                    // Wait for all images from this zip to be copied
+                    if (imagePromises.length > 0) {
+                        console.log(`Copying ${imagePromises.length} images from zip ${i + 1}...`);
+                        const copiedImages = await Promise.all(imagePromises);
+                        const successfulCopies = copiedImages.filter(name => name !== null);
+                        console.log(`Successfully copied ${successfulCopies.length} images from zip ${i + 1}`);
+                    }
+                    
+                    // Update filename references in features for this zip
+                    allFeatures.forEach(feature => {
+                        if (feature.properties && feature.properties.imgFilenames && Array.isArray(feature.properties.imgFilenames)) {
+                            feature.properties.imgFilenames = feature.properties.imgFilenames.map(filename => {
+                                return filenameMapping.get(filename) || filename;
+                            });
+                        }
+                    });
+                    
+                } catch (zipError) {
+                    console.error(`Error processing zip file ${i + 1} (${zipFiles[i].name}):`, zipError);
+                    // Continue with other zips even if one fails
+                }
+            }
+            
+            console.log(`Creating merged GeoJSON with ${allFeatures.length} total features`);
+            
+            // Create merged GeoJSON
+            const mergedGeoJSON = {
+                type: "FeatureCollection",
+                features: allFeatures
+            };
+            
+            // Add merged GeoJSON to zip
+            mergedZip.file("map.geojson", JSON.stringify(mergedGeoJSON, null, 2));
+            
+            // Generate the merged zip file
+            console.log("Generating merged zip file...");
+            const mergedZipBlob = await mergedZip.generateAsync({ 
+                type: "blob",
+                compression: "DEFLATE",
+                compressionOptions: { level: 6 }
+            });
+            
+            const mergedFile = new File([mergedZipBlob], "merged_maps.zip", { type: "application/zip" });
+            
+            console.log(`Successfully merged ${zipFiles.length} zip files with ${allFeatures.length} total features`);
+            
+            // Log the contents of the merged zip for debugging
+            try {
+                const testZip = await JSZip.loadAsync(mergedFile);
+                const fileList = Object.keys(testZip.files);
+                console.log(`Merged zip contains ${fileList.length} files:`, fileList.slice(0, 10)); // Show first 10 files
+            } catch (debugError) {
+                console.warn("Could not verify merged zip contents:", debugError);
+            }
+            
+            return mergedFile;
+            
+        } catch (error) {
+            console.error("Error merging zip files:", error);
+            console.error("Error stack:", error.stack);
+            alert(`Error merging zip files: ${error.message}. Please check the console for details.`);
+            return null;
+        }
+    };
+
+    const handleDrop = async (e) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragOver(false);
@@ -972,17 +1136,27 @@ export function Map({
         // Check if all files are images
         const allImages = files.every(file => file.type.startsWith('image/'));
         
-        // Check if there's a single zip file
-        const hasZipFile = files.length === 1 && files[0].name.toLowerCase().endsWith('.zip');
+        // Check if there are zip files
+        const zipFiles = files.filter(file => file.name.toLowerCase().endsWith('.zip'));
+        const hasZipFiles = zipFiles.length > 0;
         
         if (allImages && files.length > 0) {
             // Handle image files using ImageParser
             console.log("Dropped image files:", files.length);
             setImagesToParse(files);
-        } else if (hasZipFile) {
-            // Handle single zip file using FileParser  
-            console.log("Dropped zip file:", files[0].name);
-            setFileToParse(files[0]);
+        } else if (hasZipFiles) {
+            if (zipFiles.length === 1) {
+                // Handle single zip file using FileParser  
+                console.log("Dropped single zip file:", zipFiles[0].name);
+                setFileToParse(zipFiles[0]);
+            } else {
+                // Handle multiple zip files - merge them
+                console.log("Dropped multiple zip files:", zipFiles.length);
+                const mergedFile = await mergeMultipleZipFiles(zipFiles);
+                if (mergedFile) {
+                    setFileToParse(mergedFile);
+                }
+            }
         } else if (files.length === 1) {
             // Handle single non-image file (could be .txt, .geojson, etc.)
             const file = files[0];
@@ -998,7 +1172,7 @@ export function Map({
                 alert("Please drop a valid file (.zip, .txt, .geojson) or image files.");
             }
         } else {
-            alert("Please drop either image files, or a single zip/text file.");
+            alert("Please drop either image files, zip files, or a single text/GeoJSON file.");
         }
     };
 
@@ -1033,7 +1207,7 @@ export function Map({
                     <div className="drag-overlay">
                         <div className="drag-message">
                             <h3>Drop your files here</h3>
-                            <p>Supported: ZIP files, images, TXT, GeoJSON</p>
+                            <p>Supported: ZIP files (single or multiple), images, TXT, GeoJSON</p>
                         </div>
                     </div>
                 )}
