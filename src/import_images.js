@@ -18,6 +18,30 @@ const worldCapitals = [
 	"Riga", "Beirut", "Maseru", "Monrovia", "Tripoli", "Vaduz", "Vilnius", "Luxembourg", "Antananarivo", "Lilongwe"
   ];
 
+// Function to get or create a persistent observer name from localStorage
+const getPersistentObserver = () => {
+  const STORAGE_KEY = 'kapta_observer_name';
+  
+  // Check if observer name already exists in localStorage
+  let observerName = localStorage.getItem(STORAGE_KEY);
+  
+  // If no observer name exists, create one and store it
+  if (!observerName) {
+    observerName = worldCapitals[Math.floor(Math.random() * worldCapitals.length)];
+    localStorage.setItem(STORAGE_KEY, observerName);
+    console.log('Created new persistent observer name:', observerName);
+  } else {
+    console.log('Using existing observer name from localStorage:', observerName);
+  }
+  
+  return observerName;
+};
+
+// Function to initialize observer name on app startup (can be called from main.js)
+export const initializeObserverName = () => {
+  return getPersistentObserver();
+};
+
 // Function to extract exif data from an image - exported for reuse
 export const extractExifData = async (imageFile) => {
   return new Promise((resolve, reject) => {
@@ -138,13 +162,13 @@ export const convertImageToMapData = (processedImages) => {
   // Use simple ID generation instead of async sha256
   const batchId = generateSimpleId(batchTimestamp);
 
-  // Select a random capital from the worldCapitals array
-  const randomCapital = worldCapitals[Math.floor(Math.random() * worldCapitals.length)];
+  // Get the persistent observer name from localStorage
+  const observerName = getPersistentObserver();
 
   // Create a sender ID for the batch of images
   const sender = {
     id: `image_sender_${batchId}`,
-    name: randomCapital,
+    name: observerName,
     colorIndex: 0
   };
   

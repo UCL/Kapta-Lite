@@ -265,6 +265,10 @@ export function MapActionArea({
     };
 
     const handleCreate = () => {
+        // Ensure persistent observer name is initialized when Create button is clicked
+        const { initializeObserverName } = require('./import_images.js');
+        initializeObserverName();
+        
         setIsCreateModalOpen(true); // Open the "Create" modal
         console.log("create modal clicked")
     };
@@ -1258,17 +1262,9 @@ const generateCSV = (dataset) => {
                                         setButtonText("sharedata");
                                         setButtonDisabled(false);
                                     }}
-                                    style={{ 
-                                        height: "36px", 
-                                        width: "80px",
-                                        display: "flex", 
-                                        alignItems: "center", 
-                                        justifyContent: "center",
-                                        backgroundColor: "#e9ecef",
-                                        color: "#495057"
-                                    }}
+                                    style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold"} }
                                 >
-                                    ← Back
+                                    Go back
                                 </button>
                             </div>
                         </>
@@ -1279,7 +1275,7 @@ const generateCSV = (dataset) => {
                                 <div style={{ marginBottom: "10px" }}>
                                     <label style={{ 
                                         fontSize: "1rem", 
-                                        fontWeight: "bold",
+                                        // fontWeight: "bold",
                                         display: "block",
                                         marginBottom: "5px",
                                         color: "#333"
@@ -1332,17 +1328,9 @@ const generateCSV = (dataset) => {
                                         setButtonText("sharedata");
                                         setButtonDisabled(false);
                                     }}
-                                    style={{ 
-                                        height: "36px", 
-                                        width: "80px",
-                                        display: "flex", 
-                                        alignItems: "center", 
-                                        justifyContent: "center",
-                                        backgroundColor: "#e9ecef",
-                                        color: "#495057"
-                                    }}
+                                    style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold" } }
                                 >
-                                    ← Back
+                                    Go back
                                 </button>
                             </div>
                         </>
