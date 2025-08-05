@@ -563,7 +563,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p>Explore the map or tell us what map data you need.
+                            <p>Explore the map to connect with Kapta Business Mappers. For a large-scale crowdsoucing campaign, go to "Premium".
                             </p>
                             <button
                                 className="btn"

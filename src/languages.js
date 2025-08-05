@@ -68,10 +68,11 @@ i18next.use(initReactI18next).init({
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
 				about: "WhatsApp Maps and Photos Maps",
-				aboutContent: `<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
-								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos. <br />
-								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps and Photos Maps. <br />
-								<br /><strong>What are Kapta Business Mappers?</strong> Community leaders who make a business creating maps with Kapta. <br />
+				aboutContent: `
+								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps and Photos Maps, and connecting with Kapta Business Mappers. <br />
+								<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
+								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos that are in the phone. <br />
+								<br /><strong>What are Kapta Business Mappers?</strong> People who make a business creating maps with Kapta. <br />
 								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
 
 				why: " Case studies",
@@ -115,20 +116,20 @@ i18next.use(initReactI18next).init({
 				confirm: "Confirm",
 				yes: "Yes",
 				no: "No",
-				sharedata: "Click to share",
+				sharedata: "👉 Click to share",
 				shareimg: "Share the map IMAGE",
 				uploaddata: "Share map with Task ID",
 			   uploadPending: `uploadPending`,
 				uploadReady: "Ready to Share!!!",
 				uploadFailed: "Upload failed! See console.",
-				shareDirectly: "Click to share",
+				shareDirectly: "👉 Click to share",
 				addMetadataTitle: "Describe this map",
 				sharingTitle: "",
 				addDescription: "Search open WhatsApp Maps",
 				updateDescription: "Update map title",
 				copyright: "Kapta by UCL",
 				supportOption: "Get support to improve your map",
-				installPrompt: "Install Kapta if you're using 👉 Google Chrome 👈",
+				installPrompt: "👉 Install Kapta if you're using Google Chrome",
 				installClickMessage:
 					"Kapta is now being added to your home screen. This might take a few seconds",
 				desktoporiosPrompt:
