@@ -139,6 +139,7 @@ function App() {
                 data={mapData}
                 isLoginVisible={isLoginVisible}
                 setIsLoginVisible={setIsLoginVisible}
+                setMapData={setMapData}
                 {...dataDisplayProps}
 
             />

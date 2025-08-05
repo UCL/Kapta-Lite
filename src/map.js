@@ -23,6 +23,8 @@ import {
 } from "react-leaflet";
 
 import { MapActionArea, ShareModal } from "./mapOverlays.js";
+import { setGlobalProcessedChatFile } from "./import_whatsapp.js";
+import * as JSZip from "jszip";
 import {
 	basemapGMapsIcon,
 	basemapSatIcon,
@@ -33,6 +35,8 @@ import {
 	WhatAppMapperPosition,
 	GPSIcn,
 	nextIcn,
+	editIcon,
+	deleteIcon,
 } from "./icons.js";
 import { MAPBOX_TOKEN } from "../globals.js";
 import { UploadDialog } from "./UploadDialog.jsx";
@@ -125,12 +129,16 @@ const getImageURLFromZip = async (zip, imgFilename) => {
 
 
 
-function MapDataLayer({ data }) {
+function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLocation, onDeleteImageLocation, setMapData, updateGlobalDataFile }) {
 	const { t } = useTranslation();
 	const map = useMap();
 	const boundsRef = useRef([]);
 	const { data: geoJSON, imgZip } = data;
 	const [featureImages, setFeatureImages] = useState({}); // this is basically a cache
+	const [editingFeature, setEditingFeature] = useState(null);
+	const [editObservation, setEditObservation] = useState("");
+	const [editingLocation, setEditingLocation] = useState(null);
+	const [editLocationDescription, setEditLocationDescription] = useState("");
     // Define a custom GPS icon
     const WhatsAppMarkerIcon = L.divIcon({
 		html: WhatAppMapMarkerPosition, // 
@@ -142,6 +150,35 @@ function MapDataLayer({ data }) {
 	// Check if it's the old WhatsApp format with features array or new format with locations object
 	const isOldFormat = geoJSON.hasOwnProperty('features');
 	const isNewImageFormat = !isOldFormat && geoJSON.hasOwnProperty('locations');
+	
+	useEffect(() => {
+		// fit map to bounds
+		if (boundsRef.current.length > 0) {
+			map.fitBounds(boundsRef.current);
+		}
+	}, [geoJSON, map]);
+
+	const handleMarkerClick = useCallback(
+		async (feature) => {
+			// Handle WhatsApp style image zip
+			if (imgZip && feature.properties?.imgFilenames?.length > 0) {
+				// will want to map over imgFilenames when we support multiple
+				feature.properties.imgFilenames.map(async (filename) =>
+					// check the image isn't already loaded
+					{
+						if (filename && !featureImages[filename]) {
+							const url = await getImageURLFromZip(imgZip, filename);
+							setFeatureImages((prev) => ({
+								...prev,
+								[filename]: url,
+							}));
+						}
+					}
+				);
+			}
+		},
+		[imgZip, featureImages]
+	);
 	
 	// If it's the old format with no features
 	if (isOldFormat && geoJSON.features.length === 0) {
@@ -181,34 +218,60 @@ function MapDataLayer({ data }) {
 
 	}
 
-	useEffect(() => {
-		// fit map to bounds
-		if (boundsRef.current.length > 0) {
-			map.fitBounds(boundsRef.current);
-		}
-	}, [geoJSON, map]);
+	// Handle edit observation
+	const handleEditObservation = (feature, newObservation) => {
+		if (!data?.data?.features) return;
+        
+        const updatedData = { ...data };
+        const featureIndex = updatedData.data.features.findIndex(f => 
+            f.geometry.coordinates[0] === feature.geometry.coordinates[0] &&
+            f.geometry.coordinates[1] === feature.geometry.coordinates[1] &&
+            f.properties.datetime === feature.properties.datetime
+        );
+        
+        if (featureIndex !== -1) {
+            updatedData.data.features[featureIndex].properties.observations = newObservation;
+            setMapData(updatedData);
+            updateGlobalDataFile(updatedData);
+        }
+        
+		setEditingFeature(null);
+		setEditObservation("");
+	};
 
-	const handleMarkerClick = useCallback(
-		async (feature) => {
-			// Handle WhatsApp style image zip
-			if (imgZip && feature.properties?.imgFilenames?.length > 0) {
-				// will want to map over imgFilenames when we support multiple
-				feature.properties.imgFilenames.map(async (filename) =>
-					// check the image isn't already loaded
-					{
-						if (filename && !featureImages[filename]) {
-							const url = await getImageURLFromZip(imgZip, filename);
-							setFeatureImages((prev) => ({
-								...prev,
-								[filename]: url,
-							}));
-						}
-					}
-				);
+	// Handle delete feature
+	const handleDeleteFeature = (feature) => {
+		if (window.confirm("Are you sure you want to delete this point?")) {
+			if (!data?.data?.features) return;
+        
+            const updatedData = { ...data };
+            updatedData.data.features = updatedData.data.features.filter(f => 
+                !(f.geometry.coordinates[0] === feature.geometry.coordinates[0] &&
+                  f.geometry.coordinates[1] === feature.geometry.coordinates[1] &&
+                  f.properties.datetime === feature.properties.datetime)
+            );
+            setMapData(updatedData);
+            updateGlobalDataFile(updatedData);
+		}
+	};
+
+	// Handle edit image location description
+	const handleEditLocationDescription = (locationId, newDescription) => {
+		if (onUpdateImageLocation) {
+			onUpdateImageLocation(locationId, { description: newDescription, address: newDescription });
+		}
+		setEditingLocation(null);
+		setEditLocationDescription("");
+	};
+
+	// Handle delete image location
+	const handleDeleteImageLocation = (locationId) => {
+		if (window.confirm("Are you sure you want to delete this point?")) {
+			if (onDeleteImageLocation) {
+				onDeleteImageLocation(locationId);
 			}
-		},
-		[imgZip, featureImages]
-	);
+		}
+	};
 
 	// If it's the new image format with locations object
 	if (isNewImageFormat) {
@@ -235,7 +298,58 @@ function MapDataLayer({ data }) {
 											/>
 										</div>
 									)}
-									<p>{location.address || "Geotagged image location"}</p>
+									{/* Editable description section */}
+									{editingLocation === location.id ? (
+										<div className="popup-observation-container">
+											<textarea
+												value={editLocationDescription}
+												onChange={(e) => setEditLocationDescription(e.target.value)}
+												className="popup-edit-textarea"
+												autoFocus
+											/>
+											<div className="popup-edit-actions">
+												<button
+													onClick={(e) => {
+														e.stopPropagation();
+														handleEditLocationDescription(location.id, editLocationDescription);
+													}}
+													className="popup-save-btn"
+												>
+													Save
+												</button>
+												<button
+													onClick={(e) => {
+														e.stopPropagation();
+														setEditingLocation(null);
+														setEditLocationDescription("");
+													}}
+													className="popup-cancel-btn"
+												>
+													Cancel
+												</button>
+											</div>
+										</div>
+									) : (
+										<div className="popup-observation-container">
+											<div className="popup-observation-display">
+												<div className="popup-observation-text">
+													<p>{location.description || location.address || "Geotagged image location"}</p>
+												</div>
+												<div className="popup-edit-button-container">
+													<button
+														onClick={() => {
+															setEditingLocation(location.id);
+															setEditLocationDescription(location.description || location.address || "");
+														}}
+														className="popup-edit-btn"
+														title="Edit description"
+													>
+														{editIcon}
+													</button>
+												</div>
+											</div>
+										</div>
+									)}
 								</div>
 								<div className="map-popup-footer">
 									{t("date")}: {location.timestamp ? new Date(location.timestamp).toLocaleString() : "-"}
@@ -245,6 +359,19 @@ function MapDataLayer({ data }) {
 									<strong>Coordinates:</strong><br />
 									lat {latlng.lat.toFixed(6)}<br />
 									lng {latlng.lng.toFixed(6)}
+									{/* Delete button at bottom */}
+									<div className="popup-bottom-delete-container">
+										<button
+											onClick={(e) => {
+												e.stopPropagation();
+												handleDeleteImageLocation(location.id);
+											}}
+											className="popup-bottom-delete-btn"
+											title="Delete this point"
+										>
+											Delete
+										</button>
+									</div>
 								</div>
 							</Popup>
 						</Marker>
@@ -282,7 +409,7 @@ function MapDataLayer({ data }) {
 									click: () => handleMarkerClick(feature),
 								}}
 							>
-								<Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
+								<Popup offset={L.point(2, -15)} maxWidth={250} maxHeight={400}>
 								<div className="map-popup-body">
 									{imgFilenames && imgFilenames.length > 0 && (
 										<div
@@ -320,9 +447,61 @@ function MapDataLayer({ data }) {
 											)}
 										</div>
 									)}
-									{observations.split("\n").map((o, index) => (
-										<p key={index}>{o}</p>
-									))}
+									{/* Editable observations section */}
+									{editingFeature === feature ? (
+										<div className="popup-observation-container">
+											<textarea
+												value={editObservation}
+												onChange={(e) => setEditObservation(e.target.value)}
+												className="popup-edit-textarea"
+												autoFocus
+											/>
+											<div className="popup-edit-actions">
+												<button
+													onClick={(e) => {
+														e.stopPropagation();
+														handleEditObservation(feature, editObservation);
+													}}
+													className="popup-save-btn"
+												>
+													Save
+												</button>
+												<button
+													onClick={(e) => {
+														e.stopPropagation();
+														setEditingFeature(null);
+														setEditObservation("");
+													}}
+													className="popup-cancel-btn"
+												>
+													Cancel
+												</button>
+											</div>
+										</div>
+									) : (
+										<div className="popup-observation-container">
+											<div className="popup-observation-display">
+												<div className="popup-observation-text">
+													{observations.split("\n").map((o, index) => (
+														<p key={index}>{o}</p>
+													))}
+												</div>
+												<div className="popup-edit-button-container">
+													<button
+														onClick={(e) => {
+															e.stopPropagation();
+															setEditingFeature(feature);
+															setEditObservation(observations);
+														}}
+														className="popup-edit-btn"
+														title="Edit observation"
+													>
+														{editIcon}
+													</button>
+												</div>
+											</div>
+										</div>
+									)}
 								</div>
 								<div className="map-popup-footer">
 									{t("date")}:{" "}
@@ -333,6 +512,19 @@ function MapDataLayer({ data }) {
 									<strong>Coordinates:</strong><br />
 									lat {latlng.lat}<br />
 									lng {latlng.lng}
+									{/* Delete button at bottom */}
+									<div className="popup-bottom-delete-container">
+										<button
+											onClick={(e) => {
+												e.stopPropagation();
+												handleDeleteFeature(feature);
+											}}
+											className="popup-bottom-delete-btn"
+											title="Delete this point"
+										>
+											Delete
+										</button>
+									</div>
 								</div>
 							</Popup>
 							</Marker>
@@ -511,6 +703,7 @@ export function Map({
     data,
     isLoginVisible,
     setIsLoginVisible,
+    setMapData, // Add this to update the data
 }) {
     if (!isVisible) return null;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -526,6 +719,153 @@ export function Map({
 
     // State to track the active tile layer
     const [activeTileLayer, setActiveTileLayer] = useState("gmaps");
+
+    // Handle feature updates (for editing observations)
+    const handleUpdateFeature = (feature, updates) => {
+        if (!data?.data?.features) return;
+        
+        const updatedData = { ...data };
+        const featureIndex = updatedData.data.features.findIndex(f => 
+            f.geometry.coordinates[0] === feature.geometry.coordinates[0] &&
+            f.geometry.coordinates[1] === feature.geometry.coordinates[1] &&
+            f.properties.datetime === feature.properties.datetime
+        );
+        
+        if (featureIndex !== -1) {
+            updatedData.data.features[featureIndex].properties = {
+                ...updatedData.data.features[featureIndex].properties,
+                ...updates
+            };
+            setMapData(updatedData);
+            updateGlobalDataFile(updatedData);
+        }
+    };
+
+    // Handle feature deletion
+    const handleDeleteFeature = (feature) => {
+        if (!data?.data?.features) return;
+        
+        const updatedData = { ...data };
+        updatedData.data.features = updatedData.data.features.filter(f => 
+            !(f.geometry.coordinates[0] === feature.geometry.coordinates[0] &&
+              f.geometry.coordinates[1] === feature.geometry.coordinates[1] &&
+              f.properties.datetime === feature.properties.datetime)
+        );
+        setMapData(updatedData);
+        updateGlobalDataFile(updatedData);
+    };
+
+    // Handle image location updates (for new format)
+    const handleUpdateImageLocation = (locationId, updates) => {
+        if (!data?.data?.locations) return;
+        
+        const updatedData = { ...data };
+        if (updatedData.data.locations[locationId]) {
+            updatedData.data.locations[locationId] = {
+                ...updatedData.data.locations[locationId],
+                ...updates
+            };
+            setMapData(updatedData);
+            updateGlobalDataFile(updatedData);
+        }
+    };
+
+    // Handle image location deletion (for new format)
+    const handleDeleteImageLocation = (locationId) => {
+        if (!data?.data?.locations) return;
+        
+        const updatedData = { ...data };
+        delete updatedData.data.locations[locationId];
+        setMapData(updatedData);
+        updateGlobalDataFile(updatedData);
+    };
+
+    // Function to update the global data file with changes
+    const updateGlobalDataFile = async (updatedData) => {
+        try {
+            if (data?.imgZip) {
+                // Re-create the zip file with updated data
+                const zip = new JSZip();
+                
+                // Check if it's the new image format or old WhatsApp format
+                if (updatedData.data.features) {
+                    // For WhatsApp format, save as standard GeoJSON FeatureCollection
+                    const geoJSONData = {
+                        type: "FeatureCollection",
+                        features: updatedData.data.features
+                    };
+                    const updatedGeoJSON = JSON.stringify(geoJSONData, null, 2);
+                    zip.file("map.geojson", updatedGeoJSON);
+                } else if (updatedData.data.locations) {
+                    // For image format, convert locations to GeoJSON FeatureCollection format
+                    const features = Object.values(updatedData.data.locations).map(location => ({
+                        type: "Feature",
+                        properties: {
+                            contributionid: location.batch || location.id,
+                            mainattribute: "Geotagged Images",
+                            name: location.name,
+                            datetime: location.timestamp,
+                            observer: updatedData.data.people[location.senderId]?.name || "Unknown",
+                            observations: location.description || location.address || "image_no_observation",
+                            markerColour: "0",
+                            imgFilenames: [location.name],
+                            altitude: location.altitude?.toString() || "0"
+                        },
+                        geometry: {
+                            type: "Point",
+                            coordinates: [location.longitude, location.latitude]
+                        }
+                    }));
+                    
+                    const geoJSONData = {
+                        type: "FeatureCollection",
+                        features: features
+                    };
+                    const updatedGeoJSON = JSON.stringify(geoJSONData, null, 2);
+                    zip.file("map.geojson", updatedGeoJSON);
+                }
+                
+                // Add existing files from the original zip (except the data file we just updated)
+                try {
+                    let originalZip;
+                    if (data.imgZip instanceof File || data.imgZip instanceof Blob) {
+                        originalZip = await JSZip.loadAsync(data.imgZip);
+                    } else if (typeof data.imgZip === 'string') {
+                        // Handle base64 string
+                        originalZip = await JSZip.loadAsync(data.imgZip, {base64: true});
+                    } else {
+                        // Assume it's already ArrayBuffer or similar
+                        originalZip = await JSZip.loadAsync(data.imgZip);
+                    }
+                    
+                    const promises = [];
+                    originalZip.forEach((relativePath, file) => {
+                        if (relativePath !== "map.geojson" && relativePath !== "data.json") {
+                            promises.push(
+                                file.async("blob").then(blob => {
+                                    zip.file(relativePath, blob);
+                                })
+                            );
+                        }
+                    });
+                    
+                    // Wait for all files to be added
+                    await Promise.all(promises);
+                } catch (zipError) {
+                    console.warn("Could not load original zip, creating new one with just the data file:", zipError);
+                }
+                
+                // Generate the updated zip file
+                const updatedZipBlob = await zip.generateAsync({ type: "blob" });
+                const updatedFile = new File([updatedZipBlob], "updated_map.zip", { type: "application/zip" });
+                
+                // Update the global file
+                setGlobalProcessedChatFile(updatedFile);
+            }
+        } catch (error) {
+            console.error("Error updating global data file:", error);
+        }
+    };
 	useEffect(() => {
 		const map = document.querySelector(".leaflet-control-attribution");
 	
@@ -635,7 +975,15 @@ export function Map({
                     )}
                     {/* error if currentLocation can't be found */}
                     {error && <ErrorPopup />}
-                    {data && <MapDataLayer data={data} />}
+                    {data && <MapDataLayer 
+                        data={data} 
+                        onUpdateFeature={handleUpdateFeature}
+                        onDeleteFeature={handleDeleteFeature}
+                        onUpdateImageLocation={handleUpdateImageLocation}
+                        onDeleteImageLocation={handleDeleteImageLocation}
+                        setMapData={setMapData}
+                        updateGlobalDataFile={updateGlobalDataFile}
+                    />}
                     {showWaMappers && <WhatsAppMappersDataLayer />}
                     <UpdateMap
                         currentLocation={currentLocation}

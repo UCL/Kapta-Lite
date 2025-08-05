@@ -199,11 +199,6 @@
     }
 }
 
-.map-popup-body {
-    /* overflow-y: scroll; */
-    
-}
-
 .map-action-btn {
     width: 5rem;
     height: 6rem;
@@ -750,3 +745,145 @@
     border-radius: 6px;
     border: 2px solid #1c6e03;
   }
+
+/* Edit and Delete buttons in popups */
+.popup-edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+.popup-edit-btn:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.popup-edit-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.popup-delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.popup-delete-btn:hover {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.popup-delete-container {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    z-index: 1000;
+    background-color: white;
+    border-radius: 50%;
+    padding: 2px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.popup-edit-textarea {
+    width: 150px;
+    height: 25px;
+    min-height: 25px;
+    max-height: 25px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+    resize: none;
+    font-family: inherit;
+}
+
+.popup-edit-actions {
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+}
+
+.popup-save-btn {
+    padding: 3px 8px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.popup-save-btn:hover {
+    background-color: #218838;
+}
+
+.popup-cancel-btn {
+    padding: 3px 8px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.popup-cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.popup-observation-container {
+    margin-bottom: 10px;
+}
+
+.popup-observation-display {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.popup-observation-text {
+    flex: 1;
+}
+
+.popup-observation-text p {
+    margin: 2px 0;
+}
+
+.popup-edit-button-container {
+    margin-left: 5px;
+}
+
+/* Bottom delete button container */
+.popup-bottom-delete-container {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.popup-bottom-delete-btn {
+    background: #dc3545;
+    border: none;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.popup-bottom-delete-btn:hover {
+    background-color: #c82333;
+}

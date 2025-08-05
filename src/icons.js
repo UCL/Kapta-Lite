@@ -25,6 +25,8 @@ import {
 	faPlus,
 	faArrowUpRightFromSquare,
 	faLocationDot,
+	faEdit,
+	faTrash,
 	// faWhatsapp,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -67,7 +69,9 @@ library.add(
 	faWhatsapp,
 	faPlus,
 	faArrowUpRightFromSquare,
-	faLocationDot
+	faLocationDot,
+	faEdit,
+	faTrash
 );
 // we use .btn-icon but there is no global styling for it, only ever nested,
 // which allows for easy selecting and flexible styling
@@ -172,6 +176,14 @@ export const thumbsUpIcon = (
 );
 export const msgIcon = (
 	<FontAwesomeIcon icon={faMessage} className="btn-icon" />
+);
+
+// Edit and Delete icons
+export const editIcon = (
+	<FontAwesomeIcon icon={faEdit} style={{ color: "#007bff", fontSize: "14px" }} />
+);
+export const deleteIcon = (
+	<FontAwesomeIcon icon={faTrash} style={{ color: "#dc3545", fontSize: "14px" }} />
 );
 
 // menu
