@@ -113,3 +113,13 @@
     text-align: center;
     z-index: 1000;
 }
+
+/* Hide the green menu container while keeping burger menu and bottom buttons */
+#menuContainer {
+    display: none !important;
+}
+
+/* Hide only the input area (search/title input) but keep the bottom action buttons */
+.filter__form {
+    display: none !important;
+}

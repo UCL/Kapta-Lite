@@ -97,8 +97,8 @@ function App() {
     }, []); // Empty dependency array ensures this effect runs once on mount
 	
     
-    const [isMenuVisible, setIsMenuVisible] = useState(true); // To be set to false when the issue with FilePicker is fixed
     const [isMapVisible, setIsMapVisible] = useState(true); // Always show map
+    const [isMenuVisible, setIsMenuVisible] = useState(true); // Show menu for burger and bottom buttons
     const [mapData, setMapData] = useState(null);
     const [isLoaderVisible, setIsLoaderVisible] = useState(true);
     const [isLoginVisible, setIsLoginVisible] = useState(false);
@@ -140,6 +140,9 @@ function App() {
                 isLoginVisible={isLoginVisible}
                 setIsLoginVisible={setIsLoginVisible}
                 setMapData={setMapData}
+                setFileToParse={setFileToParse}
+                setImagesToParse={setImagesToParse}
+                showMap={showMap}
                 {...dataDisplayProps}
 
             />
@@ -147,7 +150,11 @@ function App() {
             {...dataDisplayProps}
             />
             
-            {fileToParse && <FileParser file={fileToParse} {...dataDisplayProps} />}
+            {fileToParse && <FileParser 
+                file={fileToParse} 
+                onComplete={() => setFileToParse(null)}
+                {...dataDisplayProps} 
+            />}
             {imagesToParse && imagesToParse.length > 0 && (
                 <ImageParser 
                     files={imagesToParse} 
@@ -155,6 +162,7 @@ function App() {
                         setImageStats(stats);
                         setIsImageInfoVisible(true);
                     }}
+                    onComplete={() => setImagesToParse(null)}
                     {...dataDisplayProps} 
                 />
             )}

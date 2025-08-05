@@ -32,6 +32,7 @@
     height: 100vh;
     width: 100vw;
     position: fixed;
+    position: relative;
 
     .map-button {
         position: absolute;
@@ -886,4 +887,45 @@
 
 .popup-bottom-delete-btn:hover {
     background-color: #c82333;
+}
+
+/* Drag and Drop Styles */
+#map.drag-over {
+    border: 3px dashed #25D366;
+    background-color: rgba(37, 211, 102, 0.1);
+}
+
+.drag-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(37, 211, 102, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.drag-message {
+    text-align: center;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.drag-message h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.drag-message p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
 }

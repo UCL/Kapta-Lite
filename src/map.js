@@ -704,6 +704,9 @@ export function Map({
     isLoginVisible,
     setIsLoginVisible,
     setMapData, // Add this to update the data
+    setFileToParse, // Add this for drag and drop functionality
+    setImagesToParse, // Add this for drag and drop functionality
+    showMap, // Add this for drag and drop functionality
 }) {
     if (!isVisible) return null;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -719,6 +722,31 @@ export function Map({
 
     // State to track the active tile layer
     const [activeTileLayer, setActiveTileLayer] = useState("gmaps");
+
+    // Drag and drop state
+    const [isDragOver, setIsDragOver] = useState(false);
+
+    // Prevent default drag behavior on the document
+    useEffect(() => {
+        const preventDefaults = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        };
+
+        // Add event listeners to prevent default drag behavior
+        document.addEventListener('dragenter', preventDefaults);
+        document.addEventListener('dragover', preventDefaults);
+        document.addEventListener('dragleave', preventDefaults);
+        document.addEventListener('drop', preventDefaults);
+
+        return () => {
+            // Cleanup event listeners
+            document.removeEventListener('dragenter', preventDefaults);
+            document.removeEventListener('dragover', preventDefaults);
+            document.removeEventListener('dragleave', preventDefaults);
+            document.removeEventListener('drop', preventDefaults);
+        };
+    }, []);
 
     // Handle feature updates (for editing observations)
     const handleUpdateFeature = (feature, updates) => {
@@ -917,6 +945,63 @@ export function Map({
             : console.error("GPS not available");
     };
 
+    // Drag and drop handlers
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragOver(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragOver(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragOver(false);
+
+        const files = Array.from(e.dataTransfer.files);
+        
+        if (files.length === 0) {
+            return;
+        }
+
+        // Check if all files are images
+        const allImages = files.every(file => file.type.startsWith('image/'));
+        
+        // Check if there's a single zip file
+        const hasZipFile = files.length === 1 && files[0].name.toLowerCase().endsWith('.zip');
+        
+        if (allImages && files.length > 0) {
+            // Handle image files using ImageParser
+            console.log("Dropped image files:", files.length);
+            setImagesToParse(files);
+        } else if (hasZipFile) {
+            // Handle single zip file using FileParser  
+            console.log("Dropped zip file:", files[0].name);
+            setFileToParse(files[0]);
+        } else if (files.length === 1) {
+            // Handle single non-image file (could be .txt, .geojson, etc.)
+            const file = files[0];
+            const allowedExtensions = [".zip", ".txt", ".geojson"];
+            const isAllowed = allowedExtensions.some(ext => 
+                file.name.toLowerCase().endsWith(ext)
+            );
+            
+            if (isAllowed) {
+                console.log("Dropped allowed file:", file.name);
+                setFileToParse(file);
+            } else {
+                alert("Please drop a valid file (.zip, .txt, .geojson) or image files.");
+            }
+        } else {
+            alert("Please drop either image files, or a single zip/text file.");
+        }
+    };
+
     return (
         <>
             <SuccessModal
@@ -937,7 +1022,21 @@ export function Map({
                 currentDataset={data?.data}
                 setIsUploadDialogOpen={setIsUploadDialogOpen}
             />
-            <div id="map">
+            <div 
+                id="map"
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={isDragOver ? "drag-over" : ""}
+            >
+                {isDragOver && (
+                    <div className="drag-overlay">
+                        <div className="drag-message">
+                            <h3>Drop your files here</h3>
+                            <p>Supported: ZIP files, images, TXT, GeoJSON</p>
+                        </div>
+                    </div>
+                )}
                 <div className={`map-title ${shouldPulse ? "pulse-shadow" : ""}`}>
                     {titleValue}
                 </div>
