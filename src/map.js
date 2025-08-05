@@ -962,6 +962,15 @@ export function Map({
     const mergeMultipleZipFiles = async (zipFiles, existingData = null) => {
         try {
             console.log(`Starting merge process for ${zipFiles.length} zip files...`);
+            console.log("Existing data passed to merge:", existingData ? "YES" : "NO");
+            if (existingData) {
+                console.log("Existing data structure:", {
+                    hasDataProperty: !!existingData.data,
+                    hasImgZip: !!existingData.imgZip,
+                    dataType: existingData.data ? (existingData.data.features ? 'features' : existingData.data.locations ? 'locations' : 'unknown') : 'none'
+                });
+            }
+            
             const mergedZip = new JSZip();
             const allFeatures = [];
             let imageCounter = 0;
@@ -1003,30 +1012,88 @@ export function Map({
             if (existingData?.imgZip) {
                 try {
                     console.log("Adding existing images to merged zip...");
+                    console.log("Existing imgZip type:", typeof existingData.imgZip);
+                    console.log("Existing imgZip constructor:", existingData.imgZip.constructor.name);
+                    console.log("Is File:", existingData.imgZip instanceof File);
+                    console.log("Is Blob:", existingData.imgZip instanceof Blob);
+                    
                     let existingZip;
                     if (existingData.imgZip instanceof File || existingData.imgZip instanceof Blob) {
+                        console.log("Loading as File/Blob");
                         existingZip = await JSZip.loadAsync(existingData.imgZip);
                     } else if (typeof existingData.imgZip === 'string') {
+                        console.log("Loading as base64 string");
                         existingZip = await JSZip.loadAsync(existingData.imgZip, {base64: true});
+                    } else if (existingData.imgZip instanceof ArrayBuffer) {
+                        console.log("Loading as ArrayBuffer");
+                        existingZip = await JSZip.loadAsync(existingData.imgZip);
+                    } else if (existingData.imgZip && typeof existingData.imgZip === 'object' && existingData.imgZip.files) {
+                        console.log("Already a JSZip object");
+                        existingZip = existingData.imgZip;
                     } else {
+                        console.log("Attempting to load as raw data");
                         existingZip = await JSZip.loadAsync(existingData.imgZip);
                     }
                     
-                    // Copy existing images (except data files)
-                    const existingImagePromises = [];
+                    // Count existing files first for debugging
+                    let existingFileCount = 0;
                     existingZip.forEach((relativePath, file) => {
                         if (relativePath !== "map.geojson" && relativePath !== "data.json" && !file.dir) {
+                            existingFileCount++;
+                        }
+                    });
+                    console.log(`Found ${existingFileCount} existing image files to copy`);
+                    
+                    // Copy existing images with consistent naming (except data files)
+                    const existingImagePromises = [];
+                    const existingFilenameMapping = new window.Map();
+                    
+                    existingZip.forEach((relativePath, file) => {
+                        if (relativePath !== "map.geojson" && relativePath !== "data.json" && !file.dir) {
+                            // Use consistent naming scheme for existing images too
+                            const pathParts = relativePath.split('.');
+                            const fileExtension = pathParts.length > 1 ? pathParts.pop() : '';
+                            const baseName = pathParts.join('.');
+                            const uniqueName = fileExtension 
+                                ? `${baseName}_existing_${imageCounter++}.${fileExtension}`
+                                : `${baseName}_existing_${imageCounter++}`;
+                            
+                            // Store the mapping for filename updates
+                            existingFilenameMapping.set(relativePath, uniqueName);
+                            
                             existingImagePromises.push(
                                 file.async("blob").then(blob => {
-                                    mergedZip.file(relativePath, blob);
-                                    console.log(`Added existing image: ${relativePath}`);
+                                    mergedZip.file(uniqueName, blob);
+                                    console.log(`Added existing image: ${uniqueName}`);
+                                    return uniqueName;
+                                }).catch(error => {
+                                    console.error(`Error copying existing file ${relativePath}:`, error);
+                                    return null;
                                 })
                             );
                         }
                     });
                     
                     await Promise.all(existingImagePromises);
-                    console.log(`Added ${existingImagePromises.length} existing images`);
+                    console.log(`Successfully processed ${existingImagePromises.length} existing images`);
+                    
+                    // Update filename references in existing features
+                    let updatedFeatureCount = 0;
+                    allFeatures.forEach(feature => {
+                        if (feature.properties && feature.properties.imgFilenames && Array.isArray(feature.properties.imgFilenames)) {
+                            const originalFilenames = [...feature.properties.imgFilenames];
+                            feature.properties.imgFilenames = feature.properties.imgFilenames.map(filename => {
+                                const mappedName = existingFilenameMapping.get(filename);
+                                if (mappedName) {
+                                    updatedFeatureCount++;
+                                    console.log(`Updated feature image reference: ${filename} -> ${mappedName}`);
+                                }
+                                return mappedName || filename;
+                            });
+                        }
+                    });
+                    console.log(`Updated ${updatedFeatureCount} feature image references for existing images`);
+                    
                 } catch (existingZipError) {
                     console.warn("Could not load existing images:", existingZipError);
                 }
