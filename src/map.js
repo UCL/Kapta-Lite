@@ -959,12 +959,78 @@ export function Map({
     };
 
     // Function to merge multiple zip files
-    const mergeMultipleZipFiles = async (zipFiles) => {
+    const mergeMultipleZipFiles = async (zipFiles, existingData = null) => {
         try {
             console.log(`Starting merge process for ${zipFiles.length} zip files...`);
             const mergedZip = new JSZip();
             const allFeatures = [];
             let imageCounter = 0;
+            
+            // Add existing data features if available
+            if (existingData?.data?.features && Array.isArray(existingData.data.features)) {
+                console.log(`Adding ${existingData.data.features.length} existing features to merge`);
+                allFeatures.push(...existingData.data.features);
+            } else if (existingData?.data?.locations) {
+                console.log(`Converting ${Object.keys(existingData.data.locations).length} existing locations to features`);
+                // Convert existing image format locations to features
+                Object.values(existingData.data.locations).forEach(location => {
+                    const observer = (existingData.data.people && existingData.data.people[location.senderId]) 
+                        ? existingData.data.people[location.senderId].name 
+                        : "Unknown";
+                    
+                    allFeatures.push({
+                        type: "Feature",
+                        properties: {
+                            contributionid: location.batch || location.id,
+                            mainattribute: "Geotagged Images",
+                            name: location.name,
+                            datetime: location.timestamp,
+                            observer: observer,
+                            observations: location.description || location.address || "image_no_observation",
+                            markerColour: "0",
+                            imgFilenames: [location.name],
+                            altitude: (location.altitude && location.altitude.toString) ? location.altitude.toString() : "0"
+                        },
+                        geometry: {
+                            type: "Point",
+                            coordinates: [location.longitude, location.latitude]
+                        }
+                    });
+                });
+            }
+            
+            // Add existing images to the merged zip if there's an existing imgZip
+            if (existingData?.imgZip) {
+                try {
+                    console.log("Adding existing images to merged zip...");
+                    let existingZip;
+                    if (existingData.imgZip instanceof File || existingData.imgZip instanceof Blob) {
+                        existingZip = await JSZip.loadAsync(existingData.imgZip);
+                    } else if (typeof existingData.imgZip === 'string') {
+                        existingZip = await JSZip.loadAsync(existingData.imgZip, {base64: true});
+                    } else {
+                        existingZip = await JSZip.loadAsync(existingData.imgZip);
+                    }
+                    
+                    // Copy existing images (except data files)
+                    const existingImagePromises = [];
+                    existingZip.forEach((relativePath, file) => {
+                        if (relativePath !== "map.geojson" && relativePath !== "data.json" && !file.dir) {
+                            existingImagePromises.push(
+                                file.async("blob").then(blob => {
+                                    mergedZip.file(relativePath, blob);
+                                    console.log(`Added existing image: ${relativePath}`);
+                                })
+                            );
+                        }
+                    });
+                    
+                    await Promise.all(existingImagePromises);
+                    console.log(`Added ${existingImagePromises.length} existing images`);
+                } catch (existingZipError) {
+                    console.warn("Could not load existing images:", existingZipError);
+                }
+            }
             
             for (let i = 0; i < zipFiles.length; i++) {
                 try {
@@ -1099,7 +1165,7 @@ export function Map({
                 compressionOptions: { level: 6 }
             });
             
-            const mergedFile = new File([mergedZipBlob], "merged_maps.zip", { type: "application/zip" });
+            const mergedFile = new File([mergedZipBlob], "Merged_maps.zip", { type: "application/zip" });
             
             console.log(`Successfully merged ${zipFiles.length} zip files with ${allFeatures.length} total features`);
             
@@ -1146,13 +1212,22 @@ export function Map({
             setImagesToParse(files);
         } else if (hasZipFiles) {
             if (zipFiles.length === 1) {
-                // Handle single zip file using FileParser  
+                // Handle single zip file - merge with existing data if available
                 console.log("Dropped single zip file:", zipFiles[0].name);
-                setFileToParse(zipFiles[0]);
+                if (data && (data.data?.features || data.data?.locations)) {
+                    console.log("Merging single zip with existing data...");
+                    const mergedFile = await mergeMultipleZipFiles(zipFiles, data);
+                    if (mergedFile) {
+                        setFileToParse(mergedFile);
+                    }
+                } else {
+                    // No existing data, just load the single file
+                    setFileToParse(zipFiles[0]);
+                }
             } else {
-                // Handle multiple zip files - merge them
+                // Handle multiple zip files - merge them with existing data if available
                 console.log("Dropped multiple zip files:", zipFiles.length);
-                const mergedFile = await mergeMultipleZipFiles(zipFiles);
+                const mergedFile = await mergeMultipleZipFiles(zipFiles, data);
                 if (mergedFile) {
                     setFileToParse(mergedFile);
                 }
@@ -1167,6 +1242,12 @@ export function Map({
             
             if (isAllowed) {
                 console.log("Dropped allowed file:", file.name);
+                if (data && (data.data?.features || data.data?.locations) && 
+                    (file.name.toLowerCase().endsWith('.txt') || file.name.toLowerCase().endsWith('.geojson'))) {
+                    // For text/geojson files, we might want to merge them too
+                    // For now, just replace - but this could be enhanced to merge in the future
+                    console.log("Loading file (will replace existing data):", file.name);
+                }
                 setFileToParse(file);
             } else {
                 alert("Please drop a valid file (.zip, .txt, .geojson) or image files.");
