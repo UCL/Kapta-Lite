@@ -10,10 +10,10 @@
     --black-blue--translucent: #03192799;
     --mid-grey: #555;
     --light-grey: #808080;
-    --bright-green: #25D366;
+    --bright-green: #25D367;
     --black-grey: #2d2c2c;
     --link-blue: #2d53b4;
-    --wa-green: #25D366;
+    --wa-green: #25D367;
     --wa-green--dark: #1ca64f;
 }
 
@@ -353,7 +353,7 @@ body {
     top: 150px;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #25D366;
+    background-color: #25D367;
     color: white;
     padding: 20px;
     border-radius: 8px;
@@ -367,7 +367,7 @@ body {
     left: 50%; /* Center horizontally */
     transform: translate(-50%, -50%); /* Adjust for the element's size */
     padding: 1rem 2rem; /* Increase padding for a larger button */
-    background-color: #25D366; /* Red background for emphasis */
+    background-color: #25D367; /* Red background for emphasis */
     color: white; /* White text for contrast */
     border-radius: 10px; /* Rounded corners */
     font-size: 1rem; /* Larger font size */
@@ -384,7 +384,7 @@ body {
     left: 50%; /* Center horizontally */
     transform: translate(-50%, -50%); /* Adjust for the element's size */
     padding: 1rem 2rem; /* Increase padding for a larger button */
-    background-color: #25D366; /* Red background for emphasis */
+    background-color: #25D367; /* Red background for emphasis */
     color: white; /* White text for contrast */
     border-radius: 10px; /* Rounded corners */
     font-size: 1rem; /* Larger font size */

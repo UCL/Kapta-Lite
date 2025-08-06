@@ -14,6 +14,7 @@ import ReactGA from "react-ga4";
 import { UserProvider } from "./UserContext.jsx";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 import { ShareModal } from "./mapOverlays.js";
+import KaptaLogo from "./images/icons/kapta-green.svg";
 
 export function isMobileOrTablet (){
     return (
@@ -246,6 +247,37 @@ function App() {
 
     return (
         <UserProvider>
+            {/* Kapta Logo and Brand */}
+            <div style={{
+                position: 'fixed',
+                top: '15px',
+                left: '15px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                zIndex: 9998,
+                backgroundColor: 'transparent',
+                padding: '8px 12px',
+                borderRadius: '8px'
+            }}>
+                <img 
+                    src={KaptaLogo} 
+                    alt="Kapta Logo" 
+                    style={{ 
+                        height: '24px', 
+                        width: '24px' 
+                    }} 
+                />
+                <span style={{
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#fbfdfbff',
+                    fontFamily: 'system-ui, -apple-system, sans-serif'
+                }}>
+                    kaptalite (beta)
+                </span>
+            </div>
+
             {/* Offline indicator */}
             {showOfflineMessage && (
                 <div style={{

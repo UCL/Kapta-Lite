@@ -1339,6 +1339,18 @@ const generateCSV = (dataset) => {
                                     <p style={{ margin: "8px 0 0 0", fontSize: "0.85rem" }}>
                                         Contact us for Premium plans or Download the zip file and share it via a messaging app.
                                     </p>
+                                    <button
+                                        className="btn"
+                                        style={{ height: "45px", borderRadius: "15px" }}
+                                        onClick={() => {
+                                            window.open(
+                                                "https://docs.google.com/forms/d/e/1FAIpQLSdcQWiRL55YJWBf6w4njVoFhE-OiyO3jxswEcG8OYb-0bpnEA/viewform",
+                                                "_blank"
+                                            );
+                                        }}
+                                    >
+                                        Contact us
+                                    </button>
                                 </div>
                             )}
 
@@ -1544,7 +1556,9 @@ const generateCSV = (dataset) => {
                                     <li>Passwords never stored on our servers</li>
                                     {/* <li>Files automatically expire after 30 days</li> */}
                                     <li>No user registration or personal data collection</li>
+                                    
                                 </ul>
+                                <p style={{ marginBottom: "4px" }}>💡 Kapta compress the images for faster upload/download. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
                                 <p style={{ marginBottom: "4px" }}>Download buttons</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information</li>
@@ -1552,6 +1566,8 @@ const generateCSV = (dataset) => {
                                     <li>The Map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
                                     <li>If you need help to process the map data, feel free to reach out to us.</li>
                                 </ul>
+                                
+
                                 <p style={{ marginTop: "8px", marginBottom: "0" }}>Choose a strong password (minimum 6 characters. 12 recommended) and share it separately from the map link for maximum security.</p>
                             </div>
                             <div style={{ textAlign: "right", marginTop: "15px" }}>
