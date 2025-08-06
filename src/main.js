@@ -86,6 +86,7 @@ function App() {
     const [isImageInfoVisible, setIsImageInfoVisible] = useState(false);
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [showOfflineMessage, setShowOfflineMessage] = useState(false);
+    const [globalLoadingMessage, setGlobalLoadingMessage] = useState(false);
 
     useEffect(() => {
         // Initialize GA and SW
@@ -146,6 +147,32 @@ function App() {
             window.removeEventListener('offline', handleOffline);
         };
     }, []); // Empty dependency array ensures this effect runs once on mount
+
+    // Show loading message when files are set for processing (drag & drop, service worker, URL import)
+    useEffect(() => {
+        if (fileToParse) {
+            console.log('Main app: File set for parsing, showing loading message');
+            setGlobalLoadingMessage(true);
+        }
+    }, [fileToParse]);
+
+    // Show loading message when images are set for processing (drag & drop, service worker)
+    useEffect(() => {
+        if (imagesToParse && imagesToParse.length > 0) {
+            console.log('Main app: Images set for parsing, showing loading message');
+            setGlobalLoadingMessage(true);
+        }
+    }, [imagesToParse]);
+
+    // Hide loading message when map data is ready
+    useEffect(() => {
+        if (mapData && globalLoadingMessage) {
+            console.log('Main app: Map data ready, hiding loading message');
+            setTimeout(() => {
+                setGlobalLoadingMessage(false);
+            }, 500); // Small delay to ensure map has rendered
+        }
+    }, [mapData, globalLoadingMessage]);
 
     // Helper function to show temporary messages
     const showTempMessage = (message, type = 'info', duration = 4000) => {
@@ -268,6 +295,8 @@ function App() {
                 setIsLoginVisible={setIsLoginVisible}
                 setIsWelcomeVisible={setIsWelcomeVisible}
                 dataset={mapData}
+                globalLoadingMessage={globalLoadingMessage}
+                setGlobalLoadingMessage={setGlobalLoadingMessage}
                 {...dataDisplayProps}
             />
             <Map
@@ -288,7 +317,10 @@ function App() {
             
             {fileToParse && <FileParser 
                 file={fileToParse} 
-                onComplete={() => setFileToParse(null)}
+                onComplete={() => {
+                    setFileToParse(null);
+                    setGlobalLoadingMessage(false);
+                }}
                 {...dataDisplayProps} 
             />}
             {imagesToParse && imagesToParse.length > 0 && (
@@ -297,6 +329,7 @@ function App() {
                     onProcessingComplete={(stats) => {
                         setImageStats(stats);
                         setIsImageInfoVisible(true);
+                        setGlobalLoadingMessage(false);
                     }}
                     onComplete={() => setImagesToParse(null)}
                     {...dataDisplayProps} 

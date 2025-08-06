@@ -123,11 +123,11 @@ function RecentMapButton({ showMap }) {
         </button>
     );
 }
-export function FilePicker(dataDisplayProps) {
+export function FilePicker({ setLoadingMessage, ...dataDisplayProps }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFiles, setSelectedFiles] = useState(null);
     const fileInputRef = useRef(null);
-    const [loadingMessage, setLoadingMessage] = useState(false);
+    // Remove local loadingMessage state since we'll use the parent's
 
     const handleFileChange = (event) => {
         console.log("File input change detected:", event.target.files?.length, "files");
@@ -171,29 +171,6 @@ export function FilePicker(dataDisplayProps) {
     const { t } = useTranslation();
     return (
         <>
-            {loadingMessage && (
-                <div
-                    id="loadingMessage"
-                    className="loading-message"
-                    style={{
-                        backgroundColor: "#25D366",
-                        color: "white",
-                        padding: "1rem",
-                        textAlign: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                    }}
-                >
-                    <span style={{color: "#3a3a3a"}}>Your Map is loading. This might take a few seconds.</span>
-                    <img
-                        src={checkingPwGif}
-                        alt="Loading animation"
-                        style={{ width: "40px", height: "40px" }}
-                    />
-                </div>
-            )}
             <input
                 type="file"
                 accept={isMobileOrTablet() && !isIOS() ? "image/*" : allowedExtensions.join(",")}
@@ -212,6 +189,7 @@ export function FilePicker(dataDisplayProps) {
                     onComplete={() => {
                         setSelectedFile(null); // Reset selected file
                         setLoadingMessage(false); // Hide the loading message
+                        console.log('FileParser completed, hiding loading message');
                     }}
                 />
             )}
@@ -220,9 +198,15 @@ export function FilePicker(dataDisplayProps) {
                     files={selectedFiles}
                     {...dataDisplayProps}
                     setLoadingMessage={setLoadingMessage}
+                    onProcessingComplete={(stats) => {
+                        // Hide loading message when processing completes (success or error)
+                        setLoadingMessage(false);
+                        console.log('ImageParser processing completed, hiding loading message', stats);
+                    }}
                     onComplete={() => {
                         setSelectedFiles(null); // Reset selected files
-                        setLoadingMessage(false); // Hide the loading message
+                        setLoadingMessage(false); // Hide the loading message (backup)
+                        console.log('ImageParser completed, hiding loading message');
                     }}
                 />
             )}
@@ -278,6 +262,8 @@ export default function MainMenu({
     setIsLoginVisible,
     setIsWelcomeVisible,
     dataset,
+    globalLoadingMessage,
+    setGlobalLoadingMessage,
     ...dataDisplayProps
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false);
@@ -460,7 +446,7 @@ export default function MainMenu({
 
     return (
         <>
-            {loadingMessage && (
+            {(loadingMessage || globalLoadingMessage) && (
                 <div
                 id="loadingMessage"
                 className="loading-message"
@@ -473,6 +459,13 @@ export default function MainMenu({
                   flexDirection: "column",
                   alignItems: "center",
                   gap: "0.5rem",
+                  position: "fixed",
+                  top: "20%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 10001,
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
                 }}
               >
 
@@ -715,7 +708,7 @@ export default function MainMenu({
             />
             <div id="menuContainer">
                 {/* Enable FilePicker for all devices */}
-                <FilePicker {...dataDisplayProps} />
+                <FilePicker setLoadingMessage={setLoadingMessage} {...dataDisplayProps} />
             </div>
         </>
     );

@@ -279,6 +279,7 @@ export function ImageParser({ files, onComplete, setLoadingMessage, onProcessing
   // Process image files and extract geotagged information
   const processImageFiles = async (files) => {
     try {
+      
       console.log("Processing", files.length, "image files");
       // Convert FileList to array
       const fileArray = Array.from(files);
