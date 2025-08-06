@@ -477,6 +477,8 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Initial three button view */}
                 {!activeOption && (
                     <div className="option-button-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <p>Create maps by converting WhatsApp chats or Photos into maps. </p>
+
                         <button
                             className="btn"
                             onClick={() => setActiveOption('whatsapp')}
@@ -523,17 +525,17 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                 className="btn"
                                 onClick={() =>
                                     window.open(
-                                        "https://wa.me/447473522912?text=Hi%2C%20please%20help%20me%20create%20a%20WhatsApp%20Map.",
+                                        "https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png",
                                         "_blank"
                                     )
                                 }
                             >
-                                Open WhatsApp to start
+                                See tutorial
                             </button>
 
                             {!isMobileOrTablet() && (
                                 <>
-                                    <p>Or if you already have the chat. Upload to convert it.</p>
+                                    <p>Or if you already have one or multiple chats, click below to upload or DRAG & DROP them here. </p>
                                     <button
                                         className="btn"
                                         onClick={() => {
@@ -549,6 +551,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                     >
                                         Convert a chat<br />into a map
                                     </button>
+                                    <p>🛎️ Whatever you upload here, stays in your device. No one can see it. </p>
                                 </>
                             )}
                             
@@ -567,9 +570,8 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p>To create a Photos Map, select image files from your device.</p>
-                        <p>Note that only the images that were taken with the "Location" ON in your device will be shown in the map.</p>
-                        
+                        <p>To create a Photos Map, select image files from your device. 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 SEARCH for AI-assited pre-selection</p>
+                                                
                         <div className="option-button-container">
                             <button
                                 className="btn"
@@ -598,7 +600,8 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             >
                                 Convert images into a map
                             </button>
-                            
+                            <p>Note that only the images that were taken with the "Location" ON in your device will be shown in the map.</p>
+                            <p>🛎️ Whatever you upload here, stays in your device. No one can see it. </p>
                             {/* Back button */}
                             <button 
                                 className="btn" 
@@ -662,14 +665,14 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p>Explore the map to connect with Kapta Business Mappers. For a large-scale crowdsoucing campaign, go to "Premium".
+                            <p>We're building the network Kapta Business Mappers. Explore the map to connect with them. Contact us if you need our support to launch a large-scale crowdsourcing campaign.
                             </p>
                             <button
                                 className="btn"
                                 style={{ height: "45px", borderRadius: "15px" }}
                                 onClick={() => {
                                     window.open(
-                                        "https://wa.me/447473522912?text=Hi%2C%20I%20need%20WhatsApp%20Maps%20about...",
+                                        "https://docs.google.com/forms/d/e/1FAIpQLSdcQWiRL55YJWBf6w4njVoFhE-OiyO3jxswEcG8OYb-0bpnEA/viewform",
                                         "_blank"
                                     );
                                 }}
@@ -683,9 +686,9 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                         <p>
                             {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                             <br />
-                            The <strong>free version</strong> allows you to visualise the maps in Kapta and download the data to analyse it in QGIS, ArcGIS etc.
+                            The <strong>free version</strong> allows you to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
                             <br />
-                            <strong>Premium</strong> allows you to manage multiple WhatsApp Maps and use dashboards and AI Agents for advanced visualisation and analysis.
+                            <strong>Premium</strong> allows you to manage multiple Kapta Maps and use dashboards and AI Agents for advanced visualisation and analysis.
 
                         </p>
                         <div className="option-button-container">
@@ -701,7 +704,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     </>
                 ) : (
-                    <p>No open WhatsApp Maps have been shared yet. Contribute yours!</p>
+                    <p>No open maps have been shared yet. Contribute yours!</p>
                 )}
             </div>
 
@@ -1356,6 +1359,7 @@ const generateCSV = (dataset) => {
                                         height: "40px", 
                                         display: "flex", 
                                         alignItems: "center", 
+                                        fontWeight: "bold",
                                         justifyContent: "center",
                                         backgroundColor: isMapTooLarge ? "#ccc" : "#25D366",
                                         fontWeight: "500",
@@ -1377,6 +1381,7 @@ const generateCSV = (dataset) => {
                                         display: "flex", 
                                         alignItems: "center", 
                                         justifyContent: "center",
+                                        fontWeight: "bold",
                                         backgroundColor: isMapTooLarge ? "#ccc" : "#ffc107",
                                         fontWeight: "500",
                                         cursor: isMapTooLarge ? "not-allowed" : "pointer",
@@ -1491,6 +1496,7 @@ const generateCSV = (dataset) => {
                                         autoFocus
                                     />
                                 </div>
+                                <p style={{ fontSize: "7px" }}>Only the organisation that sent you this task ID, and the Kapta system administrator, will be able to see your map data. Public-private key encryption is under development</p>
                             </div>
 
                             <div className="option-button-container" style={{ marginBottom: "8px" }}>
@@ -1532,9 +1538,9 @@ const generateCSV = (dataset) => {
                     {showInfoContent && (
                         <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
                             <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
-                                <p style={{ marginBottom: "6px" }}>Kapta Lite is a privacy-focused tool for sharing WhatsApp Maps. All maps are password-protected by default with the following security features:</p>
+                                <p style={{ marginBottom: "6px" }}>Kaptalite is a privacy-focused tool for sharing WhatsApp Maps and Photos Maps. All maps that you share direcly to your network are password-protected by default with the following security features:</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
-                                    <li>Client-side encryption using AES-256. Not even the Kapta team can view your maps.</li>
+                                    <li>Client-side encryption using AES-256. Not even the Kaptalite team can view your maps.</li>
                                     <li>Passwords never stored on our servers</li>
                                     {/* <li>Files automatically expire after 30 days</li> */}
                                     <li>No user registration or personal data collection</li>
@@ -1542,7 +1548,7 @@ const generateCSV = (dataset) => {
                                 <p style={{ marginBottom: "4px" }}>Download buttons</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information</li>
-                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kapta, select the zip file, then click 'Share' and select Kapta.</li>
+                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kaptalite, select the zip files, then click 'Share' and select Kaptalite.</li>
                                     <li>The Map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
                                     <li>If you need help to process the map data, feel free to reach out to us.</li>
                                 </ul>
