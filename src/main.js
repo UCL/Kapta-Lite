@@ -84,6 +84,8 @@ function App() {
     const [imagesToParse, setImagesToParse] = useState(null);
     const [imageStats, setImageStats] = useState({ totalProcessed: 0, withLocation: 0 });
     const [isImageInfoVisible, setIsImageInfoVisible] = useState(false);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [showOfflineMessage, setShowOfflineMessage] = useState(false);
 
     useEffect(() => {
         // Initialize GA and SW
@@ -94,7 +96,108 @@ function App() {
         // Initialize persistent observer name on app startup
         const { initializeObserverName } = require('./import_images.js');
         initializeObserverName();
+
+        // Add online/offline event listeners
+        const handleOnline = async () => {
+            setIsOnline(true);
+            setShowOfflineMessage(false);
+            console.log('App: Back online');
+            
+            // Process any queued actions
+            try {
+                const { processQueue, getQueueStatus } = await import('./offline-utils.js');
+                const queueStatus = getQueueStatus();
+                
+                if (queueStatus.length > 0) {
+                    console.log(`Processing ${queueStatus.length} queued offline actions...`);
+                    const results = await processQueue();
+                    
+                    if (results && results.length > 0) {
+                        const successCount = results.filter(r => r.success).length;
+                        const failCount = results.length - successCount;
+                        
+                        let message = `✅ Processed ${successCount} queued actions.`;
+                        if (failCount > 0) {
+                            message += ` ⚠️ ${failCount} failed and will be retried.`;
+                        }
+                        
+                        // Show temporary success message
+                        showTempMessage(message, 'success');
+                    }
+                }
+            } catch (error) {
+                console.error('Error processing offline queue:', error);
+            }
+        };
+
+        const handleOffline = () => {
+            setIsOnline(false);
+            setShowOfflineMessage(true);
+            console.log('App: Gone offline');
+            // Hide offline message after 5 seconds
+            setTimeout(() => setShowOfflineMessage(false), 5000);
+        };
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
     }, []); // Empty dependency array ensures this effect runs once on mount
+
+    // Helper function to show temporary messages
+    const showTempMessage = (message, type = 'info', duration = 4000) => {
+        const notification = document.createElement('div');
+        const bgColor = type === 'success' ? '#4CAF50' : type === 'warning' ? '#FF9800' : '#2196F3';
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: ${bgColor};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 10002;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 14px;
+            max-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        `;
+        
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        // Add CSS animations if not already added
+        if (!document.getElementById('temp-message-styles')) {
+            const style = document.createElement('style');
+            style.id = 'temp-message-styles';
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOutRight {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }, duration);
+    };
 	
     
     const [isMapVisible, setIsMapVisible] = useState(true); // Always show map
@@ -116,6 +219,39 @@ function App() {
 
     return (
         <UserProvider>
+            {/* Offline indicator */}
+            {showOfflineMessage && (
+                <div style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    backgroundColor: '#FF6B35',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    zIndex: 10000,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                }}>
+                    📶 You're offline. Some features may be limited.
+                </div>
+            )}
+            
+            {/* Connection status indicator (subtle) */}
+            <div style={{
+                position: 'fixed',
+                top: '10px',
+                right: '10px',
+                width: '12px',
+                height: '12px',
+                borderRadius: '50%',
+                backgroundColor: isOnline ? '#4CAF50' : '#FF6B35',
+                zIndex: 9999,
+                opacity: 0.7
+            }} title={isOnline ? 'Online' : 'Offline'} />
+
             <InstallDialog />
             <Loader isVisible={isLoaderVisible} setIsVisible={setIsLoaderVisible} />
             <LoginDialog

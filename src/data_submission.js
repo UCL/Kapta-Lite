@@ -1,9 +1,47 @@
 import { useTranslation } from "react-i18next";
+import { isOnline, queueAction, showOfflineMessage } from './offline-utils.js';
 
 const API_URL = "https://mjbhgmtnxe.execute-api.eu-west-2.amazonaws.com/prod/KaptaLite_test";
 const BUCKET_BASE_URL = "https://s3.eu-west-2.amazonaws.com/kapta-lite-private-maps";
 
+// Helper function to convert file to base64 for offline storage
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+
 export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, setButtonDisabled, sharingOption, taskId, WhatsAppMapTags, wabMapperId) {
+
+    // Check if online
+    if (!isOnline()) {
+        console.log("📴 Device is offline. Queuing upload for later.");
+        
+        // Queue the upload for when we're back online
+        const queueId = queueAction({
+            type: 'upload',
+            data: {
+                file: await fileToBase64(file), // Store as base64 for queuing
+                fileName: fileNameWAMap,
+                fileType: file.type,
+                sharingOption,
+                taskId,
+                WhatsAppMapTags,
+                wabMapperId
+            }
+        });
+        
+        setButtonText("uploadQueued");
+        setButtonDisabled(false);
+        
+        showOfflineMessage("Upload queued. It will be processed when you're back online.");
+        
+        // Return a temporary offline URL
+        return `offline-queued://${queueId}`;
+    }
 
     setButtonText("uploadPending");
     setButtonDisabled(true);
@@ -23,7 +61,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
         });
 
         // Step 1: Request a pre-signed URL from the backend
-        const response = await fetch(`${API_URL}/upload-url`, {
+        const response = await fetchWithRetry(`${API_URL}/upload-url`, {
             method: "POST",
             body: JSON.stringify({
                 fileName: fileNameWAMap,
@@ -42,7 +80,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
 
         // Step 2: Upload the file to S3 using the pre-signed URL
         setButtonText("uploadPending");
-        const uploadResponse = await fetch(presignedUrl, {
+        const uploadResponse = await fetchWithRetry(presignedUrl, {
             method: "PUT",
             body: file,
             headers: { "Content-Type": file.type }
@@ -69,7 +107,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
 
         if (visibility === "private-sensitive") {
             // Step 3a: Fetch the pre-signed download URL
-            const downloadResponse = await fetch(`${API_URL}/download-url?fileName=${fileNameWAMap}&visibility=${visibility}&taskIdFolder=${taskIdFolder}&tagsFolder=${tagsFolder}`);
+            const downloadResponse = await fetchWithRetry(`${API_URL}/download-url?fileName=${fileNameWAMap}&visibility=${visibility}&taskIdFolder=${taskIdFolder}&tagsFolder=${tagsFolder}`);
 
             if (!downloadResponse.ok) throw new Error(`Failed to get download URL: ${await downloadResponse.text()}`);
 
@@ -89,8 +127,52 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
 
     } catch (error) {
         console.error("❌ Upload error:", error);
+        
+        // If it's a network error and we're offline, queue the upload
+        if (!isOnline() && (error.name === 'TypeError' || error.message.includes('fetch'))) {
+            console.log("📴 Network error detected. Queuing upload for retry.");
+            
+            const queueId = queueAction({
+                type: 'upload',
+                data: {
+                    file: await fileToBase64(file),
+                    fileName: fileNameWAMap,
+                    fileType: file.type,
+                    sharingOption,
+                    taskId,
+                    WhatsAppMapTags,
+                    wabMapperId
+                }
+            });
+            
+            setButtonText("uploadQueued");
+            setButtonDisabled(false);
+            
+            showOfflineMessage("Network error. Upload queued for retry when connection is restored.");
+            return `offline-queued://${queueId}`;
+        }
+        
         setButtonText("uploadFailed");
         setButtonDisabled(false);
         throw error;
+    }
+}
+
+// Fetch with retry mechanism for better offline handling
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            return response;
+        } catch (error) {
+            console.warn(`Fetch attempt ${i + 1} failed:`, error.message);
+            
+            if (i === retries - 1) {
+                throw error; // Last attempt failed
+            }
+            
+            // Wait before retry with exponential backoff
+            await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+        }
     }
 }

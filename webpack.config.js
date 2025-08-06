@@ -129,20 +129,44 @@ module.exports = (env, argv) => {
 				? [
 						new InjectManifest({
 							swSrc: "./src/sw.js",
-							maximumFileSizeToCacheInBytes: 6242880,
+							maximumFileSizeToCacheInBytes: 10485760, // 10MB - increased for better offline support
+							exclude: [
+								/\.map$/,
+								/manifest$/,
+								/node_modules\/(?!workbox)/,
+								/\.DS_Store$/,
+								/\.git/,
+								/\.md$/,
+							],
+							// Additional files to include in precache
+							manifestTransforms: [
+								(manifestEntries) => {
+									console.log('Precaching', manifestEntries.length, 'files');
+									return {
+										manifest: manifestEntries.filter(entry => {
+											// Include essential files for offline functionality
+											return !entry.url.includes('hot-update') && 
+												   !entry.url.includes('.map');
+										})
+									};
+								}
+							]
 						}),
 				  ]
 				: []),
 			new WebpackPwaManifest({
 				publicPath: "/",
-				name: "Kapta",
+				name: "Kapta Lite - Offline Maps",
 				short_name: "Kapta",
+				description: "Create Private WhatsApp Maps & Photos Maps. Works offline!",
 				lang: "en-GB",
 				theme_color: "#25D366",
 				background_color: "#25D366",
 				display: "standalone",
 				orientation: "portrait",
 				start_url: "/",
+				scope: "/",
+				categories: ["productivity", "utilities", "navigation"],
 				share_target: {
 					action: "/share-target",
 					method: "POST",
