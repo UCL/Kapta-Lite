@@ -266,15 +266,15 @@ function App() {
                 </div>
             )}
             
-            {/* Connection status indicator (subtle) */}
-            <div style={{
+            {/* Connection status indicator (subtle) - only show red dot when offline */}
+           <div style={{
                 position: 'fixed',
                 top: '10px',
-                right: '10px',
+                left: '50%',
                 width: '12px',
                 height: '12px',
                 borderRadius: '50%',
-                backgroundColor: isOnline ? '#4CAF50' : '#FF6B35',
+                backgroundColor: isOnline ? 'transparent' : '#FF6B35',
                 zIndex: 9999,
                 opacity: 0.7
             }} title={isOnline ? 'Online' : 'Offline'} />
