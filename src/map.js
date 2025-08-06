@@ -48,47 +48,50 @@ import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
  *   Basemaps (TileLayers)
  ************************************************************************************************/
 
-function GMapsTileLayer() {
+function MapboxStreetsTileLayer() {
+	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY2xwOWY2d3FnMnJ6bDJqczR3OHV6c25hNyJ9.7vs1tik4VI8bI-4pBcBHVQ";
 	return (
 		<TileLayer
-			url={`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}`}
+			url={`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${token}`}
 			minZoom={2}
 			maxZoom={21}
 			maxNativeZoom={21}
 			opacity={1}
 			subdomains={["mt0", "mt1", "mt2", "mt3"]}
-			attribution=" Google "
+			attribution=" Mapbox | OSM Contributors"
 			crossOrigin="anonymous"
 		/>
 	);
 }
 
 
-function SatelliteTileLayer() {
+function MapboxSatelliteTileLayer() {
+	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY2xwOWY2d3FnMnJ6bDJqczR3OHV6c25hNyJ9.7vs1tik4VI8bI-4pBcBHVQ";
 	return (
 		<TileLayer
-			url={`http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}`}
+			url={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/{z}/{x}/{y}?access_token=${token}`}
 			minZoom={2}
 			maxZoom={21}
 			maxNativeZoom={21}
 			opacity={1}
 			subdomains={["mt0", "mt1", "mt2", "mt3"]}
-			attribution=" Google "
+			attribution=" Mapbox | OSM Contributors"
 			crossOrigin="anonymous"
 		/>
 	);
 }
 
-function OSMTileLayer() {
+function MapboxStreetsDarkTileLayer() {
+	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY2xwOWY2d3FnMnJ6bDJqczR3OHV6c25hNyJ9.7vs1tik4VI8bI-4pBcBHVQ";
     return (
         <TileLayer
-            url={`https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`}
+            url={`https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${token}`}
             minZoom={2}
             maxZoom={21}
             maxNativeZoom={21}
             opacity={1}
             // subdomains={["mt0", "mt1", "mt2", "mt3"]}
-            attribution=" OSM Contributors "
+            attribution=" Mapbox | OSM Contributors "
             crossOrigin="anonymous"
         />
     );
@@ -1394,9 +1397,9 @@ export function Map({
                 </button>
                 <MapContainer {...mapConfig}>
                     {/* Determine which basemap to show */}
-                    {activeTileLayer === "gmaps" && <GMapsTileLayer />}
-                    {activeTileLayer === "satellite" && <SatelliteTileLayer />}
-                    {activeTileLayer === "osm" && <OSMTileLayer />}
+                    {activeTileLayer === "gmaps" && <MapboxStreetsTileLayer />}
+                    {activeTileLayer === "satellite" && <MapboxSatelliteTileLayer />}
+                    {activeTileLayer === "osm" && <MapboxStreetsDarkTileLayer />}
                     {/* current position marker */}
                     {currentLocation && (
                         <Marker position={currentLocation} icon={currentPositionIcon}>
