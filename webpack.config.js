@@ -125,35 +125,32 @@ module.exports = (env, argv) => {
 				appMountIds: ["main"],
 				manifest: "src/manifest.webmanifest",
 			}),
-			...(isProduction
-				? [
-						new InjectManifest({
-							swSrc: "./src/sw.js",
-							maximumFileSizeToCacheInBytes: 10485760, // 10MB - increased for better offline support
-							exclude: [
-								/\.map$/,
-								/manifest$/,
-								/node_modules\/(?!workbox)/,
-								/\.DS_Store$/,
-								/\.git/,
-								/\.md$/,
-							],
-							// Additional files to include in precache
-							manifestTransforms: [
-								(manifestEntries) => {
-									console.log('Precaching', manifestEntries.length, 'files');
-									return {
-										manifest: manifestEntries.filter(entry => {
-											// Include essential files for offline functionality
-											return !entry.url.includes('hot-update') && 
-												   !entry.url.includes('.map');
-										})
-									};
-								}
-							]
-						}),
-				  ]
-				: []),
+			new InjectManifest({
+				swSrc: "./src/sw.js",
+				swDest: "sw.js",
+				maximumFileSizeToCacheInBytes: 10485760, // 10MB - increased for better offline support
+				exclude: [
+					/\.map$/,
+					/manifest$/,
+					/node_modules\/(?!workbox)/,
+					/\.DS_Store$/,
+					/\.git/,
+					/\.md$/,
+				],
+				// Additional files to include in precache
+				manifestTransforms: [
+					(manifestEntries) => {
+						console.log('Precaching', manifestEntries.length, 'files');
+						return {
+							manifest: manifestEntries.filter(entry => {
+								// Include essential files for offline functionality
+								return !entry.url.includes('hot-update') && 
+									   !entry.url.includes('.map');
+							})
+						};
+					}
+				]
+			}),
 			new WebpackPwaManifest({
 				publicPath: "/",
 				name: "Kapta Lite - Offline Maps",

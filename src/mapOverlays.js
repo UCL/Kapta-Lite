@@ -1552,10 +1552,10 @@ const generateCSV = (dataset) => {
                             <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
                                 <p style={{ marginBottom: "6px" }}>Kaptalite is a privacy-focused tool for sharing WhatsApp Maps and Photos Maps. All maps that you share direcly to your network are password-protected by default with the following security features:</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
-                                    <li>Client-side encryption using AES-256. Not even the Kaptalite team can view your maps.</li>
-                                    <li>Passwords never stored on our servers</li>
+                                    <li>Client-side encryption using AES-256.Not even the Kaptalite team can view your maps.</li>
+                                    <li>Passwords never stored on our servers.</li>
                                     {/* <li>Files automatically expire after 30 days</li> */}
-                                    <li>No user registration or personal data collection</li>
+                                    <li>No user registration or personal data collection.</li>
                                     
                                 </ul>
                                 <p style={{ marginBottom: "4px" }}>💡 Kapta compress the images for faster upload/download. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
@@ -1616,7 +1616,7 @@ const generateCSV = (dataset) => {
                     
                         <div className="modal-content">
                             <p style={{ textAlign: "center" }}>
-                                You need to create or load a Map before you can share it!
+                                Youuuuu2223244555666777788888 need to create or load a Map before you can share it!
                             </p>
                         </div>
 
