@@ -453,7 +453,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Initial three button view */}
                 {!activeOption && (
                     <div className="option-button-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <p>Create maps by converting WhatsApp chats or Photos into maps. </p>
+                        <p style={{ textAlign: "center" }}>Create maps by converting WhatsApp chats or Photos into maps. </p>
 
                         <button
                             className="btn"
@@ -511,7 +511,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
 
                             {!isMobileOrTablet() && (
                                 <>
-                                    <p>Or if you already have one or multiple chats, click below to upload or DRAG & DROP them here. </p>
+                                    <p style={{ textAlign: "center" }}>Or if you already have one or multiple chats, click below to upload or DRAG & DROP them here. </p>
                                     <button
                                         className="btn"
                                         onClick={() => {
@@ -530,7 +530,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                     
                                 </>
                             )}
-                            <p>Whatever you upload here, stays in your device. No one can see it. </p>
+                            <p style={{ textAlign: "center" }}>🔒 Whatever you upload here, stays in your device. No one can see it. </p>
                             {/* Back button */}
                              <button 
                                 className="btn" 
@@ -546,7 +546,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p>To create a Photos Map, select image files from your device. 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 SEARCH for AI-assited pre-selection</p>
+                        <p style={{ textAlign: "center" }}>To create a Photos Map, select image files from your device. 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 SEARCH for AI-assited pre-selection</p>
                                                 
                         <div className="option-button-container">
                             <button
@@ -576,7 +576,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             >
                                 Convert images into a map
                             </button>
-                            <p>Whatever you upload here, stays in your device. No one can see it. Note that only the images that were taken with the "Location" ON in your device will be shown in the map.</p>
+                            <p style={{ textAlign: "center" }}>📍Note that only the images that were taken with the "Location" ON in your device will be shown in the map. <br /><br />🔒 Whatever you upload here, stays in your device. No one can see it.</p>
                             
                             {/* Back button */}
                             <button 
@@ -641,7 +641,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p>We're building the network of Kaptallite Business Mappers. Explore the map to connect with them. Contact us if you need our support to launch a large-scale crowdsourcing campaign.
+                            <p style={{ textAlign: "center" }}>We're building the network of Kaptallite Business Mappers. Explore the map to connect with them. <br /><br />Contact us if you need our support to launch a crowdsourcing campaign.
                             </p>
                             <button
                                 className="btn"
@@ -659,7 +659,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                     </>
                 ) : isPremium ? (
                     <>
-                        <p>
+                        <p style={{ textAlign: "center" }}>
                             {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                             <br />
                             The <strong>free version</strong> allows you to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
@@ -680,7 +680,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     </>
                 ) : (
-                    <p>No open maps have been shared yet. Contribute yours!</p>
+                    <p style={{ textAlign: "center" }}>No open maps have been shared yet. Contribute yours!</p>
                 )}
             </div>
 
@@ -750,7 +750,7 @@ export function ShareModal({
             if (navigator.canShare && navigator.share) {
                 navigator
                     .share({
-                        title: "#MadeWithKapta",
+                        title: "#MadeWithKaptallite",
                         text: `This is a Private Map created with Kaptallite. 🔐 The password to open it is: ${password}`,
                         url: kaptaWaMapUrl,
                     })
@@ -1297,8 +1297,7 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         fontWeight: "bold",
                                         justifyContent: "center",
-                                        backgroundColor: "#25D366",
-                                        fontWeight: "500"
+                                        backgroundColor: "#25D366"
                                     }}
                                 >
                                     Share Map link
@@ -1315,8 +1314,7 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         justifyContent: "center",
                                         fontWeight: "bold",
-                                        backgroundColor: "#ffc107",
-                                        fontWeight: "500"
+                                        backgroundColor: "#ffc107"
                                     }}
                                 >
                                     Upload with taskID

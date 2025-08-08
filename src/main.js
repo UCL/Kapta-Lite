@@ -237,8 +237,9 @@ function App() {
     const [showBrand, setShowBrand] = useState(false); // Delay brand visibility
 
     useEffect(() => {
-        const timer = setTimeout(() => setShowBrand(true), 2000);
-        return () => clearTimeout(timer);
+        setShowBrand(true)
+        // const timer = setTimeout(() => setShowBrand(true), 0);
+        // return () => clearTimeout(timer);
     }, []);
 
     const showMap = (showLoader = false) => {
@@ -255,7 +256,7 @@ function App() {
     return (
         <UserProvider>
             {/* Kapta Logo and Brand */}
-            {showBrand && (
+            {showBrand && !isLoaderVisible && (
                 <div style={{
                     position: 'fixed',
                     top: '5px',
