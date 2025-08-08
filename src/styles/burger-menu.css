@@ -103,6 +103,24 @@
         .bm__item__content--open {
             height: auto;
         }
+
+        .bm__item__summary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.6rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .bm__item__summary--active {
+            background-color: rgba(37, 211, 102, 0.12); /* very soft green */
+        }
+
+        .bm__item__summary--active svg {
+            color: var(--mid-green);
+        }
     }
 
     .links-disclaimer__wrapper {
@@ -184,4 +202,23 @@
 
 .btn--open-burger-menu:hover {
     background-color: var(--dark-green);
+}
+
+/* Remove blue tap highlight specifically in burger tabs/links on touch devices */
+#burger-menu .bm__item__summary,
+#burger-menu .bm__item__summary:active,
+#burger-menu .bm__item__summary:focus,
+#burger-menu a,
+#burger-menu a img,
+#burger-menu button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  #burger-menu .bm__item__summary:focus,
+  #burger-menu a:focus,
+  #burger-menu button:focus {
+    outline: none;
+    box-shadow: none;
+  }
 }

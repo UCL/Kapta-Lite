@@ -22,8 +22,10 @@ export default function InstallDialog() {
 
 		window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
+		let loadTimer;
 		const handleLoad = () => {
-			setIsVisible(true);
+			// Delay visibility by 2 seconds
+			loadTimer = setTimeout(() => setIsVisible(true), 2000);
 		};
 		window.addEventListener("load", handleLoad);
 
@@ -33,6 +35,7 @@ export default function InstallDialog() {
 				handleBeforeInstallPrompt
 			);
 			window.removeEventListener("load", handleLoad);
+			if (loadTimer) clearTimeout(loadTimer);
 		};
 	}, []);
 

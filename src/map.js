@@ -193,7 +193,7 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
         No data to display or parsing error. {" "}
       </span>
       <a
-        href="https://wa.me/447473522912?text=Hi%2C%20I%20can%27t%20display%20the%20data.%20Please%20help."
+        href="https://form.typeform.com/to/jnnU3B1I"
         target="_blank"
         rel="noopener noreferrer"
         style={{
@@ -555,8 +555,8 @@ function WhatsAppMappersDataLayer({ data }) {
     const WhatsAppMapperIcon = L.divIcon({
 		html: WhatAppMapperPosition, // Use the imported GPS icon
 		className: "whatsapp-mapper-icon",
-		iconSize: [30, 30], // Adjust size as needed
-		iconAnchor: [15, 30], // Anchor point for the icon
+		iconSize: [20, 20], // Adjust size as needed
+		iconAnchor: [10, 20], // Anchor point for the icon
 	});
 	if (geoJSON.features.length == 0) {
 		// need translation
@@ -596,13 +596,13 @@ function WhatsAppMappersDataLayer({ data }) {
   {wamapperslocations.features.map((feature, i) => {
     const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
     const { name, Description, KaptaID} = feature.properties; 
-    const whatsappUrl = `https://wa.me/447473522912?text=Hi,%20please%20connect%20me%20with%20${name}%20`;
+    const whatsappUrl = `https://form.typeform.com/to/ADusU7Tj`;
 
     return (
       <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
         <Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
           <h3>{name}</h3>
-          <p>{Description}</p>
+          <p>Get in touch and we will connect you {KaptaID}</p>
           <a
             href={whatsappUrl}
             target="_blank"
@@ -620,7 +620,7 @@ function WhatsAppMappersDataLayer({ data }) {
               boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
             }}
           >
-            Contact {KaptaID}
+            Contact us
           </a>
         </Popup>
       </Marker>
@@ -922,9 +922,9 @@ export function Map({
 	
 			// Add correct attribution based on active layer
 			if (activeTileLayer === "osm") {
-				map.innerHTML += ' | OSM Contributors';
+				map.innerHTML += ' | Mapbox | OSM Contributors';
 			} else {
-				map.innerHTML += " | Google";
+				map.innerHTML += " | Mapbox | OSM Contributors";
 			}
 		}
 	}, [activeTileLayer]);

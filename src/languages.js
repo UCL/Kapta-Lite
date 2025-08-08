@@ -43,7 +43,7 @@ const jedUrl = "https://www.durham.ac.uk/staff/jed-stevenson/";
 const desUrl = "https://et.linkedin.com/in/dessalegn-tekle-02b848ba";
 
 const mailtoElem = `<a href="mailto:info@kapta.earth?subject=Kapta Mobile Feedback">info@kapta.earth</a>`;
-
+const whyReadMore = `https://uclexcites-blog.translate.goog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/?_x_tr_sl=auto&_x_tr_tl=es&_x_tr_hl=en-US&_x_tr_pto=wapp`
 i18next.use(initReactI18next).init({
 	lng: savedLanguage,
 	fallbackLng: ["en", "es", "fr", "pt", "am", "yo"],
@@ -67,16 +67,20 @@ i18next.use(initReactI18next).init({
 				inputgoallabel: "What do you want to achieve with this map?",
 				datasovmessage:
 					"Do you allow the Kapta team to use your map to support your community?",
-				about: "WhatsApp Maps and Photos Maps",
+				about: "What is Kaptallite",
 				aboutContent: `
-								<br /><strong>What is Kapta?</strong> Kapta is a platform for creating and sharing WhatsApp Maps and Photos Maps, and connecting with Kapta Business Mappers. <br />
+								<br />Kaptallite is a platform for creating and sharing WhatsApp Maps and Photos Maps, and connecting with Kaptallite Business Mappers. <br />
 								<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
+								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />
 								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos that are in the phone. <br />
-								<br /><strong>What are Kapta Business Mappers?</strong> People who make a business creating maps with Kapta. <br />
-								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />`,
+								<br /><strong>What are Kaptallite Business Mappers?</strong> People who make a business creating maps with Kaptallite. <br />
+								`,
+				why: "Why Kaptallite",
+				whyContent: `
+								<br />Our research shows that to popularise mapping and bridge the ground data gap in the (artificial and collective) intelligence economy, crowdsourcing needs to be embedded in people’s chats and photos, and become more private (less open) and remunerated (less volunteered). <a href='${whyReadMore}'>Read more</a><br />`,
 
-				why: " Case studies",
-				whyContent: `<ul style="padding-left: 1.2em; margin: 0;">
+				caseStudies: " Case studies",
+				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
 					<li>
 						<a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>
 					</li>
@@ -104,14 +108,10 @@ i18next.use(initReactI18next).init({
 					<a href='${marcosUrl}'>Marcos Moreu</a><br>
 					<a href='${fabienUrl}'>Fabien Moustard</a><br>
 					<a href='${tomUrl}'>Tom Couch</a><br>
-					<a href='${amandaUrl}'>Amanda Ho-Lyn</a><br>
 					<a href='${jedUrl}'>Jed Stevenson</a><br>
-					<a href='${desUrl}'>Dessalegn Tekle</a><br>
 					<a href='${mukiUrl}'>Muki Haklay</a><br>
-					<a href='${claireUrl}'>Claire Ellul</a><br>
-					<a href='${jeromeUrl}'>Jerome Lewis</a><br>
-					<a href='${jonathanUrl}'>Jonathan Cooper</a>`,
-				legalDisclaimer: `<br />The Kapta team has made every effort to develop an app that parses WhatsApp chats to create WhatsApp Maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Kapta cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
+					<a href='${claireUrl}'>Claire Ellul</a><br>`,
+				legalDisclaimer: `<br />The Kaptallite team has made every effort to develop an app that parses WhatsApp chats and Photos to create maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Kapta cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",
 				yes: "Yes",

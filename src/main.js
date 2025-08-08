@@ -14,7 +14,7 @@ import ReactGA from "react-ga4";
 import { UserProvider } from "./UserContext.jsx";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 import { ShareModal } from "./mapOverlays.js";
-import KaptaLogo from "./images/icons/kapta-green.svg";
+import KaptaLogo from "./images/logo_corner.svg";
 
 export function isMobileOrTablet (){
     return (
@@ -234,7 +234,14 @@ function App() {
     const [isLoaderVisible, setIsLoaderVisible] = useState(true);
     const [isLoginVisible, setIsLoginVisible] = useState(false);
     const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
-        const showMap = (showLoader = false) => {
+    const [showBrand, setShowBrand] = useState(false); // Delay brand visibility
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowBrand(true), 2000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const showMap = (showLoader = false) => {
         if (showLoader) setIsLoaderVisible(true);
         setIsMapVisible(true);
     };
@@ -248,35 +255,37 @@ function App() {
     return (
         <UserProvider>
             {/* Kapta Logo and Brand */}
-            <div style={{
-                position: 'fixed',
-                top: '15px',
-                left: '15px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                zIndex: 9998,
-                backgroundColor: 'transparent',
-                padding: '8px 12px',
-                borderRadius: '8px'
-            }}>
-                <img 
-                    src={KaptaLogo} 
-                    alt="Kapta Logo" 
-                    style={{ 
-                        height: '24px', 
-                        width: '24px' 
-                    }} 
-                />
-                <span style={{
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#fbfdfbff',
-                    fontFamily: 'system-ui, -apple-system, sans-serif'
+            {showBrand && (
+                <div style={{
+                    position: 'fixed',
+                    top: '5px',
+                    left: '0px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    zIndex: 9998,
+                    backgroundColor: 'transparent',
+                    padding: '4px 6px',
+                    borderRadius: '8px'
                 }}>
-                    kaptalite (beta)
-                </span>
-            </div>
+                    <img 
+                        src={KaptaLogo} 
+                        alt="Kapta Logo" 
+                        style={{ 
+                            height: '24px', 
+                            width: '24px' 
+                        }} 
+                    />
+                    <span style={{
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        color: '#2d2c2c',
+                        fontFamily: 'system-ui, -apple-system, sans-serif'
+                    }}>
+                        Kaptallite (beta)
+                    </span>
+                </div>
+            )}
 
             {/* Offline indicator */}
             {showOfflineMessage && (

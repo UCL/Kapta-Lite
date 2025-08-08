@@ -36,8 +36,9 @@ import {
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp';
 import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
-import KaptaMapper from "./images/KaptaLiteMapper.png"; // Import the image
+import KaptaMapper from "./images/logo_corner.svg"; // Import the image
 import WABusinessIcon from "./images/WABusinessIcon.png"; // Import the image
+import KBusinessIcon from "./images/connect.png"; // Import the image
 import shareicon from "./images/shareicon.png"; // Import the image
 import createicon from "./images/createicon.png"; // Import the image
 import premiumicon from "./images/premiumicon.png"; // Import the image
@@ -144,9 +145,9 @@ export const closeIcon = <FontAwesomeIcon icon={faX} className="btn-icon" />;
 // export const connectIcon = <FontAwesomeIcon icon={faWhatsapp} className="btn-icon" />;
 export const connectIcon =   (
 	<img
-		src={WABusinessIcon}
+		src={KBusinessIcon}
 		alt="WhatsApp Business Icon"
-		style={{ width: "22px", height: "22px" }}
+		style={{ width: "28px", height: "28px" }}
 	/>
 );
 export const shareIcn =   (

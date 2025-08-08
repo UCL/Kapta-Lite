@@ -79,7 +79,7 @@ module.exports = (env, argv) => {
 			}),
 			new HtmlWebpackPlugin({
 				template: "./src/index.html",
-				title: "Kapta",
+				title: "Kaptallite",
 				favicon: "src/images/icons/favicon.png",
 				meta: {
 					"Content-Type": {
@@ -90,11 +90,11 @@ module.exports = (env, argv) => {
 						"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
 					"og:title": {
 						property: "og:title",
-						content: "Kapta",
+						content: "Kaptallite",
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Create Private WhatsApp Maps & Photos Maps. Connect with Mappers.",
+						content: "Turn Photos & Chats into Private Map$",
 					},
 					"og:type": {
 						property: "og:type",
@@ -153,8 +153,8 @@ module.exports = (env, argv) => {
 			}),
 			new WebpackPwaManifest({
 				publicPath: "/",
-				name: "Kapta Lite - Offline Maps",
-				short_name: "Kapta",
+				name: "Kaptallite",
+				short_name: "Kaptallite",
 				description: "Create Private WhatsApp Maps & Photos Maps. Works offline!",
 				lang: "en-GB",
 				theme_color: "#25D366",

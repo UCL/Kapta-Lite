@@ -156,11 +156,11 @@
         }
     }
     .whatsapp-mapper-icon {
-        background-color: transparent;  /* Background around the icon */
+        background-color: #25D367;  /* Background around the icon */
         border-radius: 50%;                     /* Circular shape */
         padding: 6px;                           /* Space between icon and edge */
-        width: 20px;                            /* Size = icon size + padding * 2 */
-        height: 20px;
+        width: 15px;                            /* Size = icon size + padding * 2 */
+        height: 15px;
         display: flex;                          /* Center the icon inside */
         align-items: center;
         justify-content: center;
@@ -171,8 +171,8 @@
         transform: scale(1.2);
       } */
     .whatsapp-mapper-icon svg {
-        width: 25px;
-        height: 25px;
+        width: 15px;
+        height: 15px;
     }
 
     .leaflet-div-icon {

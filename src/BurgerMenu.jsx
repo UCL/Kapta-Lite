@@ -41,7 +41,7 @@ export default function BurgerMenu({
 				<div>
 					<div className="bm__item">
 						<div
-							className="bm__item__summary"
+							className={`bm__item__summary ${openSection === "about" ? "bm__item__summary--active" : ""}`}
 							onClick={() => toggleSection("about")}
 						>
 							{chevronDown} {t("about")}
@@ -53,10 +53,24 @@ export default function BurgerMenu({
 							dangerouslySetInnerHTML={{ __html: t("aboutContent") }}
 						></div>
 					</div>
+					<div className="bm__item">
+						<div
+							className={`bm__item__summary ${openSection === "why" ? "bm__item__summary--active" : ""}`}
+							onClick={() => toggleSection("why")}
+						>
+							{chevronDown} {t("why")}
+						</div>
+						<div
+							className={`bm__item__content ${
+								openSection === "why" ? "bm__item__content--open" : ""
+							}`}
+							dangerouslySetInnerHTML={{ __html: t("whyContent") }}
+						></div>
+					</div>
 					{/* New "How it works" tab */}
 					<div className="bm__item">
 						<div
-							className="bm__item__summary"
+							className={`bm__item__summary ${openSection === "howitworks" ? "bm__item__summary--active" : ""}`}
 							onClick={() => toggleSection("howitworks")}
 						>
 							{chevronDown} How it works
@@ -68,67 +82,66 @@ export default function BurgerMenu({
 							style={{ paddingLeft: "1.2em" }}
 						>
 							<ul style={{ margin: 0 }}>
-								<li>
-									<a
-										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Maps_User.png"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										💻💬 If you need WhatsApp Maps, click here.
-									</a>
-								</li>
-								<br></br>
-								<li>
-									<a
-										href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										📱💬 If you want to make WhatsApp Maps, click here.
-									</a>
-								</li>
-								<br></br>
-								<li>
-									<a
-										// href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Maps_User.png"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										💻📷 If you need Photos Maps, click here (doc under development).
-									</a>
-								</li>
-								<br></br>
-								<li>
-									<a
-										// href="https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png"
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										📱📷 If you want to make Photos Maps, click here (doc under development).
-									</a>
-								</li>
+								
+									<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+										<span style={{ fontSize: '0.95rem' }}><br></br>Tutorial for mappers<br></br><br /></span>
+										<a
+                                            href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <img
+                                                src="https://img.youtube.com/vi/vaPHy8S-OpA/hqdefault.jpg"
+                                                alt="Video Tutorial for mappers - thumbnail"
+                                                style={{ width: '100%', maxWidth: '300px', borderRadius: '8px', cursor: 'pointer' }}
+                                                loading="lazy"
+                                            />
+                                        </a>
+										
+									</div>
+								
+								<br />
+								
+									<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+										<span style={{ fontSize: '0.95rem' }}>Tutorial for organisations<br></br><br /></span>
+
+										<a
+                                            href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <img
+                                                src="https://img.youtube.com/vi/vaPHy8S-OpA/hqdefault.jpg"
+                                                alt="Video Tutorial for organisations - thumbnail"
+                                                style={{ width: '100%', maxWidth: '300px', borderRadius: '8px', cursor: 'pointer' }}
+                                                loading="lazy"
+                                            />
+                                        </a>
+                                    </div>
+								
+								
 								
 							</ul>
 						</div>
 					</div>
 					<div className="bm__item">
 						<div
-							className="bm__item__summary"
-							onClick={() => toggleSection("why")}
+							className={`bm__item__summary ${openSection === "caseStudies" ? "bm__item__summary--active" : ""}`}
+							onClick={() => toggleSection("caseStudies")}
 						>
 							{chevronDown}
-							{t("why")}
+							{t("caseStudies")}
 						</div>
 						<div
 							className={`bm__item__content ${
-								openSection === "why" ? "bm__item__content--open" : ""
+								openSection === "caseStudies" ? "bm__item__content--open" : ""
 							}`}
-							dangerouslySetInnerHTML={{ __html: t("whyContent") }}
+							dangerouslySetInnerHTML={{ __html: t("caseStudiesContent") }}
 						></div>
 					</div>
 					<div className="bm__item">
 						<div
-							className="bm__item__summary"
+							className={`bm__item__summary ${openSection === "people" ? "bm__item__summary--active" : ""}`}
 							onClick={() => toggleSection("people")}
 						>
 							{chevronDown} {t("people")}
@@ -142,7 +155,7 @@ export default function BurgerMenu({
 					</div>
 					<div className="bm__item">
 						<div
-							className="bm__item__summary"
+							className={`bm__item__summary ${openSection === "what" ? "bm__item__summary--active" : ""}`}
 							onClick={() => toggleSection("what")}
 						>
 							{chevronDown}
@@ -167,9 +180,21 @@ export default function BurgerMenu({
 						</a>
 						<div className="bm__item__text" style={{ marginTop: "0.5rem" }}>
 							<p>Have feedback or <br />want to get in touch?</p>
-							<p>
+							<button
+                            className="btn"
+                            onClick={() => {
+                                window.open(
+                                    "https://form.typeform.com/to/jnnU3B1I",
+                                    "_blank"
+                                );
+                            }}
+                            style={{ height: '45px', backgroundColor: '#25D367', fontSize: "15px" }}
+                        >
+                            Contact us
+                        </button>
+							{/* <p>
 							Contact us on WhatsApp at<br /><a href="https://wa.me/447473522912">+44 7473522912</a> or email us at<br /><a href="mailto:info@kapta.earth">info@kapta.earth</a>.
-							</p>
+							</p> */}
 						</div>
 					</div>
 				</div>

@@ -672,7 +672,7 @@ export default function MainMenu({
                     onClick={() => {
                         const message = `Hi, please send me the new link for this map ${window.location.href}`;
                         const encodedMessage = encodeURIComponent(message); // Encode the message
-                        const whatsappUrl = `https://wa.me/447473522912?text=${encodedMessage}`;
+                        const whatsappUrl = `https://form.typeform.com/to/jnnU3B1I`;
                         window.open(whatsappUrl, "_blank"); // Open the WhatsApp URL
                         }}
 
