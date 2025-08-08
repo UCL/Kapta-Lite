@@ -369,7 +369,7 @@ export function ImageParser({ files, onComplete, setLoadingMessage, onProcessing
       
       // Calculate and store image size information immediately
       if (window.calculateAndStoreImageSize) {
-        await window.calculateAndStoreImageSize(zipFile);
+        window.calculateAndStoreImageSize(zipFile);
       }
       
       // Also set it as a window property for compatibility with any code that might use it
