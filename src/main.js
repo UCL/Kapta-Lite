@@ -25,6 +25,28 @@ export function isMobileOrTablet (){
             ("ontouchstart" in window || navigator.maxTouchPoints > 0))
     );
 };
+
+// Mobile-optimized compression settings
+export const getMobileOptimizedSettings = () => {
+    const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
+    const isLowEndDevice = navigator.hardwareConcurrency <= 4 || navigator.deviceMemory <= 4;
+    
+    if (isMobile || isLowEndDevice) {
+        return {
+            maxWidth: 200,      // Smaller than desktop (300)
+            maxHeight: 200,     // Smaller than desktop (300)
+            quality: 0.6,       // Lower quality for faster processing
+            batchSize: 2        // Process fewer images at once
+        };
+    }
+    
+    return {
+        maxWidth: 300,
+        maxHeight: 300,
+        quality: 0.75,
+        batchSize: 5
+    };
+};
 export const isIOS = () => {
     return /iPad|iPhone|iPod/i.test(navigator.userAgent);
 };

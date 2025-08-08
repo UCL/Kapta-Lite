@@ -26,6 +26,7 @@ import {
     msgIcon,
     // fa-whatsapp,
 } from "./icons";
+import { getMobileOptimizedSettings } from "./main.js";
 import { slugify, useClickOutside } from "./utils.js";
 import { isMobileOrTablet } from "./main.js";
 import { useUserStore } from "./UserContext.jsx";
@@ -74,13 +75,13 @@ import ReactGA from "react-ga4";
 // }
 
 // Loading spinner for uploadPending state
-function LoadingSpinner({ text }) {
+function LoadingSpinner({ text, progress }) {
     return (
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5em' }}>
-            {text}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <img src={checkingPwGif} alt="loading" style={{ height: '1.2em', verticalAlign: 'middle' }} />
-            
-        </span>
+            <span>{text}</span>
+            {progress && <span style={{ fontSize: "0.8em", opacity: 0.8 }}>({progress})</span>}
+        </div>
     );
 }
 
@@ -150,58 +151,58 @@ window.calculateAndStoreImageSize = (zipFile) => {
     return window.globalImageSizeInfo;
 };
 
-const compressImageBlob = (blob, quality = qualityPic, maxWidth = maxWidthPic, maxHeight = maxHeightPic) => {
+const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight = 200) => {
+    // Skip compression for very small images (mobile optimization)
+    if (blob.size < 50000) { // 50KB threshold for mobile
+        return blob;
+    }
+    
     return new Promise((resolve) => {
-        // If the blob is already small (< 100KB), skip compression to save time
-        if (blob.size < 100 * 1024) {
-            resolve(blob);
-            return;
-        }
-        
         const img = new Image();
-        const url = URL.createObjectURL(blob);
-
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { 
+            alpha: false,           // Disable alpha for better performance
+            willReadFrequently: false // Optimize for single-read operations
+        });
+        
         img.onload = () => {
+            // Calculate dimensions
             let { width, height } = img;
-
-            // Calculate new size while maintaining aspect ratio
             const aspectRatio = width / height;
-            if (width > maxWidth || height > maxHeight) {
-                if (width > height) {
-                    width = maxWidth;
-                    height = Math.round(maxWidth / aspectRatio);
-                } else {
-                    height = maxHeight;
-                    width = Math.round(maxHeight * aspectRatio);
-                }
+            
+            if (width > maxWidth) {
+                width = maxWidth;
+                height = width / aspectRatio;
             }
-
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, width, height);
-
-            canvas.toBlob(
-                (compressedBlob) => {
-                    URL.revokeObjectURL(url);
-                    
-                    resolve(compressedBlob);
-                    const ratio = (compressedBlob.size / blob.size).toFixed(2);
-                    // console.log(`Compression ratio: ${ratio}`);
-                },
-                "image/jpeg",
-                quality
-            );
+            if (height > maxHeight) {
+                height = maxHeight;
+                width = height * aspectRatio;
+            }
+            
+            // Set canvas dimensions
+            canvas.width = Math.floor(width);
+            canvas.height = Math.floor(height);
+            
+            // Use better image smoothing for mobile
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'medium'; // Balance between quality and speed
+            
+            // Draw and compress
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            canvas.toBlob((compressedBlob) => {
+                URL.revokeObjectURL(img.src);
+                // Only use compressed version if it's actually smaller
+                resolve(compressedBlob && compressedBlob.size < blob.size ? compressedBlob : blob);
+            }, 'image/jpeg', quality);
         };
-
+        
         img.onerror = () => {
-            URL.revokeObjectURL(url);
-            resolve(null);
+            URL.revokeObjectURL(img.src);
+            resolve(blob);
         };
-
-        img.src = url;
+        
+        img.src = URL.createObjectURL(blob);
     });
 };
 
@@ -797,6 +798,12 @@ export function ShareModal({
         setButtonText("uploadPending");
         setButtonDisabled(true);
 
+        // Show appropriate loading message based on device
+        const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
+        if (isMobile && globalProcessedChatFile) {
+            setButtonText("Compressing images...");
+        }
+
         function generateBase62Id(length = 32) {
             const charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
             const charsetLength = charset.length;
@@ -821,22 +828,34 @@ export function ShareModal({
                 const filenames = Object.keys(zip.files);
                 const imageFiles = filenames.filter(filename => /\.(jpg|jpeg|png|gif)$/i.test(filename));
                 
-                // Use dynamic quality based on zip file size
-                const dynamicQuality = getDynamicQuality(globalProcessedChatFile.size);
-                console.log(`Compressing ${imageFiles.length} images with quality: ${dynamicQuality}`);
+                // Get mobile-optimized settings
+                const mobileSettings = getMobileOptimizedSettings();
+                const { maxWidth, maxHeight, quality, batchSize } = mobileSettings;
+                const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
+                
+                console.log(`Compressing ${imageFiles.length} images with mobile-optimized settings:`, mobileSettings);
 
                 // Process images in smaller batches to avoid memory issues
-                const batchSize = 5;
+                let progressCount = 0;
                 for (let i = 0; i < imageFiles.length; i += batchSize) {
                     const batch = imageFiles.slice(i, i + batchSize);
+                    console.log(`Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(imageFiles.length/batchSize)}`);
+                    
                     const batchPromises = batch.map(async (filename) => {
                         const file = zip.file(filename);
                         if (file) {
                             try {
                                 const fileData = await file.async("blob");
-                                const compressedBlob = await compressImageBlob(fileData, dynamicQuality);
+                                const compressedBlob = await compressImageBlob(fileData, quality, maxWidth, maxHeight);
                                 if (compressedBlob && compressedBlob.size < fileData.size) {
                                     zip.file(filename, compressedBlob);
+                                }
+                                
+                                progressCount++;
+                                if (isMobile && imageFiles.length > 5) {
+                                    // Update button text with progress on mobile for larger sets
+                                    const progressPercent = Math.round((progressCount / imageFiles.length) * 100);
+                                    setButtonText(`Processing images... ${progressPercent}%`);
                                 }
                             } catch (error) {
                                 console.warn(`Failed to compress ${filename}:`, error);
@@ -846,15 +865,18 @@ export function ShareModal({
                     
                     await Promise.all(batchPromises);
                     
-                    // Update progress if needed
-                    if (imageFiles.length > 10) {
-                        const progress = Math.round(((i + batchSize) / imageFiles.length) * 100);
-                        console.log(`Compression progress: ${Math.min(progress, 100)}%`);
+                    // Add a small delay between batches to prevent UI blocking on mobile
+                    if (i + batchSize < imageFiles.length && isMobile) {
+                        await new Promise(resolve => setTimeout(resolve, 50));
                     }
                 }
 
-                // Generate the updated zip file
-                const updatedZipBlob = await zip.generateAsync({ type: "blob" });
+                // Generate the updated zip file with mobile-optimized compression
+                const updatedZipBlob = await zip.generateAsync({ 
+                    type: "blob",
+                    compression: "DEFLATE",
+                    compressionOptions: { level: isMobile ? 6 : 9 } // Moderate compression for mobile
+                });
                 globalProcessedChatFileReduced = new File(
                     [updatedZipBlob],
                     globalProcessedChatFile.name,
