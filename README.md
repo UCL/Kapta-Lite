@@ -1,27 +1,20 @@
-# WhatsApp Maps with Kapta
+**What is Kaptallite?**  
+Kaptallite is a platform for creating and sharing WhatsApp Maps and Photos Maps, and connecting with Kaptallite Business Mappers.
 
 **What is WhatsApp Maps?**  
 WhatsApp Maps are private community maps made with WhatsApp.
 
-**What is Kapta?**  
-Kapta is a platform for creating and sharing WhatsApp Maps, and connecting WhatsApp Business Mappers with those who need WhatsApp Maps.
+**What is Photos Maps?**  
+Photos Maps are private maps made with geotagged photos that are in the phone.
 
-**What are WhatsApp Business Mappers?**  
-People who make a business creating WhatsApp Maps with their communities.
+**What are Kaptallite Business Mappers?**  
+People who make a business creating maps with Kaptallite.
 
-Kapta is inspired by [Extreme Citizen Science](https://www.ucl.ac.uk/extreme-citizen-science/), an inclusive approach to science. WhatsApp Maps can turn 2.7+ billion WhatsApp users into community mappers sensing what is happening on the ground around the globe. For more information see this UCL Press Release
-[Is this the first-ever WhatsApp Map?](https://www.ucl.ac.uk/geography/news/2024/dec/first-ever-whatsapp-map)
-
-**Kapta is a Progressive Web App** 👉 https://kapta.earth
+**Kaptallite is a Progressive Web App** 👉 https
 
 # Guidance for Developers
 
-Kapta Web and Kapta Infrastructure are not being developed at the moment, but they are still available for reference and will be updated in the future.
-
-- [Kapta Web repository](https://github.com/UCL/kapta-web)
-- [Kapta Infrastructure repository](https://github.com/UCL/kapta-infrastructure)
-- [Kapta first prototypes](https://github.com/MarcosMoreu/Kapta-Prototyping/commit/a06af733f0179d17b44190a7791395d624034477)
-
+- [Kaptallite first prototypes](https://github.com/MarcosMoreu/Kapta-Prototyping/commit/a06af733f0179d17b44190a7791395d624034477)
   
 ## Requirements
 
@@ -39,18 +32,14 @@ Kapta Web and Kapta Infrastructure are not being developed at the moment, but th
 
 # People
 
-Kapta is being developed at University College London (UCL) by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. Kapta is spining out from UCL.
+Kaptallite is being developed at University College London (UCL) by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. Kaptallite is spinning out from UCL.
 
 - [Marcos Moreu](https://www.linkedin.com/in/marcosmoreubadia)
 - [Fabien Moustard](https://www.linkedin.com/in/fabien-moustard-996998227)
 - [Tom Couch](https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch)
-- [Amanda Ho-Lyn](https://www.ucl.ac.uk/advanced-research-computing/people/amanda-ho-lyn)
 - [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/)
-- [Dessalegn Tekle](https://et.linkedin.com/in/dessalegn-tekle-02b848ba)
 - [Muki Haklay](https://www.ucl.ac.uk/geography/muki-haklay-facss)
 - [Claire Ellul](https://www.ucl.ac.uk/civil-environmental-geomatic-engineering/people/dr-claire-ellul)
-- [Jerome Lewis](https://www.ucl.ac.uk/anthropocene/people/dr-jerome-lewis)
-- [Jonathan Cooper](https://www.ucl.ac.uk/advanced-research-computing/people/jonathan-cooper)
 
 # Legal disclaimer
 

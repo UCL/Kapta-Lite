@@ -361,6 +361,7 @@ function App() {
                 dataset={mapData}
                 globalLoadingMessage={globalLoadingMessage}
                 setGlobalLoadingMessage={setGlobalLoadingMessage}
+                isLoaderVisible={isLoaderVisible}
                 {...dataDisplayProps}
             />
             <Map

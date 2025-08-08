@@ -264,6 +264,7 @@ export default function MainMenu({
     dataset,
     globalLoadingMessage,
     setGlobalLoadingMessage,
+    isLoaderVisible: mainIsLoaderVisible,
     ...dataDisplayProps
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false);
@@ -446,7 +447,7 @@ export default function MainMenu({
 
     return (
         <>
-            {(loadingMessage || globalLoadingMessage) && (
+            {(loadingMessage || globalLoadingMessage) && !(window.location.search.includes('?import=') && mainIsLoaderVisible) && (
                 <div
                 id="loadingMessage"
                 className="loading-message"

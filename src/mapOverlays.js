@@ -96,11 +96,11 @@ let maxHeightPic = 300; // Set the maximum height for the image
 const getDynamicQuality = (totalSizeBytes) => {
     const totalSizeMB = totalSizeBytes / (1024 * 1024);
     
-    if (totalSizeMB < 10) {
+    if (totalSizeMB < 50) {
         return 0.75;
-    } else if (totalSizeMB < 25) {
+    } else if (totalSizeMB < 100) {
         return 0.5;
-    } else if (totalSizeMB < 50) {
+    } else if (totalSizeMB < 200) {
         return 0.25;
     } else {
         return 0.1; // Default quality for larger files
@@ -129,7 +129,7 @@ window.calculateAndStoreImageSize = (zipFile) => {
     
     // Simple approach: just use the zip file size
     const totalSize = zipFile.size;
-    const maxSizeBytes = 100 * 1024 * 1024; // 5MB
+    const maxSizeBytes = 500 * 1024 * 1024; // 5MB
     const isMapTooLarge = totalSize > maxSizeBytes;
     const dynamicQuality = getDynamicQuality(totalSize);
     
@@ -783,12 +783,12 @@ export function ShareModal({
         // Check zip file size now - simple check
         if (globalProcessedChatFile) {
             const zipFileSize = globalProcessedChatFile.size;
-            const maxSizeBytes = 100 * 1024 * 1024; // 5MB limit
+            const maxSizeBytes = 500 * 1024 * 1024; 
             if (zipFileSize > maxSizeBytes) {
                 setPasswordError("");
                 setButtonText("sharedata");
                 setButtonDisabled(false);
-                alert(`Map is too large to share online (${(zipFileSize / (1024 * 1024)).toFixed(1)} MB). Please use the Download Map option instead.`);
+                alert(`Map is too large (${(zipFileSize / (1024 * 1024)).toFixed(1)} MB). Options to share large maps are under development. However, you can use the Download Map option instead and share it via e.g. messaging apps`);
                 return;
             }
             console.log(`Zip file size: ${(zipFileSize / (1024 * 1024)).toFixed(2)} MB - OK to share`);
@@ -1077,7 +1077,7 @@ export function ShareModal({
 
         const shareText = checkIsImageData() 
             ? "This is a Private Map created with Kaptallite" 
-            : "This is a Private Map created with Kaptallitellite";
+            : "This is a Private Map created with Kaptallite";
         const alertText = checkIsImageData() 
             ? "The Private Map link has been copied to clipboard!" 
             : "The Private Map link has been copied to clipboard!";
