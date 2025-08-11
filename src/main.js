@@ -71,6 +71,33 @@ function initServiceWorker(setFileToParse) {
                 .register("/sw.js")
                 .then((registration) => {
                     console.info("SW registered: ", registration);
+                    
+                    // Check if there's already a waiting service worker
+                    if (registration.waiting) {
+                        console.log("New version available, activating...");
+                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        window.location.reload();
+                        return;
+                    }
+                    
+                    // Listen for updates to the service worker
+                    registration.onupdatefound = () => {
+                        const installingWorker = registration.installing;
+                        if (installingWorker) {
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === "installed") {
+                                    if (navigator.serviceWorker.controller) {
+                                        // New update available, reload to activate
+                                        console.log("New content is available; reloading...");
+                                        installingWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    } else {
+                                        console.log("Content is cached for offline use.");
+                                    }
+                                }
+                            };
+                        }
+                    };
                 })
                 .catch((registrationError) => {
                     console.info("SW registration failed: ", registrationError);
@@ -92,14 +119,22 @@ function initServiceWorker(setFileToParse) {
     }
 
     navigator.serviceWorker.addEventListener("message", (event) => {
-        if (event.data.action === "load-map") {
-            return setFileToParse(event.data.file);
-        } else if (event.data.action === "load-images") {
-            return setImagesToParse(event.data.files);
-        }
-    });
+            if (event.data.action === "load-map") {
+                return setFileToParse(event.data.file);
+            } else if (event.data.action === "load-images") {
+                return setImagesToParse(event.data.files);
+            }
+        });
 
-    navigator.serviceWorker.controller?.postMessage("share-ready");
+        // Check for controlling service worker and force update check
+        navigator.serviceWorker.ready.then((registration) => {
+            // Force an update check on page load
+            registration.update();
+        });
+
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage("share-ready");
+        }
 }
 
 function App() {

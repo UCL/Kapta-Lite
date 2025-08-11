@@ -98,19 +98,30 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
     console.log('Service Worker: Activating...');
+    // Take control of all clients immediately
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    // Clean up old caches if needed
-                    if (cacheName.includes('old-') || cacheName.includes('temp-')) {
-                        console.log('Service Worker: Clearing old cache', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
+        Promise.all([
+            self.clients.claim(),
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        // Clean up old caches if needed
+                        if (cacheName.includes('old-') || cacheName.includes('temp-')) {
+                            console.log('Service Worker: Clearing old cache', cacheName);
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            })
+        ])
     );
+});
+
+// Listen for skip waiting messages
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
 
 self.addEventListener('fetch', (event) => {

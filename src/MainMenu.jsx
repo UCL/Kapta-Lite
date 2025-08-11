@@ -577,7 +577,7 @@ export default function MainMenu({
                             textAlign: 'left',
                             fontStyle: 'italic'
                         }}>
-                            This password was set by the person who shared this map with you.
+                            This password was set by the person who shared this map with you.<br></br> The images have been compressed to reduce loading time. We're working to improve the images resolution while keeping the loading time low. 
                         </p>
                     </div>
                     
