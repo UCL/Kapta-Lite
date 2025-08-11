@@ -92,12 +92,12 @@ registerRoute(
 );
 
 self.addEventListener('install', (event) => {
-    console.log('Service Worker: Installing...');
+    // console.log('Service Worker: Installing...');
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker: Activating...');
+    // console.log('Service Worker: Activating...');
     // Take control of all clients immediately
     event.waitUntil(
         Promise.all([

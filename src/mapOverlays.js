@@ -95,15 +95,28 @@ let maxHeightPic = 300; // Set the maximum height for the image
 const getDynamicQuality = (totalSizeBytes) => {
     const totalSizeMB = totalSizeBytes / (1024 * 1024);
     
+    let quality;
+    let qualityCategory;
+    
     if (totalSizeMB < 50) {
-        return 0.75;
+        quality = 0.75;
+        qualityCategory = "HIGH (< 50MB)";
     } else if (totalSizeMB < 100) {
-        return 0.5;
+        quality = 0.5;
+        qualityCategory = "MEDIUM (50-100MB)";
     } else if (totalSizeMB < 200) {
-        return 0.25;
+        quality = 0.25;
+        qualityCategory = "LOW (100-200MB)";
     } else {
-        return 0.1; // Default quality for larger files
+        quality = 0.1;
+        qualityCategory = "VERY_LOW (> 200MB)";
     }
+    
+    console.log(`📊 Dynamic Quality Applied:`);
+    console.log(`   • File Size: ${totalSizeMB.toFixed(2)} MB`);
+    console.log(`   • Quality Factor: ${quality} (${qualityCategory})`);
+    
+    return quality;
 };
 
 // Global storage for image size information
@@ -117,6 +130,7 @@ window.globalImageSizeInfo = {
 // Global function to calculate and store image size information
 window.calculateAndStoreImageSize = (zipFile) => {
     if (!zipFile) {
+        console.log("🔄 Image size calculation reset (no zip file)");
         window.globalImageSizeInfo = {
             totalSize: 0,
             isCalculated: false,
@@ -143,18 +157,24 @@ window.calculateAndStoreImageSize = (zipFile) => {
     // Update the quality parameter
     qualityPic = dynamicQuality;
     
-    console.log(`File size calculated: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
-    console.log(`Dynamic quality: ${dynamicQuality}`);
-    console.log(`Map too large: ${isMapTooLarge}`);
+    console.log(`📦 Image Size Analysis Complete:`);
+    console.log(`   • Total File Size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
+    console.log(`   • Map Too Large: ${isMapTooLarge ? 'YES (> 500MB)' : 'NO'}`);
+    console.log(`   • Applied Global Quality: ${qualityPic}`);
     
     return window.globalImageSizeInfo;
 };
 
 const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight = 200) => {
+    const originalSizeKB = (blob.size / 1024).toFixed(1);
+    
     // Skip compression for very small images (mobile optimization)
     if (blob.size < 50000) { // 50KB threshold for mobile
+        console.log(`🖼️ Image compression skipped (${originalSizeKB} KB < 50 KB threshold)`);
         return blob;
     }
+    
+    console.log(`🗜️ Compressing image: ${originalSizeKB} KB → Quality: ${quality}, Max: ${maxWidth}x${maxHeight}`);
     
     return new Promise((resolve) => {
         const img = new Image();
@@ -167,6 +187,7 @@ const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight 
         img.onload = () => {
             // Calculate dimensions
             let { width, height } = img;
+            const originalDimensions = `${width}x${height}`;
             const aspectRatio = width / height;
             
             if (width > maxWidth) {
@@ -177,6 +198,8 @@ const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight 
                 height = maxHeight;
                 width = height * aspectRatio;
             }
+            
+            const finalDimensions = `${Math.floor(width)}x${Math.floor(height)}`;
             
             // Set canvas dimensions
             canvas.width = Math.floor(width);
@@ -191,12 +214,21 @@ const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight 
             
             canvas.toBlob((compressedBlob) => {
                 URL.revokeObjectURL(img.src);
-                // Only use compressed version if it's actually smaller
-                resolve(compressedBlob && compressedBlob.size < blob.size ? compressedBlob : blob);
+                
+                if (compressedBlob && compressedBlob.size < blob.size) {
+                    const compressedSizeKB = (compressedBlob.size / 1024).toFixed(1);
+                    const compressionRatio = ((1 - compressedBlob.size / blob.size) * 100).toFixed(1);
+                    console.log(`✅ Compression successful: ${originalSizeKB} KB → ${compressedSizeKB} KB (${compressionRatio}% reduction, ${originalDimensions} → ${finalDimensions})`);
+                    resolve(compressedBlob);
+                } else {
+                    console.log(`⚠️ Compression skipped: Result would be larger (${originalSizeKB} KB → ${originalDimensions})`);
+                    resolve(blob);
+                }
             }, 'image/jpeg', quality);
         };
         
         img.onerror = () => {
+            console.log(`❌ Image compression failed for ${originalSizeKB} KB image`);
             URL.revokeObjectURL(img.src);
             resolve(blob);
         };
@@ -342,7 +374,7 @@ export function MapActionArea({
         initializeObserverName();
         
         setIsCreateModalOpen(true); // Open the "Create" modal
-        console.log("create modal clicked")
+        // console.log("create modal clicked")
     };
 
     return (
@@ -856,8 +888,9 @@ export function ShareModal({
                 const filenames = Object.keys(zip.files);
                 const imageFiles = filenames.filter(filename => /\.(jpg|jpeg|png|gif)$/i.test(filename));
                 
-                // Get mobile-optimized settings
-                const mobileSettings = getMobileOptimizedSettings();
+                // Get mobile-optimized settings with dynamic quality
+                const dynamicQuality = window.globalImageSizeInfo?.dynamicQuality || qualityPic || 0.25;
+                const mobileSettings = getMobileOptimizedSettings(dynamicQuality);
                 const { maxWidth, maxHeight, quality, batchSize } = mobileSettings;
                 const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
                 
