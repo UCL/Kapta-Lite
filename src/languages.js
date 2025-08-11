@@ -130,7 +130,8 @@ i18next.use(initReactI18next).init({
 				updateDescription: "Update map title",
 				copyright: "Captallite by UCL",
 				supportOption: "Get support to improve your map",
-				installPrompt: "👉 Install Captallite if you're using Google Chrome",
+				installPrompt: "❗ Install Captallite using Google Chrome",
+				installPromptChrome: "👉 Install Captallite to your home screen",
 				installClickMessage:
 					"Captallite is now being added to your home screen. This might take a few seconds",
 				desktoporiosPrompt:
