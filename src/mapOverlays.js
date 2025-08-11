@@ -305,6 +305,7 @@ export function MapActionArea({
     const [isPremium, setIsPremium] = useState(false); // State to differentiate between Search and Premium
     const [isRegisterMapper, setIsRegisterMapper] = useState(false); // State for "register as a mapper"
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // State for the "Create" modal
+    const [isUploading, setIsUploading] = useState(false); // State to track upload status
 
     // const [showWaMappers, setShowWaMappers] = useState(false);
 
@@ -408,6 +409,8 @@ export function MapActionArea({
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}
                 currentDataset={currentDataset}
+                isUploading={isUploading}
+                setIsUploading={setIsUploading}
                 {...dataDisplayProps} // Pass the props here
 
             />
@@ -426,25 +429,30 @@ export function MapActionArea({
             <CreateModal
                 isOpen={isCreateModalOpen}
                 setIsOpen={setIsCreateModalOpen}
+                isUploading={isUploading}
+                setIsUploading={setIsUploading}
 
             />
 
         </div>
     );
 }
-export function CreateModal({ isOpen, setIsOpen }) {
+export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) {
     if (!isOpen) return null;
 
     const createModalRef = useRef(null);
     const [activeOption, setActiveOption] = useState(null); // Track which option is active: 'whatsapp', 'photos', or null
 
-    useClickOutside(createModalRef, () => setIsOpen(false)); // Close modal when clicking outside
+    useClickOutside(createModalRef, () => {
+        if (!isUploading) setIsOpen(false);
+    }); // Close modal when clicking outside
 
     return (
         <div id="sharing-modal" ref={createModalRef}> {/* Use the same id as ShareModal */}
             <button
                 className="modal-close btn"
                 onClick={() => setIsOpen(false)}
+                disabled={isUploading}
             >
                 {closeIcon}
             </button>
@@ -459,6 +467,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             className="btn"
                             onClick={() => setActiveOption('photos')}
                             style={{ height: '45px' }}
+                            disabled={isUploading}
                         >
                             Photos Map
                         </button>
@@ -466,6 +475,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             className="btn"
                             onClick={() => setActiveOption('whatsapp')}
                             style={{ height: '45px' }}
+                            disabled={isUploading}
                         >
                             WhatsApp Map
                         </button>                   
@@ -499,6 +509,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                         "_blank"
                                     )
                                 }
+                                disabled={isUploading}
                             >
                                 See tutorial
                             </button>
@@ -518,6 +529,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                             url.searchParams.delete("import"); // Remove the "import" query parameter
                                             window.history.replaceState({}, document.title, url.toString()); // Update the URL without reloading
                                         }}
+                                        disabled={isUploading}
                                     >
                                         Convert a chat<br />into a map
                                     </button>
@@ -531,6 +543,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                 className="btn" 
                                 onClick={() => setActiveOption(null)}
                                 style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent' } }
+                                disabled={isUploading}
                             >
                                 Go back
                             </button>
@@ -568,6 +581,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                         fileInput.accept = originalAccept;
                                     }, 1000);
                                 }}
+                                disabled={isUploading}
                             >
                                 Convert photos into a map
                             </button>
@@ -578,6 +592,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                 className="btn" 
                                 onClick={() => setActiveOption(null)}
                                 style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent' } }
+                                disabled={isUploading}
                             >
                                 Go back
                             </button>
@@ -702,6 +717,8 @@ export function ShareModal({
     currentDataset,
     setIsUploadDialogOpen,
     dataset,
+    isUploading,
+    setIsUploading,
     ...dataDisplayProps
 }) {
 
@@ -751,6 +768,9 @@ export function ShareModal({
     }, [isOpen, globalProcessedChatFile, isImageSizeCalculated, checkIsImageData, dataDisplayProps.dataset]);
 
     const handleShareDataClick = async () => {
+        // Set uploading state
+        setIsUploading(true);
+        
         // Reset any previous errors
         setDecryptError("");
         
@@ -994,6 +1014,7 @@ export function ShareModal({
                         console.error("Failed to copy link: ", err);
                     });
             }
+            setIsUploading(false);
         } catch (error) {
             console.error("Error during sharing:", error);
             if (error.message?.includes("decrypt")) {
@@ -1002,13 +1023,18 @@ export function ShareModal({
                 setButtonText("sharedata");
                 setButtonDisabled(false);
             }
+            setIsUploading(false);
         }
     };
 
     const handleTaskIdUpload = async () => {
+        // Set uploading state
+        setIsUploading(true);
+        
         // Check if task ID is provided
         if (!taskIdInput || taskIdInput.trim() === "") {
             alert("Please enter a Task ID before uploading.");
+            setIsUploading(false);
             return;
         }
 
@@ -1018,6 +1044,7 @@ export function ShareModal({
             setTaskIdError("This task ID must end with 30");
             setButtonText("sharedata");
             setButtonDisabled(false);
+            setIsUploading(false);
             return; // Do not upload
         }
 
@@ -1057,12 +1084,14 @@ export function ShareModal({
 
             setButtonText("Upload Complete");
             setButtonDisabled(false);
+            setIsUploading(false);
             alert(`Map successfully uploaded with Task ID: ${trimmedTaskId}`);
             
         } catch (error) {
             console.error("Error during task ID upload:", error);
             setButtonText("Upload with Task ID");
             setButtonDisabled(false);
+            setIsUploading(false);
             alert("Upload failed. Please try again.");
         }
     };
@@ -1222,12 +1251,14 @@ const generateCSV = (dataset) => {
     URL.revokeObjectURL(url);
 };
 
-    useClickOutside(shareModalRef, () => setIsOpen(false));
+    useClickOutside(shareModalRef, () => {
+        if (!isUploading) setIsOpen(false);
+    });
 
     return (
 
         <div id="sharing-modal" ref={shareModalRef}>
-            <button className="modal-close btn" onClick={() => setIsOpen(false)}>
+            <button className="modal-close btn" onClick={() => setIsOpen(false)} disabled={isUploading}>
                 {closeIcon}
             </button>
             <div className="modal-title">
@@ -1294,6 +1325,7 @@ const generateCSV = (dataset) => {
                                                         boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
                                                     }}
                                                     autoFocus
+                                                    disabled={isUploading}
                                                 />
                                             </div>
                                             {(passwordError || decryptError) && (
@@ -1342,6 +1374,7 @@ const generateCSV = (dataset) => {
                                         justifyContent: "center",
                                         backgroundColor: "#25D366"
                                     }}
+                                    disabled={isUploading}
                                 >
                                     Share Map link
                                 </button>
@@ -1359,6 +1392,7 @@ const generateCSV = (dataset) => {
                                         fontWeight: "bold",
                                         backgroundColor: "#ffc107"
                                     }}
+                                    disabled={isUploading}
                                 >
                                     Upload with taskID
                                 </button>
@@ -1374,6 +1408,7 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         justifyContent: "center" 
                                     }}
+                                    disabled={isUploading}
                                 >
                                     {/* Download {dataDisplayProps.dataset && dataDisplayProps.dataset.isImageData ? "Geotagged Images" : "WhatsApp Map"} */}
                                     Download Map
@@ -1390,6 +1425,7 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         justifyContent: "center" 
                                     }}
+                                    disabled={isUploading}
                                 >
                                     Download CSV file
                                 </button>
@@ -1433,6 +1469,7 @@ const generateCSV = (dataset) => {
                                         setButtonDisabled(false);
                                     }}
                                     style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold"} }
+                                    disabled={isUploading}
                                 >
                                     Go back
                                 </button>
@@ -1466,6 +1503,7 @@ const generateCSV = (dataset) => {
                                             boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
                                         }}
                                         autoFocus
+                                        disabled={isUploading}
                                     />
                                     {taskIdError && (
                                         <p role="alert" aria-live="polite" style={{ color: "#e74c3c", fontSize: "0.95rem", margin: "6px 0 10px" }}>
@@ -1494,7 +1532,7 @@ const generateCSV = (dataset) => {
                                             outline: "none",
                                             boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
                                         }}
-                                        
+                                        disabled={isUploading}
                                     />
                                 </div>
                                 {/* <p style={{ fontSize: "7px" }}>Only the organisation that sent you this task ID, and the Captallite system administrator, will be able to see your map data. Public-private key encryption is under development</p> */}
@@ -1504,15 +1542,15 @@ const generateCSV = (dataset) => {
                                 <button
                                     className="btn"
                                     onClick={handleTaskIdUpload}
-                                    disabled={!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled}
+                                    disabled={!taskIdInput || taskIdInput.trim() === "" || isUploading}
                                     style={{ 
                                         height: "40px", 
                                         display: "flex", 
                                         alignItems: "center", 
                                         justifyContent: "center",
-                                        backgroundColor: (!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled) ? "#ccc" : "#ffc107",
+                                        backgroundColor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "#ccc" : "#ffc107",
                                         fontWeight: "500",
-                                        cursor: (!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled) ? "not-allowed" : "pointer"
+                                        cursor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "not-allowed" : "pointer"
                                     }}
                                 >
                                     {buttonText === "uploadPending" ? <LoadingSpinner text="Uploading..." /> : "Click to upload"}
@@ -1530,6 +1568,7 @@ const generateCSV = (dataset) => {
                                         setButtonDisabled(false);
                                     }}
                                     style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold" } }
+                                    disabled={isUploading}
                                 >
                                     Go back
                                 </button>
