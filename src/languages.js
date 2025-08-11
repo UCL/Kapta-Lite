@@ -108,9 +108,10 @@ i18next.use(initReactI18next).init({
 					<a href='${marcosUrl}'>Marcos Moreu</a><br>
 					<a href='${fabienUrl}'>Fabien Moustard</a><br>
 					<a href='${tomUrl}'>Tom Couch</a><br>
-					<a href='${jedUrl}'>Jed Stevenson</a><br>
 					<a href='${mukiUrl}'>Muki Haklay</a><br>
-					<a href='${claireUrl}'>Claire Ellul</a><br>`,
+					<a href='${claireUrl}'>Claire Ellul</a><br>
+					<a href='${jedUrl}'>Jed Stevenson</a><br>
+				`,
 				legalDisclaimer: `<br />The Captallite team has made every effort to develop an app that parses WhatsApp chats and Photos to create maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Captallite cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",

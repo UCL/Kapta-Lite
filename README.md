@@ -1,20 +1,23 @@
-**What is Kaptallite?**  
-Kaptallite is a platform for creating and sharing WhatsApp Maps and Photos Maps, and connecting with Kaptallite Business Mappers.
+**What is Captallite**  
+Captallite is a platform and a network for simple,private, remunerated crowdmapping with WhatsApp Maps and Photos Maps
 
-**What is WhatsApp Maps?**  
+**What is WhatsApp Maps**  
 WhatsApp Maps are private community maps made with WhatsApp.
 
-**What is Photos Maps?**  
-Photos Maps are private maps made with geotagged photos that are in the phone.
+**What is Photos Maps**  
+Photos Maps are private maps made with geotagged photos that are in the phone's (Google) Photos gallery.
 
-**What are Kaptallite Business Mappers?**  
-People who make a business creating maps with Kaptallite.
+**What are Captallite Business Mappers?**  
+People who make a business creating maps with Captallite.
 
-**Kaptallite is a Progressive Web App** 👉 https
+**Why Captallite**  
+To popularise simple, private, remunerated crowdmapping. Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones. For that, crowdsourcing needs to be embedded in people’s chats and photos (not in mapping apps), and become more private (less open) and more remunerated (less volunteered). A peer-review publication explaining this will be available soon.
+
+**Captallite is a Progressive Web App** 👉 https://captallite.com
 
 # Guidance for Developers
 
-- [Kaptallite first prototypes](https://github.com/MarcosMoreu/Kapta-Prototyping/commit/a06af733f0179d17b44190a7791395d624034477)
+- [Captallite first prototypes](https://github.com/MarcosMoreu/Kapta-Prototyping/commit/a06af733f0179d17b44190a7791395d624034477)
   
 ## Requirements
 
@@ -30,16 +33,32 @@ People who make a business creating maps with Kaptallite.
 5. Run `npm start` to start the development server
 6. Open `http://localhost:8080` in your browser
 
+## Configuration
+
+Captallite requires a configuration file to be created in the src directory. The file should be named `config.json` and should contain the following fields:
+
+```json
+{
+	"mapbox": {
+		"accessToken": "YOUR_MAPBOX_ACCESS_TOKEN"
+	},
+	"api": {
+		"invokeUrl": "" // API URL (optional)
+	}
+}
+```
+
 # People
 
-Kaptallite is being developed at University College London (UCL) by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. Kaptallite is spinning out from UCL.
+Captallite is spinning out from University College London (UCL). Captallite is being developed by the UCL's Extreme Citizen Science Lab and the UCL's Advanced Research Computing Centre, with support from external partners and contributors. 
 
 - [Marcos Moreu](https://www.linkedin.com/in/marcosmoreubadia)
 - [Fabien Moustard](https://www.linkedin.com/in/fabien-moustard-996998227)
 - [Tom Couch](https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch)
-- [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/)
 - [Muki Haklay](https://www.ucl.ac.uk/geography/muki-haklay-facss)
 - [Claire Ellul](https://www.ucl.ac.uk/civil-environmental-geomatic-engineering/people/dr-claire-ellul)
+- [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/)
+
 
 # Legal disclaimer
 

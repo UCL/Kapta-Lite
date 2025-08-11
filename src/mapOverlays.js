@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./styles/map-etc.css";
@@ -542,7 +541,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p style={{ textAlign: "center" }}>To create a Photos Map, select image files from your device. ‼️ Do not select more than 50 photos (We’re working on improving the processing and compression times). 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 SEARCH for AI-assited pre-selection</p>
+                        <p style={{ textAlign: "center" }}>Click to select photos (max. 50 photos‼️) 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 Search</p>
                                                 
                         <div className="option-button-container">
                             <button
@@ -673,7 +672,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             <br />
                             The <strong>free version</strong> allows you to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
                             <br />
-                            <strong>Premium</strong> allows you to manage multiple Captallite Maps and use dashboards and AI Agents for advanced visualisation and analysis.
+                            <strong>Premium</strong> allows you to create task IDs, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.
 
                         </p>
                         <div className="option-button-container">
@@ -731,6 +730,7 @@ export function ShareModal({
     const [showInfoContent, setShowInfoContent] = useState(false); // Whether to show info content
     const [showTaskIdUpload, setShowTaskIdUpload] = useState(false); // Whether to show task ID upload interface
     const [taskIdInput, setTaskIdInput] = useState(""); // Task ID input value
+    const [taskIdError, setTaskIdError] = useState(""); // Inline error for Task ID validation
     const [totalImageSize, setTotalImageSize] = useState(0); // Total size of all images in bytes
     const [isImageSizeCalculated, setIsImageSizeCalculated] = useState(false); // Whether image size has been calculated
     const [isMapTooLarge, setIsMapTooLarge] = useState(false); // Whether map exceeds 5MB limit
@@ -1012,6 +1012,19 @@ export function ShareModal({
             return;
         }
 
+        // Validate Task ID against allowed value
+        const trimmedTaskId = taskIdInput.trim();
+        if (!trimmedTaskId.endsWith("30")) {
+            setTaskIdError("This task ID must end with 30");
+            setButtonText("sharedata");
+            setButtonDisabled(false);
+            return; // Do not upload
+        }
+
+
+        // Clear any previous error before uploading
+        setTaskIdError("");
+
         setButtonText("uploadPending");
         setButtonDisabled(true);
 
@@ -1022,7 +1035,7 @@ export function ShareModal({
                 await uploadImageData(
                     dataDisplayProps.dataset.data,
                     "private-non-sensitive", // Default sharing option for task ID uploads
-                    taskIdInput.trim(),
+                    trimmedTaskId,
                     WhatsAppMapTags,
                     mapperId,
                     setButtonText,
@@ -1032,11 +1045,11 @@ export function ShareModal({
                 // Use uploadProcessedChat for WhatsApp chat data with the task ID
                 await uploadProcessedChat(
                     globalProcessedChatFile,
-                    `TaskID_${taskIdInput.trim()}_${new Date().toISOString().split('T')[0].replace(/-/g, '')}`,
+                    `TaskID_${trimmedTaskId}_${new Date().toISOString().split('T')[0].replace(/-/g, '')}`,
                     setButtonText,
                     setButtonDisabled,
                     "private-non-sensitive", // Default sharing option for task ID uploads
-                    taskIdInput.trim(),
+                    trimmedTaskId,
                     WhatsAppMapTags,
                     mapperId
                 );
@@ -1044,7 +1057,7 @@ export function ShareModal({
 
             setButtonText("Upload Complete");
             setButtonDisabled(false);
-            alert(`Map successfully uploaded with Task ID: ${taskIdInput.trim()}`);
+            alert(`Map successfully uploaded with Task ID: ${trimmedTaskId}`);
             
         } catch (error) {
             console.error("Error during task ID upload:", error);
@@ -1443,7 +1456,7 @@ const generateCSV = (dataset) => {
                                         type="text"
                                         placeholder="Enter your task ID"
                                         value={taskIdInput}
-                                        onChange={(e) => setTaskIdInput(e.target.value)}
+                                        onChange={(e) => { setTaskIdInput(e.target.value); if (taskIdError) setTaskIdError(""); }}
                                         style={{ 
                                             width: "90%", 
                                             padding: "10px", 
@@ -1454,8 +1467,37 @@ const generateCSV = (dataset) => {
                                         }}
                                         autoFocus
                                     />
+                                    {taskIdError && (
+                                        <p role="alert" aria-live="polite" style={{ color: "#e74c3c", fontSize: "0.95rem", margin: "6px 0 10px" }}>
+                                            {taskIdError}
+                                        </p>
+                                    )}
+                                    <label style={{ 
+                                        fontSize: "1rem", 
+                                        // fontWeight: "bold",
+                                        display: "block",
+                                        marginBottom: "5px",
+                                        color: "#333"
+                                    }}>
+                                        Enter your phone number:
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        placeholder="Needed for payments!"
+                                        value={WhatsAppMapTags}
+                                        onChange={(e) => setWhatsAppMapTags(e.target.value)}
+                                        style={{ 
+                                            width: "90%", 
+                                            padding: "10px", 
+                                            border: "1px solid #007bff",
+                                            borderRadius: "4px",
+                                            outline: "none",
+                                            boxShadow: "0 1px 3px rgba(0,0,0,0.1)"
+                                        }}
+                                        
+                                    />
                                 </div>
-                                <p style={{ fontSize: "7px" }}>Only the organisation that sent you this task ID, and the Captallite system administrator, will be able to see your map data. Public-private key encryption is under development</p>
+                                {/* <p style={{ fontSize: "7px" }}>Only the organisation that sent you this task ID, and the Captallite system administrator, will be able to see your map data. Public-private key encryption is under development</p> */}
                             </div>
 
                             <div className="option-button-container" style={{ marginBottom: "8px" }}>
@@ -1473,7 +1515,7 @@ const generateCSV = (dataset) => {
                                         cursor: (!taskIdInput || taskIdInput.trim() === "" || isButtonDisabled) ? "not-allowed" : "pointer"
                                     }}
                                 >
-                                    {buttonText === "uploadPending" ? <LoadingSpinner text="Uploading..." /> : "Click here to upload"}
+                                    {buttonText === "uploadPending" ? <LoadingSpinner text="Uploading..." /> : "Click to upload"}
                                 </button>
                             </div>
 
@@ -1483,6 +1525,7 @@ const generateCSV = (dataset) => {
                                     onClick={() => {
                                         setShowTaskIdUpload(false);
                                         setTaskIdInput("");
+                                        setTaskIdError("");
                                         setButtonText("sharedata");
                                         setButtonDisabled(false);
                                     }}
