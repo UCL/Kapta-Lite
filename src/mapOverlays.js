@@ -844,7 +844,7 @@ export function ShareModal({
         }
         const randomNum = generateBase62Id(); // Generate a random string of 20 characters
         console.log("🔐 Base62 ID:", randomNum)
-        const fileNameWAMap = `CaptalliteWhatsAppMap-${randomNum}`; //Reduce parameters to increase security of URL
+        const fileNameWAMap = `CaptalliteMap-${randomNum}`; //Reduce parameters to increase security of URL
 
         try {
             // Prepare file for upload - simplified approach
@@ -1040,8 +1040,8 @@ export function ShareModal({
 
         // Validate Task ID against allowed value
         const trimmedTaskId = taskIdInput.trim();
-        if (!trimmedTaskId.endsWith("30")) {
-            setTaskIdError("This task ID must end with 30");
+        if (!trimmedTaskId.endsWith("30")) { //temporary solution...
+            setTaskIdError("This task ID does not exist");
             setButtonText("sharedata");
             setButtonDisabled(false);
             setIsUploading(false);
@@ -1390,7 +1390,8 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         justifyContent: "center",
                                         fontWeight: "bold",
-                                        backgroundColor: "#ffc107"
+                                        backgroundColor: "#ffc107",
+                                        transition: "none"
                                     }}
                                     disabled={isUploading}
                                 >
@@ -1406,7 +1407,9 @@ const generateCSV = (dataset) => {
                                         height: "36px", 
                                         display: "flex", 
                                         alignItems: "center", 
-                                        justifyContent: "center" 
+                                        justifyContent: "center",
+                                        backgroundColor: "white",
+                                        transition: "none"
                                     }}
                                     disabled={isUploading}
                                 >
@@ -1459,14 +1462,17 @@ const generateCSV = (dataset) => {
 
                             <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
                                 <button
+                                
                                     className="btn"
                                     onClick={() => {
-                                        setShowPasswordInput(false);
-                                        setPassword("");
-                                        setPasswordError("");
-                                        setDecryptError("");
-                                        setButtonText("sharedata");
-                                        setButtonDisabled(false);
+                                        setTimeout(() => {
+                                            setShowPasswordInput(false);
+                                            setPassword("");
+                                            setPasswordError("");
+                                            setDecryptError("");
+                                            setButtonText("sharedata");
+                                            setButtonDisabled(false);
+                                        }, 10);
                                     }}
                                     style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold"} }
                                     disabled={isUploading}
@@ -1561,11 +1567,13 @@ const generateCSV = (dataset) => {
                                 <button
                                     className="btn"
                                     onClick={() => {
-                                        setShowTaskIdUpload(false);
-                                        setTaskIdInput("");
-                                        setTaskIdError("");
-                                        setButtonText("sharedata");
-                                        setButtonDisabled(false);
+                                        setTimeout(() => {
+                                            setTaskIdInput("");
+                                            setTaskIdError("");
+                                            setButtonText("sharedata");
+                                            setButtonDisabled(false);
+                                            setShowTaskIdUpload(false);
+                                        }, 10);
                                     }}
                                     style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold" } }
                                     disabled={isUploading}
@@ -1589,7 +1597,7 @@ const generateCSV = (dataset) => {
 
                                     
                                 </ul>
-                                <p style={{ marginBottom: "4px" }}>💡 Captallite compress the images for faster upload/download. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
+                                <p style={{ marginBottom: "4px" }}>💡 Captallite compress the images for faster upload/download. Options to upload higher resolution images is under development. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
                                 <p style={{ marginBottom: "4px" }}>Download buttons</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information.</li>

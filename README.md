@@ -11,7 +11,7 @@ Photos Maps are private maps made with geotagged photos that are in the phone's 
 People who make a business creating maps with Captallite.
 
 **Why Captallite**  
-Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially those at the margins. For that, crowdsourcing needs to be embedded in people’s chats and photos (not mapping apps), and become more private (less open) and paid (not volunteered). <u>A peer-review publication explaining this will be available here soon.</u>
+Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially those at the margins. For that, crowdsourcing needs to be embedded in people’s chats and photos (not mapping apps), and become more private (less open) and paid (not volunteered). <u>A peer-reviewed publication explaining this will be available here soon.</u>
 
 **Captallite is a Progressive Web App** 👉 https://captallite.com
 

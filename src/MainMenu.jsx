@@ -511,7 +511,7 @@ export default function MainMenu({
                             margin: 0, 
                             color: '#333', 
                             fontWeight: '600' 
-                        }}>This WhatsApp Map is password protected</h3>
+                        }}>This Captallite map is password protected</h3>
                     </div>
                     
                     <p style={{ 
