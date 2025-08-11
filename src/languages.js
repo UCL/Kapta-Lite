@@ -69,7 +69,7 @@ i18next.use(initReactI18next).init({
 					"Do you allow the Captallite team to use your map to support your community?",
 				about: "What is Captallite",
 				aboutContent: `
-								<br />Captallite is a platform for creating and sharing WhatsApp Maps and Photos Maps, and connecting with Captallite Business Mappers. <br />
+								<br />Captallite is a platform for private, paid crowdmapping with (WhatsApp) Chats and (Google) Photos. <br />
 								<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />
 								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos that are in the phone. <br />
@@ -77,7 +77,7 @@ i18next.use(initReactI18next).init({
 								`,
 				why: "Why Captallite",
 				whyContent: `
-								<br /><strong>To popularise simple, private, remunerated crowdmapping.</strong> Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones. For that, crowdsourcing needs to be embedded in people’s chats and photos (not in mapping apps), and become more private (less open) and more remunerated (less volunteered). <u>A peer-review publication explaining this will be available soon.</u><br />`,
+								<br />Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially those at the margins. For that, crowdsourcing needs to be embedded in people’s chats and photos (not mapping apps), and become more private (less open) and paid (not volunteered). <u>A peer-review publication explaining this will be available here soon.</u><br />`,
 
 				caseStudies: " Case studies",
 				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
@@ -102,7 +102,7 @@ i18next.use(initReactI18next).init({
 					"Captallite Web: A platform that brings people together to create and share WhatsApp Maps",
 
 				people: "People",
-				peopleContent: `<br />Captallite is spining out from University College London (UCL). Captallite is being developed by the UCL's Extreme Citizen Science Lab and the UCL's Advanced Research Computing Centre, with support from external partners and contributors. <br>
+				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
 					<br />Currently the core Captallite team consists of:<br>
 					<br />
 					<a href='${marcosUrl}'>Marcos Moreu</a><br>

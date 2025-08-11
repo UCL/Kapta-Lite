@@ -94,7 +94,7 @@ module.exports = (env, argv) => {
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Simple.Private. Remunerated Crowdmapping.",
+						content: "Simple.Private.Paid Crowdmapping.",
 					},
 					"og:type": {
 						property: "og:type",
@@ -155,7 +155,7 @@ module.exports = (env, argv) => {
 				publicPath: "/",
 				name: "Captallite",
 				short_name: "Captallite",
-				description: "Simple.Private. Remunerated Crowdmapping.",
+				description: "Simple.Private.Paid Crowdmapping.",
 				lang: "en-GB",
 				theme_color: "#25D366",
 				background_color: "#25D366",

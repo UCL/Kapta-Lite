@@ -608,10 +608,10 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
     const searchModalRef = useRef(null);
 
-    useClickOutside(searchModalRef, () => {
-        // setIsOpen(false); //disable mappers location for now
-        setIsRegisterMapper(false); // Reset the state when the modal is closed
-    });
+        useClickOutside(searchModalRef, () => {
+            setIsOpen(false);
+            setIsRegisterMapper(false);
+        });
 
     return (
         <div id="search-modal" ref={searchModalRef}>
@@ -685,9 +685,9 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                         <p style={{ textAlign: "center" }}>
                             {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                             <br />
-                            The <strong>free version</strong> allows you to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
+                            The <strong>free version</strong> allows organisations to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
                             <br />
-                            <strong>Premium</strong> allows you to create task IDs, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.
+                            <strong>Premium</strong> allows organisations to create task IDs to run large-scale crowdmapping campaigns, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.
 
                         </p>
                         <div className="option-button-container">
