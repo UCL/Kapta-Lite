@@ -447,7 +447,7 @@ export default function MainMenu({
 
     return (
         <>
-            {(loadingMessage || globalLoadingMessage) && !(window.location.search.includes('?import=') && mainIsLoaderVisible) && (
+            {(loadingMessage || globalLoadingMessage) && !mainIsLoaderVisible && (
                 <div
                 id="loadingMessage"
                 className="loading-message"

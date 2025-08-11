@@ -1555,6 +1555,7 @@ const generateCSV = (dataset) => {
                                         alignItems: "center", 
                                         justifyContent: "center",
                                         backgroundColor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "#ccc" : "#ffc107",
+                                        color: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "#666" : "#000",
                                         fontWeight: "500",
                                         cursor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "not-allowed" : "pointer"
                                     }}

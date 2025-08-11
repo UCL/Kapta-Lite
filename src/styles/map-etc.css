@@ -226,6 +226,17 @@
     user-select: none;
 }
 
+/* Prevent task ID upload button text from turning white on click */
+#sharing-modal .btn:active,
+#sharing-modal .btn:focus {
+    color: #000 !important;
+}
+
+#sharing-modal .btn:disabled:active,
+#sharing-modal .btn:disabled:focus {
+    color: #666 !important;
+}
+
 .map-action-btn:hover {
     transform: scale(1.05);
     background-color: var(--wa-green--dark);
