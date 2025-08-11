@@ -1003,6 +1003,7 @@ export function ShareModal({
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");
             setButtonDisabled(false);
+            setIsUploading(false); // Re-enable all buttons immediately after successful upload
 
             // Prepare share message text
             let shareTitle = "#MadeWithCaptallite";
@@ -1047,7 +1048,6 @@ export function ShareModal({
                         console.error("Failed to copy link: ", err);
                     });
             }
-            setIsUploading(false);
         } catch (error) {
             console.error("Error during sharing:", error);
             if (error.message?.includes("decrypt")) {

@@ -117,7 +117,7 @@ i18next.use(initReactI18next).init({
 				confirm: "Confirm",
 				yes: "Yes",
 				no: "No",
-				sharedata: "👉 Click to share",
+				sharedata: "Encrypt & Upload",
 				shareimg: "Share the map IMAGE",
 				uploaddata: "Share map with Task ID",
 			   uploadPending: `uploadPending`,
