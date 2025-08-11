@@ -305,7 +305,7 @@ function App() {
                         color: '#2d2c2c',
                         fontFamily: 'system-ui, -apple-system, sans-serif'
                     }}>
-                        Kaptallite (beta)
+                        Captallite (beta)
                     </span>
                 </div>
             )}

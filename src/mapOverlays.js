@@ -316,7 +316,7 @@ export function MapActionArea({
     const handleConnect = () => {
         setIsRegisterMapper(true); // Set the modal content to "register as a mapper"
         setIsSearchModalOpen(true); // Open the search modal
-        setShowWaMappers(!showWaMappers); // Toggle the WhatsApp Mappers state
+        // setShowWaMappers(!showWaMappers); // Disable mappers location for now
     };
 
     const handleShare = () => {
@@ -454,25 +454,24 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Initial three button view */}
                 {!activeOption && (
                     <div className="option-button-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <p style={{ textAlign: "center" }}>Create maps by converting WhatsApp chats or Photos into maps. </p>
+                        <p style={{ textAlign: "center" }}>Create maps by converting (Google) Photos or (WhatsApp) chats into maps. </p>
 
-                        <button
-                            className="btn"
-                            onClick={() => setActiveOption('whatsapp')}
-                            style={{ height: '45px' }}
-                        >
-                            WhatsApp Map
-                        </button>
-                        
-                        <button
+                       <button
                             className="btn"
                             onClick={() => setActiveOption('photos')}
                             style={{ height: '45px' }}
                         >
                             Photos Map
                         </button>
-                        
                         <button
+                            className="btn"
+                            onClick={() => setActiveOption('whatsapp')}
+                            style={{ height: '45px' }}
+                        >
+                            WhatsApp Map
+                        </button>                   
+                        
+                        {/* <button
                             className="btn"
                             onClick={() => {
                                 window.open(
@@ -482,20 +481,15 @@ export function CreateModal({ isOpen, setIsOpen }) {
                             }}
                             style={{ height: '45px' }}
                         >
-                            Register as Kaptallite Business Mapper
-                        </button>
+                            Register as Captallite Business Mapper
+                        </button> */}
                     </div>
                 )}
                 
                 {/* WhatsApp option content */}
                 {activeOption === 'whatsapp' && (
                     <>
-                        <p>Create WhatsApp Maps with Kaptallite in 3 simple steps:</p>
-                        <ol>
-                            <li>Share locations in a WhatsApp Group</li>
-                            <li>Export chat to Kaptallite app</li>
-                            <li>Share your WhatsApp Map</li>
-                        </ol>
+                        <p>Unlike (Google) Photos, WhatsApp Photos do not cointain location data. So you need to first share the location and then take a picture. </p>
                         
                         <div className="option-button-container">
                             <button
@@ -531,7 +525,8 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                     
                                 </>
                             )}
-                            <p style={{ textAlign: "center" }}>🔒 Whatever you upload here, stays in your device. No one can see it. </p>
+                            <p style={{ textAlign: "center" }}>🔒 Whatever you upload here, stays in your device. No one can see it. <br></br><br></br>🤞 We've submitted a feature request to Meta-WhatsApp to enable location data in photos to make WhatsApp Maps creation easier. We're awaiting their response.</p>
+
                             {/* Back button */}
                              <button 
                                 className="btn" 
@@ -547,7 +542,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p style={{ textAlign: "center" }}>To create a Photos Map, select image files from your device. 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 SEARCH for AI-assited pre-selection</p>
+                        <p style={{ textAlign: "center" }}>To create a Photos Map, select image files from your device. ‼️ Do not select more than 50 photos (We’re working on improving the processing and compression times). 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 SEARCH for AI-assited pre-selection</p>
                                                 
                         <div className="option-button-container">
                             <button
@@ -575,7 +570,7 @@ export function CreateModal({ isOpen, setIsOpen }) {
                                     }, 1000);
                                 }}
                             >
-                                Convert images into a map
+                                Convert photos into a map
                             </button>
                             <p style={{ textAlign: "center" }}>📍Note that only the images that were taken with the "Location" ON in your device will be shown in the map. <br /><br />🔒 Whatever you upload here, stays in your device. No one can see it.</p>
                             
@@ -600,7 +595,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
     const searchModalRef = useRef(null);
 
     useClickOutside(searchModalRef, () => {
-        setIsOpen(false);
+        // setIsOpen(false); //disable mappers location for now
         setIsRegisterMapper(false); // Reset the state when the modal is closed
     });
 
@@ -642,8 +637,20 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p style={{ textAlign: "center" }}>We're building the network of Kaptallite Business Mappers. Explore the map to connect with them. <br /><br />Contact us if you need our support to launch a crowdsourcing campaign.
+                            <p style={{ textAlign: "center" }}>We're building the network to connect Captallite Business Mappers with those who need ground data. <br />
                             </p>
+                            <button
+                            className="btn"
+                            style={{ height: "45px", borderRadius: "15px" }}
+                            onClick={() => {
+                                window.open(
+                                    "https://form.typeform.com/to/EAUd0TVm",
+                                    "_blank"
+                                );
+                            }}
+                        >
+                            Register as Business Mapper
+                        </button>
                             <button
                                 className="btn"
                                 style={{ height: "45px", borderRadius: "15px" }}
@@ -654,8 +661,9 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                                     );
                                 }}
                             >
-                                Contact us
+                            Request Ground Data
                             </button>
+                            
                         </div>
                     </>
                 ) : isPremium ? (
@@ -665,7 +673,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             <br />
                             The <strong>free version</strong> allows you to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
                             <br />
-                            <strong>Premium</strong> allows you to manage multiple Kaptallite Maps and use dashboards and AI Agents for advanced visualisation and analysis.
+                            <strong>Premium</strong> allows you to manage multiple Captallite Maps and use dashboards and AI Agents for advanced visualisation and analysis.
 
                         </p>
                         <div className="option-button-container">
@@ -751,8 +759,8 @@ export function ShareModal({
             if (navigator.canShare && navigator.share) {
                 navigator
                     .share({
-                        title: "#MadeWithKaptallite",
-                        text: `This is a Private Map created with Kaptallite. 🔐 The password to open it is: ${password}`,
+                        title: "#MadeWithCaptallite",
+                        text: `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`,
                         url: kaptaWaMapUrl,
                     })
                     .catch((error) => console.error("Sharing failed", error));
@@ -816,7 +824,7 @@ export function ShareModal({
         }
         const randomNum = generateBase62Id(); // Generate a random string of 20 characters
         console.log("🔐 Base62 ID:", randomNum)
-        const fileNameWAMap = `KaptalliteWhatsAppMap-${randomNum}`; //Reduce parameters to increase security of URL
+        const fileNameWAMap = `CaptalliteWhatsAppMap-${randomNum}`; //Reduce parameters to increase security of URL
 
         try {
             // Prepare file for upload - simplified approach
@@ -944,14 +952,14 @@ export function ShareModal({
             setButtonDisabled(false);
 
             // Prepare share message text
-            let shareTitle = "#MadeWithKaptallite";
+            let shareTitle = "#MadeWithCaptallite";
             let shareText;
             
             // Choose appropriate message text based on data type
             // Always include password in the share message with a lock and key emoji
             shareText = checkIsImageData()
-                ? `This is a Private Map created with Kaptallite. 🔐 The password to open it is: ${password}`
-                : `This is a Private Map created with Kaptallite. 🔐 The password to open it is: ${password}`;
+                ? `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`
+                : `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`;
 
             // Handle sharing
             if (navigator.canShare && navigator.share) {
@@ -1067,8 +1075,8 @@ export function ShareModal({
             const dateTime = getDateTime();
             // Use different filename for image data vs WhatsApp map
             link.download = checkIsImageData() 
-                ? `Kaptallite_Private_Map_${dateTime}.zip` 
-                : `Kaptallite_Private_Map_${dateTime}.zip`;
+                ? `Captallite_Private_Map_${dateTime}.zip` 
+                : `Captallite_Private_Map_${dateTime}.zip`;
             link.click();
             URL.revokeObjectURL(url);
         }
@@ -1076,8 +1084,8 @@ export function ShareModal({
     const handleShareCurrentUrl = () => {
 
         const shareText = checkIsImageData() 
-            ? "This is a Private Map created with Kaptallite" 
-            : "This is a Private Map created with Kaptallite";
+            ? "This is a Private Map created with Captallite" 
+            : "This is a Private Map created with Captallite";
         const alertText = checkIsImageData() 
             ? "The Private Map link has been copied to clipboard!" 
             : "The Private Map link has been copied to clipboard!";
@@ -1085,7 +1093,7 @@ export function ShareModal({
         if (navigator.canShare && navigator.share) {
             navigator
                 .share({
-                    title: "#MadeWithKaptallite",
+                    title: "#MadeWithCaptallite",
                     text: shareText,
                     url: window.location.href,
                 })
@@ -1196,7 +1204,7 @@ const generateCSV = (dataset) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `Kaptallite_WhatsApp_Map_${dateTime}.csv`; // File name now includes date and time
+    link.download = `Captallite_WhatsApp_Map_${dateTime}.csv`; // File name now includes date and time
     link.click();
     URL.revokeObjectURL(url);
 };
@@ -1447,7 +1455,7 @@ const generateCSV = (dataset) => {
                                         autoFocus
                                     />
                                 </div>
-                                <p style={{ fontSize: "7px" }}>Only the organisation that sent you this task ID, and the Kaptallite system administrator, will be able to see your map data. Public-private key encryption is under development</p>
+                                <p style={{ fontSize: "7px" }}>Only the organisation that sent you this task ID, and the Captallite system administrator, will be able to see your map data. Public-private key encryption is under development</p>
                             </div>
 
                             <div className="option-button-container" style={{ marginBottom: "8px" }}>
@@ -1489,9 +1497,9 @@ const generateCSV = (dataset) => {
                     {showInfoContent && (
                         <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
                             <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
-                                <p style={{ marginBottom: "6px" }}>Kaptallite is a privacy-focused tool for sharing WhatsApp Maps and Photos Maps. All maps that you share direcly to your network are password-protected by default with the following security features:</p>
+                                <p style={{ marginBottom: "6px" }}>Captallite is a privacy-focused tool for sharing WhatsApp Maps and Photos Maps. All maps that you share direcly to your network are password-protected by default with the following security features:</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
-                                    <li>Client-side encryption using AES-256. Not even the Kaptallite team can view your maps.</li>
+                                    <li>Client-side encryption using AES-256. Not even the Captallite team can view your maps.</li>
                                     <li>Passwords never stored on our servers.</li>
                                     {/* <li>Files automatically expire after 30 days</li> */}
                                     <li>No user registration or personal data collection.</li>
@@ -1499,11 +1507,11 @@ const generateCSV = (dataset) => {
 
                                     
                                 </ul>
-                                <p style={{ marginBottom: "4px" }}>💡 Kaptallite compress the images for faster upload/download. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
+                                <p style={{ marginBottom: "4px" }}>💡 Captallite compress the images for faster upload/download. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
                                 <p style={{ marginBottom: "4px" }}>Download buttons</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information.</li>
-                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Kaptallite in a PC, drag & drop the zip file. In a mobile, either upload it or select the zip files, then click 'Share' and select Kaptallite.</li>
+                                    <li>The Map file contains the map data in geoJSON format and the images. To view the map in Captallite in a PC, drag & drop the zip file. In a mobile, either upload it or select the zip files, then click 'Share' and select Captallite.</li>
                                     <li>The Map data can directly be imported into QGIS or ArcGIS or other GIS software.</li>
                                     <li>If you need help to process the map data, feel free to reach out to us.</li>
                                 </ul>

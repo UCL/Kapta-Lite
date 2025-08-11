@@ -41,6 +41,7 @@
     content: "";
     width: 25px;
     aspect-ratio: 1;
+    border-radius: 50%; /* make them circles instead of squares */
     /* box-shadow: 0 0 0 3px inset #fff; */
     animation: l5 1.5s infinite;
 }

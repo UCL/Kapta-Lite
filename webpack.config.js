@@ -79,7 +79,7 @@ module.exports = (env, argv) => {
 			}),
 			new HtmlWebpackPlugin({
 				template: "./src/index.html",
-				title: "Kaptallite",
+				title: "Captallite",
 				favicon: "src/images/icons/favicon.png",
 				meta: {
 					"Content-Type": {
@@ -90,11 +90,11 @@ module.exports = (env, argv) => {
 						"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
 					"og:title": {
 						property: "og:title",
-						content: "Kaptallite",
+						content: "Captallite",
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Turn Photos & Chats into Private Map$",
+						content: "Simple.Private. Remunerated Crowdmapping.",
 					},
 					"og:type": {
 						property: "og:type",
@@ -153,9 +153,9 @@ module.exports = (env, argv) => {
 			}),
 			new WebpackPwaManifest({
 				publicPath: "/",
-				name: "Kaptallite",
-				short_name: "Kaptallite",
-				description: "Create Private WhatsApp Maps & Photos Maps. Works offline!",
+				name: "Captallite",
+				short_name: "Captallite",
+				description: "Simple.Private. Remunerated Crowdmapping.",
 				lang: "en-GB",
 				theme_color: "#25D366",
 				background_color: "#25D366",

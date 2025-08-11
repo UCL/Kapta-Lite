@@ -84,39 +84,50 @@ export default function BurgerMenu({
 							<ul style={{ margin: 0 }}>
 								
 									<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-										<span style={{ fontSize: '0.95rem' }}><br></br>Tutorial for mappers<br></br><br /></span>
-										<a
-                                            href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            <img
-                                                src="https://img.youtube.com/vi/vaPHy8S-OpA/hqdefault.jpg"
-                                                alt="Video Tutorial for mappers - thumbnail"
-                                                style={{ width: '100%', maxWidth: '300px', borderRadius: '8px', cursor: 'pointer' }}
-                                                loading="lazy"
-                                            />
-                                        </a>
+										<br />
+
+										<span style={{ fontSize: '0.95rem' }}>📱 
+
+										 <a
+										//  href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
+                                        //     target="_blank"
+                                        //     rel="noopener noreferrer"
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly'); }}
+                                        >Tutorial for mappers
+                                            
+                                        </a></span>
 										
 									</div>
 								
 								<br />
 								
 									<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-										<span style={{ fontSize: '0.95rem' }}>Tutorial for organisations<br></br><br /></span>
+										<span style={{ fontSize: '0.95rem' }}>💻  
 
-										<a
-                                            href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            <img
-                                                src="https://img.youtube.com/vi/vaPHy8S-OpA/hqdefault.jpg"
-                                                alt="Video Tutorial for organisations - thumbnail"
-                                                style={{ width: '100%', maxWidth: '300px', borderRadius: '8px', cursor: 'pointer' }}
-                                                loading="lazy"
-                                            />
-                                        </a>
+                                        <a
+										//  href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
+                                        //     target="_blank"
+                                        //     rel="noopener noreferrer"
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly'); }}
+                                        >Tutorial for organisations
+                                          
+                                        </a></span>
+										<p>The <strong>free version</strong> allows you to visualise and edit one or multiple maps in Captallite mobile or PC, or export to QGIS, ArcGIS etc.
+										<br />
+                           				 <strong>Premium</strong> allows you to manage multiple maps and use dashboards and AI Agents for advanced visualisation & analysis.</p>
+										 <div className="option-button-container">
+										<button
+											className="btn"
+											style={{ backgroundColor: '#25D367', height: '25px',  fontSize: "15px" }}
+											onClick={() => {
+												window.open("https://form.typeform.com/to/dJ4XaduT", "_blank");
+											}}
+										>
+											Try Premium
+										</button>
+                       				 </div>
                                     </div>
 								
 								
