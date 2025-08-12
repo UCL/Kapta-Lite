@@ -437,43 +437,4 @@ body {
     outline: none;
     box-shadow: none;
   }
-  
-  /* Add mobile touch interactions for modal buttons */
-  #sharing-modal .btn:active,
-  #create-modal .btn:active,
-  #login-dialog .btn:active,
-  #upload-dialog .btn:active,
-  dialog .btn:active,
-  .modal .btn:active {
-    transform: scale(0.95);
-    background-color: rgba(0, 0, 0, 0.1);
-    transition: transform 0.1s ease, background-color 0.1s ease;
-  }
-  
-  /* Specific styles for different button types in modals */
-  #sharing-modal .btn.confirm:active,
-  #create-modal .btn.confirm:active,
-  dialog .btn.confirm:active {
-    background-color: var(--mid-green);
-    color: white;
-  }
-  
-  #sharing-modal .btn.cancel:active,
-  #create-modal .btn.cancel:active,
-  dialog .btn.cancel:active {
-    background-color: var(--mid-red--translucent);
-    color: white;
-  }
-  
-  /* Special handling for green action buttons */
-  #sharing-modal .btn:active[style*="25D366"],
-  #create-modal .btn:active[style*="25D366"] {
-    background-color: #1a9b4f !important; /* Darker green for active state */
-  }
-  
-  /* Special handling for yellow/warning buttons */
-  #sharing-modal .btn:active[style*="ffc107"],
-  #create-modal .btn:active[style*="ffc107"] {
-    background-color: #e6ad06 !important; /* Darker yellow for active state */
-  }
 }
