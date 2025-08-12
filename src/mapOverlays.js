@@ -815,7 +815,11 @@ export function ShareModal({
                         text: `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`,
                         url: kaptaWaMapUrl,
                     })
-                    .catch((error) => console.error("Sharing failed", error));
+                    .catch((error) => console.error("Sharing failed", error))
+                    .finally(() => {
+                        // Re-enable buttons after sharing attempt
+                        setIsUploading(false);
+                    });
             } else {
                 navigator.clipboard
                     .writeText(kaptaWaMapUrl)
@@ -824,6 +828,10 @@ export function ShareModal({
                     })
                     .catch((err) => {
                         console.error("Failed to copy link: ", err);
+                    })
+                    .finally(() => {
+                        // Re-enable buttons after clipboard operation
+                        setIsUploading(false);
                     });
             }
             return;
@@ -832,11 +840,13 @@ export function ShareModal({
         // Check password is valid
         if (!password) {
             setPasswordError("Please enter a password");
+            setIsUploading(false);
             return;
         }
         
         if (password.length < 6) {
             setPasswordError("Password must be at least 6 characters");
+            setIsUploading(false);
             return;
         }
 
@@ -848,6 +858,7 @@ export function ShareModal({
                 setPasswordError("");
                 setButtonText("sharedata");
                 setButtonDisabled(false);
+                setIsUploading(false);
                 alert(`Map is too large (${(zipFileSize / (1024 * 1024)).toFixed(1)} MB). Options to share large maps are under development. However, you can use the Download Map option instead and share it via e.g. messaging apps`);
                 return;
             }
@@ -1003,7 +1014,6 @@ export function ShareModal({
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");
             setButtonDisabled(false);
-            setIsUploading(false); // Re-enable all buttons immediately after successful upload
 
             // Prepare share message text
             let shareTitle = "#MadeWithCaptallite";
@@ -1023,7 +1033,11 @@ export function ShareModal({
                         text: shareText,
                         url: generatedUrl,
                     })
-                    .catch((error) => console.error("Sharing failed", error));
+                    .catch((error) => console.error("Sharing failed", error))
+                    .finally(() => {
+                        // Re-enable buttons after sharing attempt
+                        setIsUploading(false);
+                    });
             } else {
                 // Prepare clipboard content and message
                 let clipboardContent, alertMessage;
@@ -1046,6 +1060,10 @@ export function ShareModal({
                     })
                     .catch((err) => {
                         console.error("Failed to copy link: ", err);
+                    })
+                    .finally(() => {
+                        // Re-enable buttons after clipboard operation
+                        setIsUploading(false);
                     });
             }
         } catch (error) {
@@ -1485,6 +1503,7 @@ const generateCSV = (dataset) => {
                                         backgroundColor: "#25D366",
                                         fontWeight: "500"
                                     }}
+                                    disabled={isUploading}
                                 >
                                     {buttonText === "uploadPending"
                                         ? <LoadingSpinner text="Encrypting & Uploading" />

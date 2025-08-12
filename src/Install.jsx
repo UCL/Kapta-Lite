@@ -4,12 +4,6 @@ import KaptaLogo from "./images/icons/kapta-green.svg";
 import { isIOS, isMobileOrTablet } from "./main";
 import ReactGA from "react-ga4";
 
-// Function to detect if the user is using Google Chrome
-const isGoogleChrome = () => {
-	const userAgent = navigator.userAgent.toLowerCase();
-	return userAgent.includes('chrome') && !userAgent.includes('edg') && !userAgent.includes('opr');
-};
-
 export default function InstallDialog() {
 	if (!isMobileOrTablet() || isIOS()) return null; // don't run install prompt on desktop
 
@@ -72,14 +66,10 @@ export default function InstallDialog() {
 
 	if (!isVisible) return null;
 
-	// Show different messages based on browser
-	const isChrome = isGoogleChrome();
-	const promptMessage = isChrome ? t("installPromptChrome") : t("installPrompt");
-
 	return (
 		<dialog id="install-dialog">
 			<img src={KaptaLogo}></img>
-			<div>{promptMessage}</div>
+			<div>{t("installPrompt")}</div>
 			<button onClick={handleCloseClick}>{t("dismiss")}</button>
 			<button onClick={handleInstallClick}>{t("install")}</button>
 		</dialog>

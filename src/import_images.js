@@ -305,11 +305,12 @@ export function ImageParser({ files, onComplete, setLoadingMessage, onProcessing
         withLocation: geotaggedImages.length
       };
       
+      // Call the processing complete callback with stats
+      if (onProcessingComplete) {
+        onProcessingComplete(stats);
+      }
+      
       if (geotaggedImages.length === 0) {
-        // Call the processing complete callback with stats only if no geo images
-        if (onProcessingComplete) {
-          onProcessingComplete(stats);
-        }
         return;
       }
       
@@ -376,14 +377,6 @@ export function ImageParser({ files, onComplete, setLoadingMessage, onProcessing
       
       // Set the data to be displayed on the map
       setDataDisplayMap(mapData, fileName, zip);
-      
-      // Add a small delay to allow the map to render before hiding loading message
-      setTimeout(() => {
-        // Call the processing complete callback with stats after map has had time to render
-        if (onProcessingComplete) {
-          onProcessingComplete(stats);
-        }
-      }, 1000); // 1 second delay to allow map rendering
       
     } catch (error) {
       console.error("Error processing image files:", error);
