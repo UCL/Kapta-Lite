@@ -44,6 +44,56 @@ import { FilePicker, MainMenu } from "./MainMenu.jsx"; // Adjust the path based 
 import { encryptFile, encodePassphrase } from "./encryption.js";
 import ReactGA from "react-ga4";
 
+// Progress Bar Component
+const ProgressBar = ({ progress, stage, stageProgress, text }) => {
+    const getStageText = () => {
+        switch (stage) {
+            case "compressing":
+                return `Compressing images... ${stageProgress}%`;
+            case "encrypting":
+                return `Encrypting map... ${stageProgress}%`;
+            case "uploading":
+                return `Uploading map... ${stageProgress}%`;
+            default:
+                return text || "Processing...";
+        }
+    };
+
+    return (
+        <div style={{ 
+            width: "100%", 
+            display: "flex", 
+            flexDirection: "column", 
+            alignItems: "center",
+            gap: "8px"
+        }}>
+            <div style={{
+                fontSize: "0.9rem",
+                fontWeight: "500",
+                color: "rgba(255, 255, 255, 0.95)", // Much higher opacity
+                textAlign: "center"
+            }}>
+                {getStageText()}
+            </div>
+            <div style={{
+                width: "85%",
+                height: "8px",
+                backgroundColor: "rgba(255, 255, 255, 0.4)", // Higher opacity background
+                borderRadius: "4px",
+                overflow: "hidden"
+            }}>
+                <div style={{
+                    width: `${progress}%`,
+                    height: "100%",
+                    backgroundColor: "rgba(255, 255, 255, 0.9)", // Much higher opacity
+                    borderRadius: "4px",
+                    transition: "width 0.3s ease"
+                }} />
+            </div>
+        </div>
+    );
+};
+
 
 
 
@@ -784,6 +834,11 @@ export function ShareModal({
     const [isImageSizeCalculated, setIsImageSizeCalculated] = useState(false); // Whether image size has been calculated
     const [isMapTooLarge, setIsMapTooLarge] = useState(false); // Whether map exceeds 5MB limit
 
+    // Progress bar state
+    const [uploadProgress, setUploadProgress] = useState(0); // Progress percentage (0-100)
+    const [uploadStage, setUploadStage] = useState(""); // Current stage: "compressing", "encrypting", "uploading"
+    const [uploadStageProgress, setUploadStageProgress] = useState(0); // Progress within current stage (0-100)
+
     // No size check when modal opens - we'll check only when user clicks share
     useEffect(() => {
         if (isOpen && !isImageSizeCalculated) {
@@ -809,6 +864,9 @@ export function ShareModal({
             setTaskIdInput(""); // Reset task ID input
             setTaskIdError(""); // Reset task ID error
             setWhatsAppMapTags(""); // Reset map tags/phone number
+            setUploadProgress(0); // Reset upload progress
+            setUploadStage(""); // Reset upload stage
+            setUploadStageProgress(0); // Reset stage progress
         }
     }, [isOpen, globalProcessedChatFile, isImageSizeCalculated, checkIsImageData, dataDisplayProps.dataset]);
 
@@ -881,12 +939,9 @@ export function ShareModal({
         // Generate the URL if it hasn't been generated yet
         setButtonText("uploadPending");
         setButtonDisabled(true);
-
-        // Show appropriate loading message based on device
-        const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
-        if (isMobile && globalProcessedChatFile) {
-            setButtonText("Compressing images...");
-        }
+        setUploadStage("compressing");
+        setUploadProgress(0);
+        setUploadStageProgress(0);
 
         function generateBase62Id(length = 32) {
             const charset = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -922,12 +977,18 @@ export function ShareModal({
 
                 // Process images in smaller batches to avoid memory issues
                 let progressCount = 0;
-                for (let i = 0; i < imageFiles.length; i += batchSize) {
-                    const batch = imageFiles.slice(i, i + batchSize);
-                    console.log(`Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(imageFiles.length/batchSize)}`);
-                    
-                    const batchPromises = batch.map(async (filename) => {
-                        const file = zip.file(filename);
+                
+                if (imageFiles.length === 0) {
+                    // No images to compress, move directly to completion
+                    setUploadStageProgress(100);
+                    setUploadProgress(60);
+                } else {
+                    for (let i = 0; i < imageFiles.length; i += batchSize) {
+                        const batch = imageFiles.slice(i, i + batchSize);
+                        console.log(`Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(imageFiles.length/batchSize)}`);
+                        
+                        const batchPromises = batch.map(async (filename) => {
+                            const file = zip.file(filename);
                         if (file) {
                             try {
                                 const fileData = await file.async("blob");
@@ -937,22 +998,22 @@ export function ShareModal({
                                 }
                                 
                                 progressCount++;
-                                if (isMobile && imageFiles.length > 5) {
-                                    // Update button text with progress on mobile for larger sets
-                                    const progressPercent = Math.round((progressCount / imageFiles.length) * 100);
-                                    setButtonText(`Processing images... ${progressPercent}%`);
-                                }
+                                // Update compression progress
+                                const progressPercent = Math.round((progressCount / imageFiles.length) * 100);
+                                setUploadStageProgress(progressPercent);
+                                setUploadProgress(Math.round(progressPercent * 0.6)); // Compression is 60% of total process
                             } catch (error) {
                                 console.warn(`Failed to compress ${filename}:`, error);
                             }
                         }
                     });
-                    
-                    await Promise.all(batchPromises);
-                    
-                    // Add a small delay between batches to prevent UI blocking on mobile
-                    if (i + batchSize < imageFiles.length && isMobile) {
-                        await new Promise(resolve => setTimeout(resolve, 50));
+                        
+                        await Promise.all(batchPromises);
+                        
+                        // Add a small delay between batches to prevent UI blocking on mobile
+                        if (i + batchSize < imageFiles.length && isMobile) {
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
                     }
                 }
 
@@ -962,6 +1023,11 @@ export function ShareModal({
                     compression: "DEFLATE",
                     compressionOptions: { level: isMobile ? 6 : 9 } // Moderate compression for mobile
                 });
+                
+                // Compression complete
+                setUploadStageProgress(100);
+                setUploadProgress(60);
+                
                 globalProcessedChatFileReduced = new File(
                     [updatedZipBlob],
                     globalProcessedChatFile.name,
@@ -973,13 +1039,32 @@ export function ShareModal({
                     try {
                         console.log("Encrypting file with password...");
                         
+                        // Update progress to encryption stage
+                        setUploadStage("encrypting");
+                        setUploadStageProgress(0);
+                        setUploadProgress(60); // Start encryption at 60%
+                        
                         // Track encryption event
                         ReactGA.event({
                             category: "Encryption",
                             action: "Map Encrypted",
                         });
                         
+                        // Simulate encryption progress (since encryptFile doesn't provide progress callbacks)
+                        const encryptionProgressInterval = setInterval(() => {
+                            setUploadStageProgress(prev => {
+                                const newProgress = Math.min(prev + 10, 90);
+                                setUploadProgress(60 + Math.round(newProgress * 0.2)); // Encryption is 20% of total (60-80%)
+                                return newProgress;
+                            });
+                        }, 100);
+                        
                         const encryptedBlob = await encryptFile(globalProcessedChatFileReduced, password);
+                        
+                        clearInterval(encryptionProgressInterval);
+                        setUploadStageProgress(100);
+                        setUploadProgress(80); // Encryption complete
+                        
                         globalProcessedChatFileReduced = new File(
                             [encryptedBlob],
                             globalProcessedChatFile.name,
@@ -991,10 +1076,28 @@ export function ShareModal({
                         return;
                     }
                 }
+            } else {
+                // For image data case (no zip file to compress)
+                setUploadStageProgress(100);
+                setUploadProgress(60); // Skip compression, go directly to encryption stage
             }
 
             // Check if we're handling image data or WhatsApp chat data
             let presignedUrl;
+            
+            // Update progress to uploading stage
+            setUploadStage("uploading");
+            setUploadStageProgress(0);
+            setUploadProgress(80); // Start upload at 80%
+            
+            // Simulate upload progress
+            const uploadProgressInterval = setInterval(() => {
+                setUploadStageProgress(prev => {
+                    const newProgress = Math.min(prev + 5, 95);
+                    setUploadProgress(80 + Math.round(newProgress * 0.2)); // Upload is 20% of total (80-100%)
+                    return newProgress;
+                });
+            }, 200);
             
             if (checkIsImageData()) {
                 // Use uploadImageData for image data
@@ -1020,6 +1123,10 @@ export function ShareModal({
                     mapperId
                 );
             }
+            
+            clearInterval(uploadProgressInterval);
+            setUploadStageProgress(100);
+            setUploadProgress(100); // Upload complete
 
             // Generate URL without passphrase in it
             let generatedUrl = `https://staging.d2o6xx2zphytuq.amplifyapp.com/?import=${presignedUrl}`;
@@ -1513,13 +1620,21 @@ const generateCSV = (dataset) => {
                                         display: "flex", 
                                         alignItems: "center", 
                                         justifyContent: "center",
-                                        backgroundColor: "#25D366",
+                                        backgroundColor: buttonText === "uploadPending" ? "transparent" : "#25D366",
+                                        border: buttonText === "uploadPending" ? "none" : undefined,
+                                        boxShadow: buttonText === "uploadPending" ? "none" : undefined,
+                                        outline: buttonText === "uploadPending" ? "none" : undefined,
+                                        opacity: buttonText === "uploadPending" ? "1" : undefined, // Override CSS opacity for upload state
                                         fontWeight: "500"
                                     }}
                                     disabled={isUploading}
                                 >
                                     {buttonText === "uploadPending"
-                                        ? <LoadingSpinner text="Encrypting & Uploading" />
+                                        ? <ProgressBar 
+                                            progress={uploadProgress}
+                                            stage={uploadStage}
+                                            stageProgress={uploadStageProgress}
+                                        />
                                         : buttonText
                                     }
                                 </button>
