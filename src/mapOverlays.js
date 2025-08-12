@@ -796,6 +796,19 @@ export function ShareModal({
             setIsImageSizeCalculated(false);
             setTotalImageSize(0);
             setIsMapTooLarge(false);
+            
+            // Reset share-related states when modal closes
+            setKaptaWaMapUrl(""); // Reset the generated URL
+            setButtonText("sharedata"); // Reset button text
+            setButtonDisabled(false); // Reset button disabled state
+            setPassword(""); // Reset password
+            setPasswordError(""); // Reset password errors
+            setDecryptError(""); // Reset decrypt errors
+            setShowPasswordInput(false); // Reset password input visibility
+            setShowTaskIdUpload(false); // Reset task ID upload interface
+            setTaskIdInput(""); // Reset task ID input
+            setTaskIdError(""); // Reset task ID error
+            setWhatsAppMapTags(""); // Reset map tags/phone number
         }
     }, [isOpen, globalProcessedChatFile, isImageSizeCalculated, checkIsImageData, dataDisplayProps.dataset]);
 
@@ -1519,11 +1532,10 @@ const generateCSV = (dataset) => {
                                     onClick={() => {
                                         setTimeout(() => {
                                             setShowPasswordInput(false);
-                                            setPassword("");
+                                            // setPassword("");
                                             setPasswordError("");
                                             setDecryptError("");
-                                            setButtonText("sharedata");
-                                            setButtonDisabled(false);
+                                            // Don't reset buttonText and buttonDisabled here - only reset when modal closes
                                         }, 10);
                                     }}
                                     style={{ marginTop: '10px', height: '35px', width: '85px', backgroundColor: 'transparent', fontSize: "1rem", fontWeight: "bold"} }
@@ -1623,8 +1635,7 @@ const generateCSV = (dataset) => {
                                         setTimeout(() => {
                                             setTaskIdInput("");
                                             setTaskIdError("");
-                                            setButtonText("sharedata");
-                                            setButtonDisabled(false);
+                                            // Don't reset buttonText and buttonDisabled here - only reset when modal closes
                                             setShowTaskIdUpload(false);
                                         }, 10);
                                     }}
