@@ -1412,7 +1412,7 @@ export function Map({
                     {/* current position marker */}
                     {currentLocation && (
                         <Marker position={currentLocation} icon={currentPositionIcon}>
-                            <Popup offset={L.point(-8, -15)} maxWidth={200} maxHeight={400}> 
+                            <Popup offset={L.point(0, -5)} maxWidth={200} maxHeight={400}> 
                                 <p style={{ textAlign: "center", fontWeight: 600 }}>
                                     You're here!
                                 </p>

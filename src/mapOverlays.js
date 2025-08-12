@@ -729,7 +729,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p style={{ textAlign: "center" }}>We're building the network to connect Captallite Business Mappers with those who need ground data. <br />
+                            <p style={{ textAlign: "center" }}>We're building the network to connect people on the ground with those who need ground data. <br />
                             </p>
                             <button
                             className="btn"
