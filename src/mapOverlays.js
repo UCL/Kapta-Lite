@@ -981,7 +981,7 @@ export function ShareModal({
                 if (imageFiles.length === 0) {
                     // No images to compress, move directly to completion
                     setUploadStageProgress(100);
-                    setUploadProgress(60);
+                    setUploadProgress(30);
                 } else {
                     for (let i = 0; i < imageFiles.length; i += batchSize) {
                         const batch = imageFiles.slice(i, i + batchSize);
@@ -1001,7 +1001,7 @@ export function ShareModal({
                                 // Update compression progress
                                 const progressPercent = Math.round((progressCount / imageFiles.length) * 100);
                                 setUploadStageProgress(progressPercent);
-                                setUploadProgress(Math.round(progressPercent * 0.6)); // Compression is 60% of total process
+                                setUploadProgress(Math.round(progressPercent * 0.3)); // Compression is 30% of total process
                             } catch (error) {
                                 console.warn(`Failed to compress ${filename}:`, error);
                             }
@@ -1026,7 +1026,7 @@ export function ShareModal({
                 
                 // Compression complete
                 setUploadStageProgress(100);
-                setUploadProgress(60);
+                setUploadProgress(30);
                 
                 globalProcessedChatFileReduced = new File(
                     [updatedZipBlob],
@@ -1042,7 +1042,7 @@ export function ShareModal({
                         // Update progress to encryption stage
                         setUploadStage("encrypting");
                         setUploadStageProgress(0);
-                        setUploadProgress(60); // Start encryption at 60%
+                        setUploadProgress(30); // Start encryption at 30%
                         
                         // Track encryption event
                         ReactGA.event({
@@ -1054,7 +1054,7 @@ export function ShareModal({
                         const encryptionProgressInterval = setInterval(() => {
                             setUploadStageProgress(prev => {
                                 const newProgress = Math.min(prev + 10, 90);
-                                setUploadProgress(60 + Math.round(newProgress * 0.2)); // Encryption is 20% of total (60-80%)
+                                setUploadProgress(30 + Math.round(newProgress * 0.2)); // Encryption is 20% of total (30-50%)
                                 return newProgress;
                             });
                         }, 100);
@@ -1063,7 +1063,7 @@ export function ShareModal({
                         
                         clearInterval(encryptionProgressInterval);
                         setUploadStageProgress(100);
-                        setUploadProgress(80); // Encryption complete
+                        setUploadProgress(50); // Encryption complete
                         
                         globalProcessedChatFileReduced = new File(
                             [encryptedBlob],
@@ -1079,7 +1079,7 @@ export function ShareModal({
             } else {
                 // For image data case (no zip file to compress)
                 setUploadStageProgress(100);
-                setUploadProgress(60); // Skip compression, go directly to encryption stage
+                setUploadProgress(30); // Skip compression, go directly to encryption stage
             }
 
             // Check if we're handling image data or WhatsApp chat data
@@ -1088,13 +1088,13 @@ export function ShareModal({
             // Update progress to uploading stage
             setUploadStage("uploading");
             setUploadStageProgress(0);
-            setUploadProgress(80); // Start upload at 80%
+            setUploadProgress(50); // Start upload at 50%
             
             // Simulate upload progress
             const uploadProgressInterval = setInterval(() => {
                 setUploadStageProgress(prev => {
                     const newProgress = Math.min(prev + 5, 95);
-                    setUploadProgress(80 + Math.round(newProgress * 0.2)); // Upload is 20% of total (80-100%)
+                    setUploadProgress(50 + Math.round(newProgress * 0.5)); // Upload is 50% of total (50-100%)
                     return newProgress;
                 });
             }, 200);
