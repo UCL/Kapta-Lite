@@ -32,7 +32,7 @@ import { useUserStore } from "./UserContext.jsx";
 import { ASK_URL, hasCognito } from "../globals.js";
 import { uploadProcessedChat } from "./data_submission.js";
 import { uploadImageData } from "./import_images.js";
-import { globalProcessedChatFile } from "./import_whatsapp";
+import { globalProcessedChatFile, setGlobalProcessedChatFile } from "./import_whatsapp";
 // import BurgerMenu from "./BurgerMenu.jsx";
 // import { handleConnect } from "./ConnectButton.js";
 import { handleSearch } from "./SearchBar.js";
@@ -580,20 +580,16 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                 {/* WhatsApp option content */}
                 {activeOption === 'whatsapp' && (
                     <>
-                        <p>Unlike (Google) Photos, WhatsApp Photos do not cointain location data. So you need to first share the location and then take a picture. </p>
+                        <p style={{ textAlign: "center" }}>Photos taken or shared with WhatsApp do not cointain location data. So you need to first share the location and then take a picture. </p>
                         
                         <div className="option-button-container">
                             <button
                                 className="btn"
-                                onClick={() =>
-                                    window.open(
-                                        "https://publicdocs-kapta-lite.s3.eu-west-2.amazonaws.com/LEAFLET_WhatsApp_Business_Mapper.png",
-                                        "_blank"
-                                    )
-                                }
+                                onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly'); }}
+
                                 disabled={isUploading}
                             >
-                                See tutorial
+                                Watch tutorial
                             </button>
 
                             {!isMobileOrTablet() && (
@@ -891,7 +887,7 @@ export function ShareModal({
                 navigator
                     .share({
                         title: "#MadeWithCaptallite",
-                        text: `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`,
+                        text: `This is a private map created with Captallite. 🔐 The password to open it is: ${password}`,
                         url: kaptaWaMapUrl,
                     })
                     .catch((error) => console.error("Sharing failed", error))
@@ -1150,8 +1146,8 @@ export function ShareModal({
             // Choose appropriate message text based on data type
             // Always include password in the share message with a lock and key emoji
             shareText = checkIsImageData()
-                ? `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`
-                : `This is a Private Map created with Captallite. 🔐 The password to open it is: ${password}`;
+                ? `This is a private map created with Captallite. 🔐 The password to open it is: ${password}`
+                : `This is a private map created with Captallite. 🔐 The password to open it is: ${password}`;
 
             // Handle sharing
             if (navigator.canShare && navigator.share) {
@@ -1421,7 +1417,7 @@ export function ShareModal({
     };
     
     const handleHighResClick = () => {
-        setHighResButtonText("Available soon");
+        setHighResButtonText("💳 Available soon");
         setTimeout(() => {
             setHighResButtonText("Need High Resolution?");
         }, 3000);

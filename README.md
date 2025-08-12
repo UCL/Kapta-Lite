@@ -1,11 +1,11 @@
 **What is Captallite**  
-Captallite is a platform for private, paid crowdmapping with (WhatsApp) Chats and (Google) Photos.
+Captallite is a platform for private, paid crowdmapping with Photos and WhatsApp.
 
 **What is WhatsApp Maps**  
 WhatsApp Maps are private community maps made with WhatsApp.
 
 **What is Photos Maps**  
-Photos Maps are private maps made with geotagged photos that are in the phone's (Google) Photos gallery.
+Photos Maps are private maps made with geotagged photos that are in the phone's Photos gallery.
 
 **What are Captallite Business Mappers?**  
 People who make a business creating maps with Captallite.

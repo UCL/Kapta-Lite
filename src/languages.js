@@ -69,7 +69,7 @@ i18next.use(initReactI18next).init({
 					"Do you allow the Captallite team to use your map to support your community?",
 				about: "What is Captallite",
 				aboutContent: `
-								<br />Captallite is a platform for private, paid crowdmapping with (WhatsApp) Chats and (Google) Photos. <br />
+								<br />Captallite is a platform for private, paid crowdmapping with Photos and WhatsApp. <br />
 								<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />
 								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos that are in the phone. <br />
@@ -85,13 +85,13 @@ i18next.use(initReactI18next).init({
 						<a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>
 					</li>
 					<li>
-						<a href='${whatsappMapsUrl}'>Population and Water Infrastructure in rural Ethiopia (2024)</a>
+						<a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>
 					</li>
 					<li>
-						<a href='${ethio2023}'>Land use in rural Ethiopia (2023)</a>
+						<a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water (2023)</a>
 					</li>
 					<li>
-						<a href='${extremeCitizenUrl}'>Farming in Nigeria (2021)</a>
+						<a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>
 					</li>
 					<li>
 						<a href='${ecsanvismap}'>World Map of our case studies before WhatsApp Maps with Captallite 2010-2023</a>
