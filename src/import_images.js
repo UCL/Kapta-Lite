@@ -252,7 +252,7 @@ export const convertImageToMapData = (processedImages) => {
 // Main component to handle image file parsing
 
 export let importdataimages = false;
-export function ImageParser({ files, onComplete, setLoadingMessage, onProcessingComplete, ...dataDisplayProps }) {
+export function ImageParser({ files, onComplete, setLoadingMessage, onProcessingComplete, onMapRenderComplete, ...dataDisplayProps }) {
   const { setMapData, showMap, setFileToParse } = dataDisplayProps;
   
   if(!window.location.href.includes('?import=')){
@@ -272,8 +272,21 @@ export function ImageParser({ files, onComplete, setLoadingMessage, onProcessing
       if (onComplete) {
         onComplete(data, name);
       }
+      
+      // Set up callback to hide loading message when map rendering is complete
+      if (onMapRenderComplete && setLoadingMessage) {
+        // Override the onMapRenderComplete to also hide the local loading message
+        const originalCallback = onMapRenderComplete;
+        window.hideLoadingOnMapRender = () => {
+          console.log('Map render complete - hiding local loading message');
+          setLoadingMessage(false);
+          if (originalCallback) {
+            originalCallback();
+          }
+        };
+      }
     },
-    [setMapData, showMap, onComplete]
+    [setMapData, showMap, onComplete, onMapRenderComplete, setLoadingMessage]
   );
 
   // Process image files and extract geotagged information

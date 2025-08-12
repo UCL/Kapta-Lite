@@ -225,15 +225,7 @@ function App() {
         }
     }, [imagesToParse]);
 
-    // Hide loading message when map data is ready
-    useEffect(() => {
-        if (mapData && globalLoadingMessage) {
-            console.log('Main app: Map data ready, hiding loading message');
-            setTimeout(() => {
-                setGlobalLoadingMessage(false);
-            }, 500); // Small delay to ensure map has rendered
-        }
-    }, [mapData, globalLoadingMessage]);
+    // Hide loading message when map data is ready (removed automatic timeout - now controlled by map render complete)
 
     // Helper function to show temporary messages
     const showTempMessage = (message, type = 'info', duration = 4000) => {
@@ -404,6 +396,10 @@ function App() {
                 globalLoadingMessage={globalLoadingMessage}
                 setGlobalLoadingMessage={setGlobalLoadingMessage}
                 isLoaderVisible={isLoaderVisible}
+                onMapRenderComplete={() => {
+                    // For MainMenu initiated uploads, this will be handled by the window callback
+                    console.log('MainMenu map render complete callback');
+                }}
                 {...dataDisplayProps}
             />
             <Map
@@ -415,6 +411,17 @@ function App() {
                 setFileToParse={setFileToParse}
                 setImagesToParse={setImagesToParse}
                 showMap={showMap}
+                onMapRenderComplete={() => {
+                    // Hide loading message when map rendering is complete
+                    console.log('Main app: Map rendering complete, hiding global loading message');
+                    setGlobalLoadingMessage(false);
+                    
+                    // Also call any local loading message callback
+                    if (window.hideLoadingOnMapRender) {
+                        window.hideLoadingOnMapRender();
+                        window.hideLoadingOnMapRender = null; // Clean up
+                    }
+                }}
                 {...dataDisplayProps}
 
             />

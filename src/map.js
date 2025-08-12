@@ -132,7 +132,7 @@ const getImageURLFromZip = async (zip, imgFilename) => {
 
 
 
-function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLocation, onDeleteImageLocation, setMapData, updateGlobalDataFile }) {
+function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLocation, onDeleteImageLocation, setMapData, updateGlobalDataFile, onMapRenderComplete }) {
 	const { t } = useTranslation();
 	const map = useMap();
 	const boundsRef = useRef([]);
@@ -159,7 +159,15 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 		if (boundsRef.current.length > 0) {
 			map.fitBounds(boundsRef.current);
 		}
-	}, [geoJSON, map]);
+		
+		// Call the render complete callback when map is ready
+		if (onMapRenderComplete) {
+			// Small delay to ensure bounds fitting and markers are fully rendered
+			setTimeout(() => {
+				onMapRenderComplete();
+			}, 300);
+		}
+	}, [geoJSON, map, onMapRenderComplete]);
 
 	const handleMarkerClick = useCallback(
 		async (feature) => {
@@ -710,6 +718,7 @@ export function Map({
     setFileToParse, // Add this for drag and drop functionality
     setImagesToParse, // Add this for drag and drop functionality
     showMap, // Add this for drag and drop functionality
+    onMapRenderComplete, // New callback for when map rendering is complete
 }) {
     if (!isVisible) return null;
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -1423,6 +1432,7 @@ export function Map({
                         onDeleteImageLocation={handleDeleteImageLocation}
                         setMapData={setMapData}
                         updateGlobalDataFile={updateGlobalDataFile}
+                        onMapRenderComplete={onMapRenderComplete}
                     />}
                     {showWaMappers && <WhatsAppMappersDataLayer />}
                     <UpdateMap

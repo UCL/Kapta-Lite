@@ -123,7 +123,7 @@ function RecentMapButton({ showMap }) {
         </button>
     );
 }
-export function FilePicker({ setLoadingMessage, ...dataDisplayProps }) {
+export function FilePicker({ setLoadingMessage, onMapRenderComplete, ...dataDisplayProps }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedFiles, setSelectedFiles] = useState(null);
     const fileInputRef = useRef(null);
@@ -198,15 +198,15 @@ export function FilePicker({ setLoadingMessage, ...dataDisplayProps }) {
                     files={selectedFiles}
                     {...dataDisplayProps}
                     setLoadingMessage={setLoadingMessage}
+                    onMapRenderComplete={onMapRenderComplete}
                     onProcessingComplete={(stats) => {
-                        // Hide loading message when processing completes (success or error)
-                        setLoadingMessage(false);
-                        console.log('ImageParser processing completed, hiding loading message', stats);
+                        // Don't hide loading message here - let the map rendering complete first
+                        console.log('ImageParser processing completed, but keeping loading message until map renders', stats);
                     }}
                     onComplete={() => {
                         setSelectedFiles(null); // Reset selected files
-                        setLoadingMessage(false); // Hide the loading message (backup)
-                        console.log('ImageParser completed, hiding loading message');
+                        // Don't hide loading message here - let the map rendering complete first
+                        console.log('ImageParser completed, but keeping loading message until map renders');
                     }}
                 />
             )}
@@ -265,6 +265,7 @@ export default function MainMenu({
     globalLoadingMessage,
     setGlobalLoadingMessage,
     isLoaderVisible: mainIsLoaderVisible,
+    onMapRenderComplete,
     ...dataDisplayProps
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false);
@@ -709,7 +710,7 @@ export default function MainMenu({
             />
             <div id="menuContainer">
                 {/* Enable FilePicker for all devices */}
-                <FilePicker setLoadingMessage={setLoadingMessage} {...dataDisplayProps} />
+                <FilePicker setLoadingMessage={setLoadingMessage} onMapRenderComplete={onMapRenderComplete} {...dataDisplayProps} />
             </div>
         </>
     );
