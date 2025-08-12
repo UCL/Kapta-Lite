@@ -853,10 +853,10 @@ export function ShareModal({
             setIsMapTooLarge(false);
             
             // Reset share-related states when modal closes
-            setKaptaWaMapUrl(""); // Reset the generated URL
+            setKaptaWaMapUrl(""); // Reset the generated URL - this forces full process to run again
             setButtonText("sharedata"); // Reset button text
             setButtonDisabled(false); // Reset button disabled state
-            setPassword(""); // Reset password
+            setPassword(""); // Reset password - forces user to enter new password
             setPasswordError(""); // Reset password errors
             setDecryptError(""); // Reset decrypt errors
             setUploadError(""); // Reset upload errors
@@ -869,6 +869,17 @@ export function ShareModal({
             setUploadStage(""); // Reset upload stage
             setUploadStageProgress(0); // Reset stage progress
             setHighResButtonText("Need High Resolution?"); // Reset high res button text
+            
+            // Reset global variables to force re-compression, re-encryption, and re-upload
+            setGlobalProcessedChatFile(null); // Clear processed chat file
+            if (window.globalImageSizeInfo) {
+                window.globalImageSizeInfo = {
+                    totalSize: 0,
+                    isCalculated: false,
+                    isMapTooLarge: false,
+                    dynamicQuality: 0.25
+                };
+            }
         }
     }, [isOpen, globalProcessedChatFile, isImageSizeCalculated, checkIsImageData, dataDisplayProps.dataset]);
 
