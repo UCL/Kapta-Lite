@@ -825,6 +825,7 @@ export function ShareModal({
     const [password, setPassword] = useState(""); // State for encryption password
     const [passwordError, setPasswordError] = useState(""); // State for password validation errors
     const [decryptError, setDecryptError] = useState(""); // State for decryption errors
+    const [uploadError, setUploadError] = useState(""); // State for general upload errors
     const [showPasswordInput, setShowPasswordInput] = useState(false); // Whether to show the password input
     const [showInfoContent, setShowInfoContent] = useState(false); // Whether to show info content
     const [showTaskIdUpload, setShowTaskIdUpload] = useState(false); // Whether to show task ID upload interface
@@ -859,6 +860,7 @@ export function ShareModal({
             setPassword(""); // Reset password
             setPasswordError(""); // Reset password errors
             setDecryptError(""); // Reset decrypt errors
+            setUploadError(""); // Reset upload errors
             setShowPasswordInput(false); // Reset password input visibility
             setShowTaskIdUpload(false); // Reset task ID upload interface
             setTaskIdInput(""); // Reset task ID input
@@ -876,6 +878,8 @@ export function ShareModal({
         
         // Reset any previous errors
         setDecryptError("");
+        setUploadError("");
+        setPasswordError("");
         
         // If the URL is already generated, handle re-click behavior
         if (kaptaWaMapUrl) {
@@ -1190,10 +1194,15 @@ export function ShareModal({
             console.error("Error during sharing:", error);
             if (error.message?.includes("decrypt")) {
                 setDecryptError("Incorrect password. Please try again.");
+            } else if (error.message?.includes("Network") || error.message?.includes("fetch") || error.name === "NetworkError") {
+                setUploadError("Network error. Please check your connection and try again.");
+            } else if (error.message?.includes("too large") || error.message?.includes("size")) {
+                setUploadError("Map file is too large to upload. Try reducing image count or quality.");
             } else {
-                setButtonText("sharedata");
-                setButtonDisabled(false);
+                setUploadError("Upload failed. Please try again.");
             }
+            setButtonText("sharedata");
+            setButtonDisabled(false);
             setIsUploading(false);
         }
     };
@@ -1202,9 +1211,13 @@ export function ShareModal({
         // Set uploading state
         setIsUploading(true);
         
+        // Reset any previous errors
+        setTaskIdError("");
+        setUploadError("");
+        
         // Check if task ID is provided
         if (!taskIdInput || taskIdInput.trim() === "") {
-            alert("Please enter a Task ID before uploading.");
+            setTaskIdError("Please enter a Task ID before uploading.");
             setIsUploading(false);
             return;
         }
@@ -1263,7 +1276,15 @@ export function ShareModal({
             setButtonText("Upload with Task ID");
             setButtonDisabled(false);
             setIsUploading(false);
-            alert("Upload failed. Please try again.");
+            
+            // Set error state instead of alert
+            if (error.message && error.message.includes('network')) {
+                setUploadError("Network error. Please check your connection and try again.");
+            } else if (error.message && error.message.includes('too large')) {
+                setUploadError("File is too large for upload. Please try with fewer images.");
+            } else {
+                setUploadError("Upload failed. Please try again.");
+            }
         }
     };
 
@@ -1435,6 +1456,22 @@ const generateCSV = (dataset) => {
             <div className="modal-title">
                 {"Share"}
             </div>
+
+            {/* Error Message Display */}
+            {(uploadError || decryptError || passwordError || taskIdError) && (
+                <div style={{
+                    background: '#ffebee',
+                    border: '1px solid #f44336',
+                    borderRadius: '4px',
+                    padding: '12px',
+                    margin: '10px 0',
+                    color: '#c62828',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                }}>
+                    {uploadError || decryptError || passwordError || taskIdError}
+                </div>
+            )}
 
             {(importdata || importdataimages || window.location.href.includes("import=")) ? (
                 <>
