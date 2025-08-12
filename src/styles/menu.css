@@ -123,3 +123,21 @@
 .filter__form {
     display: none !important;
 }
+
+/* Mobile touch interactions for menu buttons */
+@media (hover: none) and (pointer: coarse) {
+    /* Menu buttons mobile touch feedback */
+    .menu-btn:active,
+    .button-area .btn:active {
+        transform: scale(0.95);
+        background-color: rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.1s ease, background-color 0.1s ease;
+    }
+    
+    /* Video modal close button */
+    #video-modal .modal-close:active {
+        transform: scale(0.9);
+        background-color: rgba(0, 0, 0, 0.1);
+        transition: transform 0.1s ease;
+    }
+}
