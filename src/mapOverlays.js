@@ -1232,14 +1232,110 @@ export function ShareModal({
             return; // Do not upload
         }
 
-
         // Clear any previous error before uploading
         setTaskIdError("");
 
         setButtonText("uploadPending");
         setButtonDisabled(true);
+        
+        // Initialize progress bar for task ID upload
+        setUploadStage("compressing");
+        setUploadProgress(0);
+        setUploadStageProgress(0);
 
         try {
+            // Prepare file for upload - similar compression process as shareData
+            let processedFile = null;
+
+            if (globalProcessedChatFile) {
+                // Load zip and compress images efficiently
+                const zip = await JSZip.loadAsync(globalProcessedChatFile);
+                const filenames = Object.keys(zip.files);
+                const imageFiles = filenames.filter(filename => /\.(jpg|jpeg|png|gif)$/i.test(filename));
+                
+                // Get mobile-optimized settings with dynamic quality
+                const dynamicQuality = window.globalImageSizeInfo?.dynamicQuality || qualityPic || 0.25;
+                const mobileSettings = getMobileOptimizedSettings(dynamicQuality);
+                const { maxWidth, maxHeight, quality, batchSize } = mobileSettings;
+                const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
+                
+                console.log(`Compressing ${imageFiles.length} images for task ID upload:`, mobileSettings);
+
+                // Process images in smaller batches
+                let progressCount = 0;
+                
+                if (imageFiles.length === 0) {
+                    // No images to compress
+                    setUploadStageProgress(100);
+                    setUploadProgress(30);
+                } else {
+                    for (let i = 0; i < imageFiles.length; i += batchSize) {
+                        const batch = imageFiles.slice(i, i + batchSize);
+                        console.log(`Processing batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(imageFiles.length/batchSize)}`);
+                        
+                        const batchPromises = batch.map(async (filename) => {
+                            const file = zip.file(filename);
+                            if (file) {
+                                try {
+                                    const imageBlob = await file.async("blob");
+                                    const compressedBlob = await compressImageBlob(imageBlob, quality, maxWidth, maxHeight);
+                                    zip.file(filename, compressedBlob);
+                                    
+                                    progressCount++;
+                                    const progress = Math.round((progressCount / imageFiles.length) * 100);
+                                    setUploadStageProgress(progress);
+                                    setUploadProgress(Math.round(progress * 0.3)); // Compression is 30% of total
+                                } catch (error) {
+                                    console.warn(`Failed to compress image ${filename}:`, error);
+                                }
+                            }
+                        });
+                        
+                        await Promise.all(batchPromises);
+                        
+                        // Small delay between batches on mobile
+                        if (i + batchSize < imageFiles.length && isMobile) {
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
+                    }
+                }
+
+                // Generate the updated zip file
+                const updatedZipBlob = await zip.generateAsync({ 
+                    type: "blob",
+                    compression: "DEFLATE",
+                    compressionOptions: { level: isMobile ? 6 : 9 }
+                });
+                
+                // Compression complete
+                setUploadStageProgress(100);
+                setUploadProgress(30);
+                
+                processedFile = new File(
+                    [updatedZipBlob],
+                    globalProcessedChatFile.name,
+                    { type: "application/zip" }
+                );
+            } else {
+                // For image data case (no zip file to compress)
+                setUploadStageProgress(100);
+                setUploadProgress(30);
+            }
+
+            // Update progress to uploading stage (skip encryption for task ID uploads)
+            setUploadStage("uploading");
+            setUploadStageProgress(0);
+            setUploadProgress(30); // Start upload at 30%
+            
+            // Simulate upload progress
+            const uploadProgressInterval = setInterval(() => {
+                setUploadStageProgress(prev => {
+                    const newProgress = Math.min(prev + 5, 95);
+                    setUploadProgress(30 + Math.round(newProgress * 0.7)); // Upload is 70% of total (30-100%)
+                    return newProgress;
+                });
+            }, 200);
+
             // Check if we're handling image data or WhatsApp chat data
             if (checkIsImageData()) {
                 // Use uploadImageData for image data with the task ID
@@ -1255,7 +1351,7 @@ export function ShareModal({
             } else {
                 // Use uploadProcessedChat for WhatsApp chat data with the task ID
                 await uploadProcessedChat(
-                    globalProcessedChatFile,
+                    processedFile || globalProcessedChatFile,
                     `TaskID_${trimmedTaskId}_${new Date().toISOString().split('T')[0].replace(/-/g, '')}`,
                     setButtonText,
                     setButtonDisabled,
@@ -1265,6 +1361,10 @@ export function ShareModal({
                     mapperId
                 );
             }
+
+            clearInterval(uploadProgressInterval);
+            setUploadStageProgress(100);
+            setUploadProgress(100); // Upload complete
 
             setButtonText("Upload Complete");
             setButtonDisabled(false);
@@ -1770,13 +1870,25 @@ const generateCSV = (dataset) => {
                                         display: "flex", 
                                         alignItems: "center", 
                                         justifyContent: "center",
-                                        backgroundColor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "#ccc" : "#ffc107",
+                                        backgroundColor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "#ccc" : 
+                                                        (buttonText === "uploadPending") ? "transparent" : "#ffc107",
                                         color: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "#666" : "#000",
                                         fontWeight: "500",
-                                        cursor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "not-allowed" : "pointer"
+                                        cursor: (!taskIdInput || taskIdInput.trim() === "" || isUploading) ? "not-allowed" : "pointer",
+                                        border: buttonText === "uploadPending" ? "none" : undefined,
+                                        boxShadow: buttonText === "uploadPending" ? "none" : undefined,
+                                        outline: buttonText === "uploadPending" ? "none" : undefined,
+                                        opacity: buttonText === "uploadPending" ? "1" : undefined
                                     }}
                                 >
-                                    {buttonText === "uploadPending" ? <LoadingSpinner text="Uploading..." /> : "Click to upload"}
+                                    {buttonText === "uploadPending" 
+                                        ? <ProgressBar 
+                                            progress={uploadProgress}
+                                            stage={uploadStage}
+                                            stageProgress={uploadStageProgress}
+                                        />
+                                        : "Click to upload"
+                                    }
                                 </button>
                             </div>
 
