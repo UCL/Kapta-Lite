@@ -636,7 +636,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p style={{ textAlign: "center" }}>Click to select photos (max. 50 photos‼️) 💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 Search</p>
+                        <p style={{ textAlign: "center" }}>Click to select photos (max. 50 photos‼️)<br /><br />💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 Search</p>
                                                 
                         <div className="option-button-container">
                             <button
@@ -839,6 +839,9 @@ export function ShareModal({
     const [uploadProgress, setUploadProgress] = useState(0); // Progress percentage (0-100)
     const [uploadStage, setUploadStage] = useState(""); // Current stage: "compressing", "encrypting", "uploading"
     const [uploadStageProgress, setUploadStageProgress] = useState(0); // Progress within current stage (0-100)
+    
+    // High Resolution button state
+    const [highResButtonText, setHighResButtonText] = useState("Need High Resolution?"); // Text for high res button
 
     // No size check when modal opens - we'll check only when user clicks share
     useEffect(() => {
@@ -869,6 +872,7 @@ export function ShareModal({
             setUploadProgress(0); // Reset upload progress
             setUploadStage(""); // Reset upload stage
             setUploadStageProgress(0); // Reset stage progress
+            setHighResButtonText("Need High Resolution?"); // Reset high res button text
         }
     }, [isOpen, globalProcessedChatFile, isImageSizeCalculated, checkIsImageData, dataDisplayProps.dataset]);
 
@@ -1415,6 +1419,14 @@ export function ShareModal({
             URL.revokeObjectURL(url);
         }
     };
+    
+    const handleHighResClick = () => {
+        setHighResButtonText("Available soon");
+        setTimeout(() => {
+            setHighResButtonText("Need High Resolution?");
+        }, 3000);
+    };
+    
     const handleShareCurrentUrl = () => {
 
         const shareText = checkIsImageData() 
@@ -1744,6 +1756,30 @@ const generateCSV = (dataset) => {
                         </>
                     ) : showPasswordInput && !showTaskIdUpload ? (
                         <>
+                            {/* High Resolution Button - appears/disappears with password input */}
+                            <div className="option-button-container" style={{ marginBottom: "8px", textAlign: "center" }}>
+                                <button
+                                    className="btn"
+                                    onClick={handleHighResClick}
+                                    style={{ 
+                                        height: "25px", 
+                                        width:"170px",
+                                        display: "flex", 
+                                        alignItems: "center", 
+                                        justifyContent: "center",
+                                        backgroundColor: "#08f0f0ff", // Light blue background
+                                        fontSize: "0.85rem", // Slightly smaller font
+                                        fontWeight: "400",
+                                        color: "#333",
+                                        margin: "0 auto",
+                                        borderRadius: "5px"
+                                    }}
+                                    disabled={isUploading}
+                                >
+                                    {highResButtonText}
+                                </button>
+                            </div>
+                            
                             {/* Share Map Link Interface with Password Input */}
                             <div className="option-button-container" style={{ marginBottom: "8px" }}>
                                 <button
