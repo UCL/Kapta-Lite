@@ -45,6 +45,47 @@ import { wamapperslocations } from "./wamapperslocations.js";
 import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
 
 /************************************************************************************************
+ *   Image Download Helper
+ ************************************************************************************************/
+const downloadImageAsPNG = async (imgElement, filename) => {
+	try {
+		// Create a canvas to convert the image to PNG
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		
+		// Set canvas size to match image
+		canvas.width = imgElement.naturalWidth || imgElement.width;
+		canvas.height = imgElement.naturalHeight || imgElement.height;
+		
+		// Draw the image on canvas
+		ctx.drawImage(imgElement, 0, 0);
+		
+		// Convert to PNG blob
+		canvas.toBlob((blob) => {
+			const link = document.createElement('a');
+			link.href = URL.createObjectURL(blob);
+			// Use the original filename, but ensure .png extension
+			const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+			link.download = `${nameWithoutExt}.png`;
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			URL.revokeObjectURL(link.href);
+		}, 'image/png');
+	} catch (error) {
+		console.error('Error downloading image as PNG:', error);
+		// Fallback to direct download
+		const link = document.createElement('a');
+		link.href = imgElement.src;
+		const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+		link.download = `${nameWithoutExt}.png`;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}
+};
+
+/************************************************************************************************
  *   Basemaps (TileLayers)
  ************************************************************************************************/
 
@@ -306,6 +347,36 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 												src={location.imageUrl}
 												alt="Geotagged image"
 												style={{ display: "block", maxWidth: "100%" }}
+												onContextMenu={async (e) => {
+													// Handle right-click to ensure PNG download
+													e.preventDefault();
+													await downloadImageAsPNG(e.target, location.name || 'image');
+												}}
+												onTouchStart={(e) => {
+													// Handle long press on mobile devices
+													const img = e.target;
+													const longPressTimeout = setTimeout(() => {
+														downloadImageAsPNG(img, location.name || 'image');
+													}, 800); // 800ms long press
+													
+													img.dataset.longPressTimeout = longPressTimeout;
+												}}
+												onTouchEnd={(e) => {
+													// Clear long press timeout
+													const timeoutId = e.target.dataset.longPressTimeout;
+													if (timeoutId) {
+														clearTimeout(timeoutId);
+														delete e.target.dataset.longPressTimeout;
+													}
+												}}
+												onTouchMove={(e) => {
+													// Cancel long press if user moves finger
+													const timeoutId = e.target.dataset.longPressTimeout;
+													if (timeoutId) {
+														clearTimeout(timeoutId);
+														delete e.target.dataset.longPressTimeout;
+													}
+												}}
 											/>
 										</div>
 									)}
@@ -449,6 +520,36 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 															alt={`Feature image ${index + 1}`}
 															style={{
 																display: index > 0 ? "none" : "block",
+															}}
+															onContextMenu={async (e) => {
+																// Handle right-click to ensure PNG download
+																e.preventDefault();
+																await downloadImageAsPNG(e.target, filename);
+															}}
+															onTouchStart={(e) => {
+																// Handle long press on mobile devices
+																const img = e.target;
+																const longPressTimeout = setTimeout(() => {
+																	downloadImageAsPNG(img, filename);
+																}, 800); // 800ms long press
+																
+																img.dataset.longPressTimeout = longPressTimeout;
+															}}
+															onTouchEnd={(e) => {
+																// Clear long press timeout
+																const timeoutId = e.target.dataset.longPressTimeout;
+																if (timeoutId) {
+																	clearTimeout(timeoutId);
+																	delete e.target.dataset.longPressTimeout;
+																}
+															}}
+															onTouchMove={(e) => {
+																// Cancel long press if user moves finger
+																const timeoutId = e.target.dataset.longPressTimeout;
+																if (timeoutId) {
+																	clearTimeout(timeoutId);
+																	delete e.target.dataset.longPressTimeout;
+																}
 															}}
 														/>
 													)

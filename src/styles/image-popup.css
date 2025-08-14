@@ -29,6 +29,43 @@
     font-weight: 600;
 }
 
+/* Popup images - downloadable styling */
+.feature-images img {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    position: relative;
+}
+
+.feature-images img:hover {
+    opacity: 0.9;
+}
+
+.feature-images {
+    position: relative;
+}
+
+.feature-images::after {
+    content: "Right-click to download as PNG";
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #666;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.feature-images:hover::after {
+    opacity: 1;
+}
+
 /* Mobile-specific adjustments */
 @media (max-width: 480px) {
     .image-popup {
@@ -41,5 +78,17 @@
     
     .image-details {
         font-size: 11px;
+    }
+    
+    /* Hide the tooltip on mobile since right-click behavior is different */
+    .feature-images::after {
+        display: none;
+    }
+}
+
+/* Touch devices - alternative tooltip */
+@media (hover: none) and (pointer: coarse) {
+    .feature-images::after {
+        content: "Long press to download as PNG";
     }
 }
