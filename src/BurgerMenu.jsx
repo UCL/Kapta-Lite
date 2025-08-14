@@ -97,7 +97,7 @@ export default function BurgerMenu({
                                         >Tutorial for mappers
                                             
                                         </a></span>
-										
+										<p>Learn how to instantly turn Photos into maps and create WhatsApp Maps.</p>
 									</div>
 								
 								<br />
@@ -116,7 +116,8 @@ export default function BurgerMenu({
                                         </a></span>
 										<p>The <strong>free version</strong> allows you to visualise and edit one or multiple maps in Captallite mobile or PC, or export to QGIS, ArcGIS etc.
 										<br />
-                           				 <strong>Premium</strong> allows you to manage multiple maps and use dashboards and AI Agents for advanced visualisation & analysis.</p>
+										<br />
+                           				 <strong>Premium</strong> allows organisations to run crowdmapping campaigns with Task IDs, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.</p>
 										 <div className="option-button-container">
 										<button
 											className="btn"
@@ -182,13 +183,7 @@ export default function BurgerMenu({
 				</div>
 				<div className="links-disclaimer__wrapper" style={{ textAlign: "center" }}>
 					<div className="bm__item" >
-						<a
-							href="https://github.com/UCL/Kapta-Lite"
-							id="gh"
-							className="bm__item__content"
-						>
-							{GHIcon}
-						</a>
+						
 						<div className="bm__item__text" style={{ marginTop: "0.5rem" }}>
 							<p>Have feedback or <br />want to get in touch?</p>
 							<button
@@ -207,6 +202,16 @@ export default function BurgerMenu({
 							Contact us on WhatsApp at<br /><a href="https://wa.me/447473522912">+44 7473522912</a> or email us at<br /><a href="mailto:info@kapta.earth">info@kapta.earth</a>.
 							</p> */}
 						</div>
+						<br />
+						<a
+							href="https://github.com/UCL/Kapta-Lite"
+							id="gh"
+							className="bm__item__"
+						> 
+							{GHIcon}
+						</a>
+						<p style={{fontSize: "12px", color:"black", fontStyle: "italic"}}>Captallite is open source</p>
+
 					</div>
 				</div>
 			</div>

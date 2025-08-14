@@ -94,7 +94,7 @@ i18next.use(initReactI18next).init({
 						<a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>
 					</li>
 					<li>
-						<a href='${ecsanvismap}'>World Map of our case studies before WhatsApp Maps with Captallite 2010-2023</a>
+						<a href='${ecsanvismap}'>World Map of our case studies before captallite (2010-2023)</a>
 					</li>
 					</ul>`,
 				what: " Disclaimer",
@@ -117,7 +117,7 @@ i18next.use(initReactI18next).init({
 				confirm: "Confirm",
 				yes: "Yes",
 				no: "No",
-				sharedata: "Encrypt & Upload",
+				sharedata: "Share",
 				shareimg: "Share the map IMAGE",
 				uploaddata: "Share map with Task ID",
 			   uploadPending: `uploadPending`,

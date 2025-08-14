@@ -335,7 +335,7 @@ function App() {
                         color: '#2d2c2c',
                         fontFamily: 'system-ui, -apple-system, sans-serif'
                         }}>
-                        Captallite <em style={{
+                        captallite <em style={{
                             fontSize: '12px',
                             color: '#838282ff',
                             fontStyle: 'italic'
