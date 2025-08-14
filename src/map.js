@@ -177,6 +177,7 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 	const { t } = useTranslation();
 	const map = useMap();
 	const boundsRef = useRef([]);
+	const hasInitiallyFitBounds = useRef(false); // Track if we've already fit bounds initially
 	const { data: geoJSON, imgZip } = data;
 	const [featureImages, setFeatureImages] = useState({}); // this is basically a cache
 	const [editingFeature, setEditingFeature] = useState(null);
@@ -195,12 +196,10 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 	const isOldFormat = geoJSON.hasOwnProperty('features');
 	const isNewImageFormat = !isOldFormat && geoJSON.hasOwnProperty('locations');
 	
+	// Clear bounds array at the start of each render to avoid accumulation
+	boundsRef.current = [];
+	
 	useEffect(() => {
-		// fit map to bounds
-		if (boundsRef.current.length > 0) {
-			map.fitBounds(boundsRef.current);
-		}
-		
 		// Call the render complete callback when map is ready
 		if (onMapRenderComplete) {
 			// Small delay to ensure bounds fitting and markers are fully rendered
@@ -208,7 +207,17 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 				onMapRenderComplete();
 			}, 300);
 		}
-	}, [geoJSON, map, onMapRenderComplete]);
+	}, [onMapRenderComplete]);
+
+	useEffect(() => {
+		// fit map to bounds only on initial load, not when data changes due to edits/deletes
+		if (boundsRef.current.length > 0 && !hasInitiallyFitBounds.current) {
+			setTimeout(() => {
+				map.fitBounds(boundsRef.current);
+				hasInitiallyFitBounds.current = true;
+			}, 100); // Small delay to ensure markers are rendered
+		}
+	});
 
 	const handleMarkerClick = useCallback(
 		async (feature) => {
