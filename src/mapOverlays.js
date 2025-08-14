@@ -49,11 +49,11 @@ const ProgressBar = ({ progress, stage, stageProgress, text }) => {
     const getStageText = () => {
         switch (stage) {
             case "compressing":
-                return `Compressing images... ${stageProgress}%`;
+                return `Compressing & Encrypting... ${stageProgress}%`;
             case "encrypting":
-                return `Encrypting map... ${stageProgress}%`;
+                return `Encrypting... ${stageProgress}%`;
             case "uploading":
-                return `Uploading map... ${stageProgress}%`;
+                return `Uploading Encrypted Map... ${stageProgress}%`;
             default:
                 return text || "Processing...";
         }
@@ -543,7 +543,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                 {/* Initial three button view */}
                 {!activeOption && (
                     <div className="option-button-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <p style={{ textAlign: "center" }}>Create maps by converting (Google) Photos or (WhatsApp) chats into maps. </p>
+                        <p style={{ textAlign: "center" }}>Convert Photos or WhatsApp chats into maps. </p>
 
                        <button
                             className="btn"
@@ -765,7 +765,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             <br />
                             The <strong>free version</strong> allows organisations to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
                             <br />
-                            <strong>Premium</strong> allows organisations to create task IDs to run large-scale crowdmapping campaigns, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.
+                            <strong>Premium</strong> allows organisations to run crowdmapping campaigns with Task IDs, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.
 
                         </p>
                         <div className="option-button-container">
@@ -1870,11 +1870,11 @@ const generateCSV = (dataset) => {
                                         autoFocus
                                         disabled={isUploading}
                                     />
-                                    {taskIdError && (
-                                        <p role="alert" aria-live="polite" style={{ color: "#e74c3c", fontSize: "0.95rem", margin: "6px 0 10px" }}>
-                                            {taskIdError}
-                                        </p>
-                                    )}
+                                    {/* {taskIdError && (
+                                        // <p role="alert" aria-live="polite" style={{ color: "#e74c3c", fontSize: "0.95rem", margin: "6px 0 10px" }}>
+                                        //     {taskIdError}
+                                        // </p>
+                                    )} */}
                                     <label style={{ 
                                         fontSize: "1rem", 
                                         // fontWeight: "bold",
