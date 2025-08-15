@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { isOnline, queueAction, showOfflineMessage } from './offline-utils.js';
 
-const API_URL = "https://mjbhgmtnxe.execute-api.eu-west-2.amazonaws.com/prod/KaptaLite_test";
-const BUCKET_BASE_URL = "https://s3.eu-west-2.amazonaws.com/kapta-lite-private-maps";
+const API_URL = "https://5jx97xhyvc.execute-api.eu-west-2.amazonaws.com/prod/captallite";
+// const BUCKET_BASE_URL = "https://s3.eu-west-2.amazonaws.com/captallite";
+const BUCKET_BASE_URL = "https://d2r9z549in6xyk.cloudfront.net";
 
 // Helper function to convert file to base64 for offline storage
 function fileToBase64(file) {
@@ -47,7 +48,7 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
     setButtonDisabled(true);
 
     try {
-        const visibility = sharingOption; // "private-sensitive", "private-non-sensitive", or "open"
+        const visibility = "private"; // "private-sensitive", "private-non-sensitive", or "open"
         const taskIdFolder = taskId || "noTaskId";; // To classify data by taskId, and give a value if no value
         const tagsFolder = WhatsAppMapTags || "noMapTags"; // To classify data by tags
         const WABMapperFolder = wabMapperId || "noWabMapperId"; // WhatsApp Mapper ID
@@ -93,16 +94,15 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
         console.log("✅ File uploaded successfully");
 
         // Optional handling logic per sharingOption
-        if (sharingOption === "private-sensitive") {
-            console.log("Handling private-sensitive scenario...");
-        } else if (sharingOption === "private-non-sensitive") {
-            console.log("Handling private-non-sensitive scenario...");
-        } else if (sharingOption === "open") {
-            console.log("Handling open scenario...");
-        } else {
-            console.log("Unknown sharing option. Default behavior.");
-        }
-
+        // if (sharingOption === "private-sensitive") {
+        //     console.log("Handling private-sensitive scenario...");
+        // } else if (sharingOption === "private-non-sensitive") {
+        //     console.log("Handling private-non-sensitive scenario...");
+        // } else if (sharingOption === "open") {
+        //     console.log("Handling open scenario...");
+        // } else {
+        //     console.log("Unknown sharing option. Default behavior.");
+        // }
         let downloadUrl;
 
         if (visibility === "private-sensitive") {
@@ -116,7 +116,9 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
             console.log("✅ Pre-signed Download URL:", downloadUrl);
         } else {
             // Step 3b: Generate permanent URL manually
-            downloadUrl = `${BUCKET_BASE_URL}/uploads/${visibility}/${taskIdFolder}/${tagsFolder}/${fileNameWAMap}`;
+            // downloadUrl = `${BUCKET_BASE_URL}/uploads/${visibility}/${taskIdFolder}/${tagsFolder}/${fileNameWAMap}`;
+               downloadUrl = `${BUCKET_BASE_URL}/${taskIdFolder}/${tagsFolder}/${fileNameWAMap}`;
+
             console.log("🌍 Public Download URL with prefix rules and referer checks:", downloadUrl);
         }
 

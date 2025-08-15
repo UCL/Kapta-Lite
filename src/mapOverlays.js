@@ -808,7 +808,7 @@ export function ShareModal({
     
     const shareModalRef = useRef(null);
     const { t } = useTranslation();
-    const [sharingOption, setSharingOption] = useState("private-non-sensitive"); // Default to Private
+    const [sharingOption, setSharingOption] = useState("private"); // Default to Private
     const [hasTaskId, setHasTaskId] = useState(null);
     const [taskId, setTaskId] = useState("");
     const [mapperId, setMapperId] = useState(""); // New state for Mapper ID
@@ -1352,7 +1352,7 @@ export function ShareModal({
                 // Use uploadImageData for image data with the task ID
                 await uploadImageData(
                     dataDisplayProps.dataset.data,
-                    "private-non-sensitive", // Default sharing option for task ID uploads
+                    "private", // Default sharing option for task ID uploads
                     trimmedTaskId,
                     WhatsAppMapTags,
                     mapperId,
@@ -1366,7 +1366,7 @@ export function ShareModal({
                     `TaskID_${trimmedTaskId}_${new Date().toISOString().split('T')[0].replace(/-/g, '')}`,
                     setButtonText,
                     setButtonDisabled,
-                    "private-non-sensitive", // Default sharing option for task ID uploads
+                    "private", // Default sharing option for task ID uploads
                     trimmedTaskId,
                     WhatsAppMapTags,
                     mapperId
