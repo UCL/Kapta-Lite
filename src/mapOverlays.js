@@ -1363,7 +1363,16 @@ export function ShareModal({
                 // Use uploadProcessedChat for WhatsApp chat data with the task ID
                 await uploadProcessedChat(
                     processedFile || globalProcessedChatFile,
-                    `TaskID_${trimmedTaskId}_${new Date().toISOString().split('T')[0].replace(/-/g, '')}`,
+                    (() => {
+                        const now = new Date();
+                        const date = now.toISOString().split('T')[0].replace(/-/g, '');
+                        const time = now
+                            .toTimeString()
+                            .split(' ')[0] // HH:MM:SS
+                            .replace(/:/g, '');
+                        const millis = now.getMilliseconds().toString().padStart(3, '0');
+                        return `TaskID_${trimmedTaskId}_${date}_${time}_${millis}`;
+                    })(),
                     setButtonText,
                     setButtonDisabled,
                     "private", // Default sharing option for task ID uploads

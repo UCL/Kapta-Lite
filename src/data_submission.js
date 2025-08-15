@@ -48,8 +48,9 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
     setButtonDisabled(true);
 
     try {
-        const visibility = "private"; // "private-sensitive", "private-non-sensitive", or "open"
-        const taskIdFolder = taskId || "noTaskId";; // To classify data by taskId, and give a value if no value
+        // const taskIdpath = 
+    const visibility = "private"; // "private-sensitive", "private-non-sensitive", or "open"
+    const taskIdFolder = taskId ? "tasks/"+taskId : "noTaskId"; // To classify data by taskId, and give a value if no value
         const tagsFolder = WhatsAppMapTags || "noMapTags"; // To classify data by tags
         const WABMapperFolder = wabMapperId || "noWabMapperId"; // WhatsApp Mapper ID
 
