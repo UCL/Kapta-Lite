@@ -1701,7 +1701,7 @@ const generateCSV = (dataset) => {
                                         justifyContent: "center",
                                         backgroundColor: "#25D366"
                                     }}
-                                    disabled={isUploading}
+                                    disabled={isUploading || !navigator.onLine}
                                 >
                                     Share Map link
                                 </button>
@@ -1720,7 +1720,7 @@ const generateCSV = (dataset) => {
                                         backgroundColor: "#ffc107",
                                         transition: "none"
                                     }}
-                                    disabled={isUploading}
+                                    disabled={isUploading || !navigator.onLine}
                                 >
                                     Upload with taskID
                                 </button>

@@ -19,29 +19,29 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
 
     // Check if online
     if (!isOnline()) {
-        console.log("📴 Device is offline. Queuing upload for later.");
+        console.log("📴 Device is offline. ");
         
-        // Queue the upload for when we're back online
-        const queueId = queueAction({
-            type: 'upload',
-            data: {
-                file: await fileToBase64(file), // Store as base64 for queuing
-                fileName: fileNameWAMap,
-                fileType: file.type,
-                sharingOption,
-                taskId,
-                WhatsAppMapTags,
-                wabMapperId
-            }
-        });
+        // // Queue the upload for when we're back online
+        // const queueId = queueAction({
+        //     type: 'upload',
+        //     data: {
+        //         file: await fileToBase64(file), // Store as base64 for queuing
+        //         fileName: fileNameWAMap,
+        //         fileType: file.type,
+        //         sharingOption,
+        //         taskId,
+        //         WhatsAppMapTags,
+        //         wabMapperId
+        //     }
+        // });
         
-        setButtonText("uploadQueued");
-        setButtonDisabled(false);
+        // setButtonText("uploadQueued");
+        // setButtonDisabled(false);
         
-        showOfflineMessage("Upload queued. It will be processed when you're back online.");
+        showOfflineMessage("📴 Device is offline. Share when online");
         
         // Return a temporary offline URL
-        return `offline-queued://${queueId}`;
+        // return `offline-queued://${queueId}`;
     }
 
     setButtonText("uploadPending");
@@ -132,26 +132,26 @@ export async function uploadProcessedChat(file, fileNameWAMap, setButtonText, se
         
         // If it's a network error and we're offline, queue the upload
         if (!isOnline() && (error.name === 'TypeError' || error.message.includes('fetch'))) {
-            console.log("📴 Network error detected. Queuing upload for retry.");
+            console.log("📴 Network error detected. ");
             
-            const queueId = queueAction({
-                type: 'upload',
-                data: {
-                    file: await fileToBase64(file),
-                    fileName: fileNameWAMap,
-                    fileType: file.type,
-                    sharingOption,
-                    taskId,
-                    WhatsAppMapTags,
-                    wabMapperId
-                }
-            });
+            // const queueId = queueAction({
+            //     type: 'upload',
+            //     data: {
+            //         file: await fileToBase64(file),
+            //         fileName: fileNameWAMap,
+            //         fileType: file.type,
+            //         sharingOption,
+            //         taskId,
+            //         WhatsAppMapTags,
+            //         wabMapperId
+            //     }
+            // });
             
-            setButtonText("uploadQueued");
-            setButtonDisabled(false);
+            // setButtonText("uploadQueued");
+            // setButtonDisabled(false);
             
-            showOfflineMessage("Network error. Upload queued for retry when connection is restored.");
-            return `offline-queued://${queueId}`;
+            showOfflineMessage("Network error.");
+            // return `offline-queued://${queueId}`;
         }
         
         setButtonText("uploadFailed");

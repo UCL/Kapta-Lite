@@ -666,7 +666,7 @@ export default function MainMenu({
             
             {errorMessage && (
                 <div className="error-message" style={{top:"300px",backgroundColor: "#3a3a3a",color: "white",textAlign: "center", }}>
-                    This map URL has expired
+                    This map URL has expired or an error occured.
                 <button
                   
                     className="error-click"
@@ -679,7 +679,7 @@ export default function MainMenu({
                         }}
 
                 >
-                    Click here to request a refresh
+                    Contact us
                 </button>
                 <button
                    
