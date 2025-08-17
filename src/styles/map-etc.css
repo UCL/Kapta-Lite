@@ -131,7 +131,7 @@
     #connect:active,
     #share:active,
     #create:active {
-        background-color: var(--mid-green-light, #03c03c); /* Lighten background */
+        background-color: var(--mid-green-light, #1fcbff); /* Lighten background */
     }
     #connect:focus:not(:focus-visible),
     #share:focus:not(:focus-visible),
@@ -156,7 +156,7 @@
         }
     }
     .whatsapp-mapper-icon {
-        background-color: #25D367;  /* Background around the icon */
+        background-color: #1fcbff;  /* Background around the icon */
         border-radius: 50%;                     /* Circular shape */
         padding: 6px;                           /* Space between icon and edge */
         width: 15px;                            /* Size = icon size + padding * 2 */
@@ -475,7 +475,7 @@
 #connect:active,
 #create:active,
 #share:active {
-    background-color: var(--mid-green-light, #03c03c); /* Lighten background */
+    background-color: var(--mid-green-light, #1fcbff); /* Lighten background */
 }
 
 #sharing-modal {
@@ -554,7 +554,7 @@
 
             &:active,
             :focus {
-                background-color: #02b429;
+                background-color: #1fcbff;
                 color: #eee;
                 border-color: #031927;
 
@@ -696,7 +696,7 @@
 
     /* Active state */
     .premium-btn:active{
-        background-color: var(--mid-green-light, #026e23); /* Lighten background */
+        background-color: var(--mid-green-light, #1fcbff); /* Lighten background */
     }
 #search-modal .option-button-container {
     width: 100%;
@@ -913,8 +913,8 @@
 
 /* Drag and Drop Styles */
 #map.drag-over {
-    border: 3px dashed #25D366;
-    background-color: rgba(37, 211, 102, 0.1);
+    border: 3px dashed #1fcbff;
+    background-color: rgba(31, 203, 255, 0.1);
 }
 
 .drag-overlay {
@@ -923,7 +923,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(37, 211, 102, 0.9);
+    background-color: rgba(31, 203, 255, 0.9);
     display: flex;
     align-items: center;
     justify-content: center;

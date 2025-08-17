@@ -74,7 +74,7 @@
 }
 
 #copyright {
-    color: #093f1d;
+    color: #1fcbff;
     position: fixed;
     width: 100%;
     text-align: center;
@@ -105,7 +105,7 @@
     top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(28, 131, 3, 0.993);
+    background-color: rgba(31, 203, 255, 0.993);
     color: white;
     padding: 20px;
     border-radius: 8px;

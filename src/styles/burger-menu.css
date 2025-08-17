@@ -115,7 +115,7 @@
         }
 
         .bm__item__summary--active {
-            background-color: rgba(37, 211, 102, 0.12); /* very soft green */
+            background-color: rgba(31, 203, 255, 0.12); /* very soft blue */
         }
 
         .bm__item__summary--active svg {
@@ -190,7 +190,7 @@
     position: absolute;
     top: 2rem;
     left: 2rem;
-    background-color: var(--mid-green);
+    background-color: #1fcbff;
     color: white;
     border: none;
     border-radius: 5px;
@@ -201,7 +201,7 @@
 }
 
 .btn--open-burger-menu:hover {
-    background-color: var(--dark-green);
+    background-color: #17a3cc;
 }
 
 /* Remove blue tap highlight specifically in burger tabs/links on touch devices */

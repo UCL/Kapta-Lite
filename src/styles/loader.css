@@ -8,11 +8,11 @@
     /* to be above scale line and attribution */
     z-index: 1002;
     gap: 5px;
-    background-color: var(--wa-green);
+    background-color: #343541;
 
     &.loader:before,
     &.loader:after {
-        box-shadow: 0 0 0 3px inset #fff;
+        box-shadow: 0 0 0 3px inset #1FCBFF;
     }
 }
 
@@ -25,7 +25,7 @@
     align-items: center;
     height: 100%;
     width: 95%;
-    background-color: #fff;
+    background-color: #1FCBFF;
     border-radius: 8px;
     top: 0;
 

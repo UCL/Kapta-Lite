@@ -98,7 +98,7 @@ export const addMetaIcn = (
 export const uploadIcn = (
 	<FontAwesomeIcon icon={faCloudArrowUp} className="btn-icon" />
 );
-export const WhatAppMapper = <FontAwesomeIcon icon={faWhatsapp} style={{ color: "#05ad29" }}/>;
+export const WhatAppMapper = <FontAwesomeIcon icon={faWhatsapp} style={{ color: "#1fcbff" }}/>;
 // export const WhatAppMapMarker = <FontAwesomeIcon icon={faLocationDot} style={{ color: "#05ad29" }}/>;
 // export const WhatAppMapMarkerPosition = (
 // 	<img
@@ -188,5 +188,5 @@ export const deleteIcon = (
 );
 
 // menu
-export const menuIcon = <FontAwesomeIcon icon={faBars} style={{ backgroundColor: "#25D366", border:"1px solid #2d2c2c",padding: "8px", borderRadius: "8px",  boxSizing: "content-box"}}/>;
+export const menuIcon = <FontAwesomeIcon icon={faBars} style={{ backgroundColor: "#1fcbff", border:"1px solid #2d2c2c",padding: "8px", borderRadius: "8px",  boxSizing: "content-box"}}/>;
 export const GHIcon = <FontAwesomeIcon icon={faGithub} style={{ color: "black" }} />;

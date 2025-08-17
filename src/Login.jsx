@@ -1,5 +1,5 @@
 import { signUp, initiateAuth, respondToSMSChallenge } from "./auth.js";
-import KaptaLogo from "./images/icons/kapta-green.svg";
+import KaptaLogo from "./images/icons/favicon.svg";
 import { closeIcon, thumbsUpIcon } from "./icons.js";
 import { useUserStore } from "./UserContext.jsx";
 import React, { useEffect, useState } from "react";

@@ -121,7 +121,7 @@ export default function BurgerMenu({
 										 <div className="option-button-container">
 										<button
 											className="btn"
-											style={{ backgroundColor: '#25D367', height: '25px',  fontSize: "15px" }}
+											style={{ backgroundColor: '#1fcbff', height: '25px',  fontSize: "15px" }}
 											onClick={() => {
 												window.open("https://form.typeform.com/to/dJ4XaduT", "_blank");
 											}}
@@ -194,7 +194,7 @@ export default function BurgerMenu({
                                     "_blank"
                                 );
                             }}
-                            style={{ height: '45px', backgroundColor: '#25D367', fontSize: "15px" }}
+                            style={{ height: '45px', backgroundColor: '#1fcbff', fontSize: "15px" }}
                         >
                             Contact us
                         </button>
