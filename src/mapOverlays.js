@@ -632,7 +632,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p style={{ textAlign: "center" }}>Click to select photos (max. 50 photos‼️)<br /><br />💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 Search</p>
+                        <p style={{ textAlign: "center" }}>Click to select photos.💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 Search</p>
                                                 
                         <div className="option-button-container">
                             <button

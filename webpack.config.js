@@ -157,8 +157,8 @@ module.exports = (env, argv) => {
 				short_name: "Captallite",
 				description: "Simple.Private.Paid Crowdmapping.",
 				lang: "en-GB",
-				theme_color: "#25D366",
-				background_color: "#25D366",
+				theme_color: "#343541",
+				background_color: "#343541",
 				display: "standalone",
 				orientation: "portrait",
 				start_url: "/",
@@ -185,11 +185,11 @@ module.exports = (env, argv) => {
 				},
 				icons: [
 					{
-						src: path.resolve("src/images/icons/kapta-green.svg"),
+						src: path.resolve("src/images/icons/favicon.svg"),
 						sizes: [72, 96, 128, 192, 256, 512],
 					},
 					{
-						src: path.resolve("src/images/icons/kapta-green.svg"),
+						src: path.resolve("src/images/icons/favicon.svg"),
 						size: "512x512",
 						purpose: "maskable",
 					},

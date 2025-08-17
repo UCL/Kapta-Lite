@@ -69,7 +69,7 @@ i18next.use(initReactI18next).init({
 					"Do you allow the Captallite team to use your map to support your community?",
 				about: "What is Captallite",
 				aboutContent: `
-								<br />Captallite is a platform for private, paid crowdmapping with Photos and WhatsApp. <br />
+								<br />Captallite is a platform for simple, private, paid crowdmapping with Photos and WhatsApp. <br />
 								<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
 								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />
 								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos that are in the phone. <br />
@@ -77,7 +77,7 @@ i18next.use(initReactI18next).init({
 								`,
 				why: "Why Captallite",
 				whyContent: `
-								<br />Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially those at the margins. For that, crowdsourcing needs to be embedded in people’s chats and photos (not mapping apps), and become more private (less open) and paid (not volunteered). <u>A peer-reviewed publication explaining this will be available here soon.</u><br />`,
+								<br />Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially the billions at the margins. To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler (i.e. be embedded in people’s photos and chats, not in mapping apps).<u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
 
 				caseStudies: " Case studies",
 				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
@@ -94,7 +94,7 @@ i18next.use(initReactI18next).init({
 						<a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>
 					</li>
 					<li>
-						<a href='${ecsanvismap}'>World Map of our case studies before captallite (2010-2023)</a>
+						<a href='${ecsanvismap}'>World Map of our case studies before Captallite (2010-2023)</a>
 					</li>
 					</ul>`,
 				what: " Disclaimer",
