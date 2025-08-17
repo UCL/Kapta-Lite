@@ -25,7 +25,7 @@ export const queueAction = (action) => {
     // Store in localStorage for persistence
     try {
         localStorage.setItem('kapta-offline-queue', JSON.stringify(offlineQueue));
-        console.log('Offline: Queued action', action.type);
+        // console.log('Offline: Queued action', action.type);
     } catch (error) {
         console.error('Offline: Failed to store queue', error);
     }
@@ -41,7 +41,7 @@ export const processQueue = async () => {
         return;
     }
     
-    console.log(`Offline: Processing ${offlineQueue.length} queued actions`);
+    // console.log(`Offline: Processing ${offlineQueue.length} queued actions`);
     
     const results = [];
     
