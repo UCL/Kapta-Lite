@@ -53,7 +53,7 @@ const ProgressBar = ({ progress, stage, stageProgress, text }) => {
             case "encrypting":
                 return `Encrypting... ${stageProgress}%`;
             case "uploading":
-                return `Uploading Encrypted Map... ${stageProgress}%`;
+                return `Uploading Map... ${stageProgress}%`;
             default:
                 return text || "Processing...";
         }
@@ -739,7 +739,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p style={{ textAlign: "center" }}>We're building the network of business mappers to connect people on the ground with those who need ground data. 👇 Register if you want to be contacted to collect data in your area and get paid for it. 
+                            <p style={{ textAlign: "center" }}>We're building the network of business mappers to connect people on the ground with those who need ground data.<br /><br />Register if you want to be contacted to collect data in your area and get paid for it. 
                             </p>
                              <button
                             className="btn"
@@ -755,7 +755,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                         
 
                             </button>
-                            <p style={{ textAlign: "center" }}>👇 If you need ground data, get in touch.<br />
+                            <p style={{ textAlign: "center" }}>If you need ground data, get in touch.<br />
                             </p>
                             <button
                                 className="btn"

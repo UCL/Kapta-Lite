@@ -719,27 +719,30 @@ function WhatsAppMappersDataLayer({ data }) {
     return (
       <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
         <Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
-          <h3>{name}</h3>
-          <p>Get in touch and we will connect you {KaptaID}</p>
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn"
-            style={{
-              display: "inline-block",
-              marginTop: "0.5rem",
-              padding: "0.5rem 1rem",
-              backgroundColor: "#87CEEB",
-              color: "white",
-              borderRadius: "5px",
-              fontWeight: "bold",
-              textDecoration: "none",
-              boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-            }}
-          >
-            Contact us
-          </a>
+            <h3>{name}</h3>
+            <p>Get in touch and we will connect you {KaptaID}</p>
+            <button
+        className="btn"
+        style={{
+            display: "inline-block",
+            marginTop: "0.5rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "#87CEEB",
+            color: "white",
+            borderRadius: "5px",
+            fontWeight: "bold",
+            textDecoration: "none",
+            boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+        }}
+        onClick={() => {
+            navigator.clipboard.writeText(KaptaID).then(() => {
+            alert("KaptaID copied to clipboard!");
+            window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+            });
+        }}
+        >
+        Contact us
+        </button>
         </Popup>
       </Marker>
     );
