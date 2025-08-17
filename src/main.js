@@ -332,12 +332,12 @@ function App() {
                     <span style={{
                         fontSize: '14px',
                         fontWeight: '500',
-                        color: '#2d2c2c',
+                        color: '#f8f9faff',
                         fontFamily: 'system-ui, -apple-system, sans-serif'
                         }}>
                         captallite <em style={{
                             fontSize: '12px',
-                            color: '#838282ff',
+                            color: '#f9fbfcff',
                             fontStyle: 'italic'
                         }}>beta</em>
                         </span>

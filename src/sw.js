@@ -107,7 +107,7 @@ self.addEventListener('activate', (event) => {
                     cacheNames.map((cacheName) => {
                         // Clean up old caches if needed
                         if (cacheName.includes('old-') || cacheName.includes('temp-')) {
-                            console.log('Service Worker: Clearing old cache', cacheName);
+                            // console.log('Service Worker: Clearing old cache', cacheName);
                             return caches.delete(cacheName);
                         }
                     })
@@ -226,7 +226,7 @@ self.addEventListener('message', (event) => {
 
 // Handle background sync for queued actions
 self.addEventListener('sync', (event) => {
-    console.log('Service Worker: Background sync triggered', event.tag);
+    // console.log('Service Worker: Background sync triggered', event.tag);
     
     if (event.tag === 'background-sync') {
         event.waitUntil(doBackgroundSync());
@@ -235,7 +235,7 @@ self.addEventListener('sync', (event) => {
 
 async function doBackgroundSync() {
     // Handle any queued uploads or API calls when back online
-    console.log('Service Worker: Performing background sync');
+    // console.log('Service Worker: Performing background sync');
     
     try {
         // Get queued items from IndexedDB or localStorage
@@ -246,11 +246,11 @@ async function doBackgroundSync() {
                 await processQueuedItem(item);
                 await removeQueuedItem(item.id);
             } catch (error) {
-                console.error('Service Worker: Failed to process queued item', error);
+                // console.error('Service Worker: Failed to process queued item', error);
             }
         }
     } catch (error) {
-        console.error('Service Worker: Background sync failed', error);
+        // console.error('Service Worker: Background sync failed', error);
     }
 }
 
@@ -262,24 +262,24 @@ async function getQueuedItems() {
 
 async function processQueuedItem(item) {
     // Placeholder for processing queued uploads or API calls
-    console.log('Service Worker: Processing queued item', item);
+    // console.log('Service Worker: Processing queued item', item);
 }
 
 async function removeQueuedItem(id) {
     // Placeholder for removing processed items from queue
-    console.log('Service Worker: Removing queued item', id);
+    // console.log('Service Worker: Removing queued item', id);
 }
 
 // Listen for network status changes
 self.addEventListener('online', () => {
-    console.log('Service Worker: Network is back online');
+    // console.log('Service Worker: Network is back online');
     // Trigger background sync when network is restored
     self.registration.sync.register('background-sync');
 });
 
 // Handle push notifications (for future use)
 self.addEventListener('push', (event) => {
-    console.log('Service Worker: Push notification received');
+    // console.log('Service Worker: Push notification received');
     
     const options = {
         body: event.data ? event.data.text() : 'New update available',
@@ -307,7 +307,7 @@ self.addEventListener('push', (event) => {
 
 // Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
-    console.log('Service Worker: Notification clicked');
+    // console.log('Service Worker: Notification clicked');
     
     event.notification.close();
     

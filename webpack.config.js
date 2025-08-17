@@ -140,7 +140,7 @@ module.exports = (env, argv) => {
 				// Additional files to include in precache
 				manifestTransforms: [
 					(manifestEntries) => {
-						console.log('Precaching', manifestEntries.length, 'files');
+						// console.log('Precaching', manifestEntries.length, 'files');
 						return {
 							manifest: manifestEntries.filter(entry => {
 								// Include essential files for offline functionality

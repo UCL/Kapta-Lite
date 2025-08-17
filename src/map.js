@@ -730,7 +730,7 @@ function WhatsAppMappersDataLayer({ data }) {
               display: "inline-block",
               marginTop: "0.5rem",
               padding: "0.5rem 1rem",
-              backgroundColor: "#25D366",
+              backgroundColor: "#87CEEB",
               color: "white",
               borderRadius: "5px",
               fontWeight: "bold",
@@ -781,7 +781,7 @@ function ErrorPopup({ error }) {
 
 var southWest = L.latLng(-70, -180);
 var northEast = L.latLng(80, 180);
-console.log("ismobileortrable",isMobileOrTablet())
+// console.log("ismobileortrable",isMobileOrTablet())
 if (!isMobileOrTablet()) {
       var zoomOnload = 3; //to avoid multiple global maps displayed     
     }else{
@@ -819,6 +819,30 @@ function UpdateMap({ currentLocation, flyToLocation, setFlyToLocation }) {
 	return null;
 }
 
+/************************************************************************************************
+ *  Max Zoom Controller for WaMappers Layer
+ ************************************************************************************************/
+
+function MaxZoomController({ showWaMappers }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (showWaMappers) {
+            // When WaMappers layer is shown, limit max zoom to 10
+            map.setMaxZoom(10);
+            // If current zoom is higher than 10, zoom out to 10
+            if (map.getZoom() > 10) {
+                map.setZoom(10);
+            }
+        } else {
+            // When WaMappers layer is hidden, restore normal max zoom
+            map.setMaxZoom(21);
+        }
+    }, [showWaMappers, map]);
+
+    return null; // This component doesn't render anything
+}
+
 export function Map({
     isVisible,
     data,
@@ -843,10 +867,17 @@ export function Map({
     const [showWaMappers, setShowWaMappers] = useState(false);
 
     // State to track the active tile layer
-    const [activeTileLayer, setActiveTileLayer] = useState("gmaps");
+    const [activeTileLayer, setActiveTileLayer] = useState("satellite");
 
     // Drag and drop state
     const [isDragOver, setIsDragOver] = useState(false);
+
+    // Function to handle max zoom when connecting to WaMappers
+    const maxZoomConnect = useCallback(() => {
+        // This function will be called from MapActionArea when connecting
+        // The actual zoom limiting is handled by MaxZoomController component
+        // console.log("MaxZoom connect function called - zoom limiting to 10");
+    }, []);
 
     // Wrapper function to calculate size before parsing
     const setFileToParseWithSizeCalc = async (file) => {
@@ -1545,6 +1576,7 @@ export function Map({
                         onMapRenderComplete={onMapRenderComplete}
                     />}
                     {showWaMappers && <WhatsAppMappersDataLayer />}
+                    <MaxZoomController showWaMappers={showWaMappers} />
                     <UpdateMap
                         currentLocation={currentLocation}
                         flyToLocation={flyToLocation}
@@ -1564,6 +1596,7 @@ export function Map({
                     currentDataset={data?.data}
                     showWaMappers={showWaMappers}
                     setShowWaMappers={setShowWaMappers}
+                    maxZoomConnect={maxZoomConnect}
                 />
             </div>
         </>

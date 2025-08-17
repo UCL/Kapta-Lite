@@ -162,9 +162,9 @@ const getDynamicQuality = (totalSizeBytes) => {
         qualityCategory = "VERY_LOW (> 200MB)";
     }
     
-    console.log(`📊 Dynamic Quality Applied:`);
-    console.log(`   • File Size: ${totalSizeMB.toFixed(2)} MB`);
-    console.log(`   • Quality Factor: ${quality} (${qualityCategory})`);
+    // console.log(`📊 Dynamic Quality Applied:`);
+    // console.log(`   • File Size: ${totalSizeMB.toFixed(2)} MB`);
+    // console.log(`   • Quality Factor: ${quality} (${qualityCategory})`);
     
     return quality;
 };
@@ -180,7 +180,7 @@ window.globalImageSizeInfo = {
 // Global function to calculate and store image size information
 window.calculateAndStoreImageSize = (zipFile) => {
     if (!zipFile) {
-        console.log("🔄 Image size calculation reset (no zip file)");
+        // console.log("🔄 Image size calculation reset (no zip file)");
         window.globalImageSizeInfo = {
             totalSize: 0,
             isCalculated: false,
@@ -207,10 +207,10 @@ window.calculateAndStoreImageSize = (zipFile) => {
     // Update the quality parameter
     qualityPic = dynamicQuality;
     
-    console.log(`📦 Image Size Analysis Complete:`);
-    console.log(`   • Total File Size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
-    console.log(`   • Map Too Large: ${isMapTooLarge ? 'YES (> 500MB)' : 'NO'}`);
-    console.log(`   • Applied Global Quality: ${qualityPic}`);
+    // console.log(`📦 Image Size Analysis Complete:`);
+    // console.log(`   • Total File Size: ${(totalSize / (1024 * 1024)).toFixed(2)} MB`);
+    // console.log(`   • Map Too Large: ${isMapTooLarge ? 'YES (> 500MB)' : 'NO'}`);
+    // console.log(`   • Applied Global Quality: ${qualityPic}`);
     
     return window.globalImageSizeInfo;
 };
@@ -220,11 +220,11 @@ const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight 
     
     // Skip compression for very small images (mobile optimization)
     if (blob.size < 50000) { // 50KB threshold for mobile
-        console.log(`🖼️ Image compression skipped (${originalSizeKB} KB < 50 KB threshold)`);
+        // console.log(`🖼️ Image compression skipped (${originalSizeKB} KB < 50 KB threshold)`);
         return blob;
     }
     
-    console.log(`🗜️ Compressing image: ${originalSizeKB} KB → Quality: ${quality}, Max: ${maxWidth}x${maxHeight}`);
+    // console.log(`🗜️ Compressing image: ${originalSizeKB} KB → Quality: ${quality}, Max: ${maxWidth}x${maxHeight}`);
     
     return new Promise((resolve) => {
         const img = new Image();
@@ -268,17 +268,17 @@ const compressImageBlob = async (blob, quality = 0.6, maxWidth = 200, maxHeight 
                 if (compressedBlob && compressedBlob.size < blob.size) {
                     const compressedSizeKB = (compressedBlob.size / 1024).toFixed(1);
                     const compressionRatio = ((1 - compressedBlob.size / blob.size) * 100).toFixed(1);
-                    console.log(`✅ Compression successful: ${originalSizeKB} KB → ${compressedSizeKB} KB (${compressionRatio}% reduction, ${originalDimensions} → ${finalDimensions})`);
+                    // console.log(`✅ Compression successful: ${originalSizeKB} KB → ${compressedSizeKB} KB (${compressionRatio}% reduction, ${originalDimensions} → ${finalDimensions})`);
                     resolve(compressedBlob);
                 } else {
-                    console.log(`⚠️ Compression skipped: Result would be larger (${originalSizeKB} KB → ${originalDimensions})`);
+                    // console.log(`⚠️ Compression skipped: Result would be larger (${originalSizeKB} KB → ${originalDimensions})`);
                     resolve(blob);
                 }
             }, 'image/jpeg', quality);
         };
         
         img.onerror = () => {
-            console.log(`❌ Image compression failed for ${originalSizeKB} KB image`);
+            // console.log(`❌ Image compression failed for ${originalSizeKB} KB image`);
             URL.revokeObjectURL(img.src);
             resolve(blob);
         };
@@ -379,6 +379,7 @@ export function MapActionArea({
     create,
     showWaMappers,
     setShowWaMappers,
+    maxZoomConnect,
     ...dataDisplayProps // Add this to capture the props
 }) {
     const [isBMVisible, setIsBMVisible] = useState(false); // Define the state for BurgerMenu visibility
@@ -396,9 +397,17 @@ export function MapActionArea({
     // };
 
     const handleConnect = () => {
-        setIsRegisterMapper(true); // Set the modal content to "register as a mapper"
-        setIsSearchModalOpen(true); // Open the search modal
-        // setShowWaMappers(!showWaMappers); // Disable mappers location for now
+        if (showWaMappers) {
+            // If layer is already shown, just hide it without showing modal
+            setShowWaMappers(false);
+        } else {
+            // If layer is off, show modal and then show the layer
+            setIsRegisterMapper(true); // Set the modal content to "register as a mapper"
+            setIsSearchModalOpen(true); // Open the search modal
+            setShowWaMappers(true); // Enable mappers location
+            maxZoomConnect(); // Call the function to handle max zoom limiting
+
+        }
     };
 
     const handleShare = () => {
@@ -478,6 +487,7 @@ export function MapActionArea({
                             type="button"
                             onClick={handlePremium}
                             className="map-action-btn premium-btn"
+                            style={{ marginBottom: "5px" }}
                         >
                             <div className="map-action-icon">{premiumIcn}</div>
                             <span className="map-action-label" style={{ color: "#3a3a3a", }}>Premium</span>
@@ -729,9 +739,9 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
 
                     Connect with<br />mappers in the map
                 </button> */}
-                            <p style={{ textAlign: "center" }}>We're building the network to connect people on the ground with those who need ground data. <br />
+                            <p style={{ textAlign: "center" }}>We're building the network of business mappers to connect people on the ground with those who need ground data. 👇 Register if you want to be contacted to collect data in your area and get paid for it. 
                             </p>
-                            <button
+                             <button
                             className="btn"
                             style={{ height: "45px", borderRadius: "15px" }}
                             onClick={() => {
@@ -742,7 +752,11 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             }}
                         >
                             Register as Business Mapper
-                        </button>
+                        
+
+                            </button>
+                            <p style={{ textAlign: "center" }}>👇 If you need ground data, get in touch.<br />
+                            </p>
                             <button
                                 className="btn"
                                 style={{ height: "45px", borderRadius: "15px" }}
@@ -948,7 +962,7 @@ export function ShareModal({
                 alert(`Map is too large (${(zipFileSize / (1024 * 1024)).toFixed(1)} MB). Options to share large maps are under development. However, you can use the Download Map option instead and share it via e.g. messaging apps`);
                 return;
             }
-            console.log(`Zip file size: ${(zipFileSize / (1024 * 1024)).toFixed(2)} MB - OK to share`);
+            // console.log(`Zip file size: ${(zipFileSize / (1024 * 1024)).toFixed(2)} MB - OK to share`);
         }
 
         // Generate the URL if it hasn't been generated yet
@@ -969,7 +983,7 @@ export function ShareModal({
                 .join("");
         }
         const randomNum = generateBase62Id(); // Generate a random string of 20 characters
-        console.log("🔐 Base62 ID:", randomNum)
+        // console.log("🔐 Base62 ID:", randomNum)
         const fileNameWAMap = `CaptalliteMap-${randomNum}`; //Reduce parameters to increase security of URL
 
         try {
@@ -988,7 +1002,7 @@ export function ShareModal({
                 const { maxWidth, maxHeight, quality, batchSize } = mobileSettings;
                 const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
                 
-                console.log(`Compressing ${imageFiles.length} images with mobile-optimized settings:`, mobileSettings);
+                // console.log(`Compressing ${imageFiles.length} images with mobile-optimized settings:`, mobileSettings);
 
                 // Process images in smaller batches to avoid memory issues
                 let progressCount = 0;
@@ -1270,7 +1284,7 @@ export function ShareModal({
                 const { maxWidth, maxHeight, quality, batchSize } = mobileSettings;
                 const isMobile = /iPad|iPhone|iPod|android|Mobile/i.test(navigator.userAgent);
                 
-                console.log(`Compressing ${imageFiles.length} images for task ID upload:`, mobileSettings);
+                // console.log(`Compressing ${imageFiles.length} images for task ID upload:`, mobileSettings);
 
                 // Process images in smaller batches
                 let progressCount = 0;

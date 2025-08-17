@@ -453,7 +453,7 @@ export default function MainMenu({
                 id="loadingMessage"
                 className="loading-message"
                 style={{
-                  backgroundColor: "#25D366",
+                  backgroundColor: "#1fcbff",
                   color: "white",
                   padding: "1rem",
                   textAlign: "center",
