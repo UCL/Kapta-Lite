@@ -720,7 +720,7 @@ function WhatsAppMappersDataLayer({ data }) {
       <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
         <Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
             <h3>{name}</h3>
-            <p>Get in touch and we will connect you {KaptaID}</p>
+            <p>Get in touch and we will connect you with {KaptaID}</p>
             <button
         className="btn"
         style={{
@@ -736,7 +736,7 @@ function WhatsAppMappersDataLayer({ data }) {
         }}
         onClick={() => {
             navigator.clipboard.writeText(KaptaID).then(() => {
-            alert("KaptaID copied to clipboard!");
+            alert("The Captallite Business Mapper ID has been copied to clipboard! Click OK and paste it when the form opens.");
             window.open(whatsappUrl, "_blank", "noopener,noreferrer");
             });
         }}
@@ -826,22 +826,45 @@ function UpdateMap({ currentLocation, flyToLocation, setFlyToLocation }) {
  *  Max Zoom Controller for WaMappers Layer
  ************************************************************************************************/
 
-function MaxZoomController({ showWaMappers }) {
+function MaxZoomController({ showWaMappers, setShowWaMappers }) {
     const map = useMap();
+    const showRef = useRef(showWaMappers);
+    const suppressedRef = useRef(false); // tracks whether we auto-hid the layer due to zoom
+
+    // keep ref in sync with prop
+    useEffect(() => {
+        showRef.current = showWaMappers;
+    }, [showWaMappers]);
 
     useEffect(() => {
-        if (showWaMappers) {
-            // When WaMappers layer is shown, limit max zoom to 10
-            map.setMaxZoom(10);
-            // If current zoom is higher than 10, zoom out to 10
-            if (map.getZoom() > 10) {
-                map.setZoom(10);
+        if (!map || typeof setShowWaMappers !== 'function') return;
+
+        const handleZoom = () => {
+            const currentZoom = map.getZoom();
+
+            if (currentZoom > 12) {
+                // if the layer is currently visible, hide it and mark suppressed
+                if (showRef.current) {
+                    suppressedRef.current = true;
+                    setShowWaMappers(false);
+                }
+            } else {
+                // zoom <= 12: if we previously auto-hid the layer, restore it
+                if (suppressedRef.current) {
+                    suppressedRef.current = false;
+                    setShowWaMappers(true);
+                }
             }
-        } else {
-            // When WaMappers layer is hidden, restore normal max zoom
-            map.setMaxZoom(21);
-        }
-    }, [showWaMappers, map]);
+        };
+
+        map.on('zoomend', handleZoom);
+        // run once to ensure correct initial state
+        handleZoom();
+
+        return () => {
+            map.off('zoomend', handleZoom);
+        };
+    }, [map, setShowWaMappers]);
 
     return null; // This component doesn't render anything
 }
@@ -1539,7 +1562,7 @@ export function Map({
                     className="map-button"
                     onClick={() =>
                         setActiveTileLayer((prev) =>
-                            prev === "gmaps" ? "satellite" : prev === "satellite" ? "osm" : "gmaps"
+                            prev === "osm" ? "satellite" : prev === "satellite" ? "gmaps" : "osm"
                         )
                     }
                 >
@@ -1579,7 +1602,7 @@ export function Map({
                         onMapRenderComplete={onMapRenderComplete}
                     />}
                     {showWaMappers && <WhatsAppMappersDataLayer />}
-                    <MaxZoomController showWaMappers={showWaMappers} />
+                    <MaxZoomController showWaMappers={showWaMappers} setShowWaMappers={setShowWaMappers} />
                     <UpdateMap
                         currentLocation={currentLocation}
                         flyToLocation={flyToLocation}

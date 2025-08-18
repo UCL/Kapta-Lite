@@ -425,12 +425,15 @@ export function MapActionArea({
     const handlePremium = () => {
         setIsPremium(true); // Set to "Premium" mode
         setIsSearchModalOpen(true); // Opens the search modal
+        
     };
 
     const handleCreate = () => {
         // Ensure persistent observer name is initialized when Create button is clicked
         const { initializeObserverName } = require('./import_images.js');
         initializeObserverName();
+        setShowWaMappers(false);
+
         
         setIsCreateModalOpen(true); // Open the "Create" modal
         // console.log("create modal clicked")
@@ -553,7 +556,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                 {/* Initial three button view */}
                 {!activeOption && (
                     <div className="option-button-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <p style={{ textAlign: "center" }}>Convert Photos or WhatsApp chats into maps. </p>
+                        <p style={{ textAlign: "center" }}>Convert into maps the photos stored in your phone or WhatsApp</p>
 
                        <button
                             className="btn"
@@ -561,7 +564,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                             style={{ height: '45px' }}
                             disabled={isUploading}
                         >
-                            Photos Map
+                            Phone gallery
                         </button>
                         <button
                             className="btn"
@@ -569,7 +572,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                             style={{ height: '45px' }}
                             disabled={isUploading}
                         >
-                            WhatsApp Map
+                            WhatsApp
                         </button>                   
                         
                         {/* <button
@@ -642,7 +645,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                 {/* Photos option content */}
                 {activeOption === 'photos' && (
                     <>
-                        <p style={{ textAlign: "center" }}>Click to select photos.💡 Tip: When the Menu opens, you can go to Google Photos and use 🔎 Search</p>
+                        <p style={{ textAlign: "center" }}>💡 Tip: When the Menu for selecting photos opens, you can go to the Google Photos section and use 🔎 Search to filter by location, date and category (e.g. Plants in Addis Ababa in June 2025)</p>
                                                 
                         <div className="option-button-container">
                             <button
@@ -671,7 +674,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                                 }}
                                 disabled={isUploading}
                             >
-                                Convert photos into a map
+                                Select photos
                             </button>
                             <p style={{ textAlign: "center" }}>📍Note that only the images that were taken with the "Location" ON in your device will be shown in the map. <br /><br />🔒 Whatever you upload here, stays in your device. No one can see it.</p>
                             
@@ -778,6 +781,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                             <br />
                             The <strong>free version</strong> allows organisations to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
+                            <br />
                             <br />
                             <strong>Premium</strong> allows organisations to run crowdmapping campaigns with Task IDs, manage large map datasets and use dashboards & AI Agents for advanced visualisation & analysis.
 
@@ -1158,7 +1162,7 @@ export function ShareModal({
             setUploadProgress(100); // Upload complete
 
             // Generate URL without passphrase in it
-            let generatedUrl = `https://staging.d2o6xx2zphytuq.amplifyapp.com/?import=${presignedUrl}`;
+            let generatedUrl = `https://firstversionmc.d2o6xx2zphytuq.amplifyapp.com/?import=${presignedUrl}`;
             
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");

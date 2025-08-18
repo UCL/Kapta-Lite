@@ -68,21 +68,26 @@ i18next.use(initReactI18next).init({
 				datasovmessage:
 					"Do you allow the Captallite team to use your map to support your community?",
 				about: "What is Captallite",
+								// <br /><strong>Captallite</strong> is a crowdsourcing platform to instantly turn photos and WhatsApp chats into private maps. <br />
+								// <br /><strong>Captallite</strong> is a platform for simple, private crowdsourcing that turns photos stored in the phone or WhatsApp into maps.<br />
+
 				aboutContent: `
-								<br />Captallite is a platform for simple, private, paid crowdmapping with Photos and WhatsApp. <br />
-								<br /><strong>What is WhatsApp Maps?</strong> WhatsApp Maps are private community maps made with WhatsApp. <br />
-								<br />👉 <strong><a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map?</a></strong><br />
-								<br /><strong>What is Photos Maps?</strong> Photos Maps are private maps made with geotagged photos that are in the phone. <br />
-								<br /><strong>What are Captallite Business Mappers?</strong> People who make a business creating maps with Captallite. <br />
+								<br /><strong>Captallite</strong> is a crowdsourcing platform to connect with people on the ground and instantly turn photos and WhatsApp chats into private maps. <br />
+
+								<br /><strong>Captallite Business Mappers</strong> are people on the ground who earn money creating maps with Captallite. <br />
 								`,
 				why: "Why Captallite",
 				whyContent: `
-								<br />Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially the billions at the margins. To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler (i.e. be embedded in people’s photos and chats, not in mapping apps).<u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
+								<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many many people, especially by the crowds that have never participated in crowdsourcing.<br /><br />To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler (i.e. be embedded in people’s photos and chats, not in mapping apps).<br /><u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
 
 				caseStudies: " Case studies",
 				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
+						
 					<li>
 						<a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>
+					</li>
+					<li>
+						<a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />
 					</li>
 					<li>
 						<a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>
@@ -104,14 +109,17 @@ i18next.use(initReactI18next).init({
 				people: "People",
 				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
 					<br />Currently the core Captallite team consists of:<br>
-					<br />
-					<a href='${marcosUrl}'>Marcos Moreu</a><br>
-					<a href='${fabienUrl}'>Fabien Moustard</a><br>
-					<a href='${tomUrl}'>Tom Couch</a><br>
-					<a href='${mukiUrl}'>Muki Haklay</a><br>
-					<a href='${claireUrl}'>Claire Ellul</a><br>
-					<a href='${jedUrl}'>Jed Stevenson</a><br>
+
 				`,
+				// 				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
+				// 	<br />Currently the core Captallite team consists of:<br>
+				// 	<br />
+				// 	<a href='${marcosUrl}'>Marcos Moreu</a><br>
+				// 	<br />
+				// 	<a href='${mukiUrl}'>Muki Haklay</a><br>
+				// 	<a href='${claireUrl}'>Claire Ellul</a><br>
+				// 	<a href='${jedUrl}'>Jed Stevenson</a><br>
+				// `,
 				legalDisclaimer: `<br />The Captallite team has made every effort to develop an app that parses WhatsApp chats and Photos to create maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Captallite cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",

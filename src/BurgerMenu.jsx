@@ -97,7 +97,7 @@ export default function BurgerMenu({
                                         >Tutorial for mappers
                                             
                                         </a></span>
-										<p>Learn how to instantly turn Photos into maps and how to create WhatsApp Maps.</p>
+										<p>Learn how to instantly turn photos stored in your phone or WhatsApp into maps.</p>
 									</div>
 								
 								<br />
