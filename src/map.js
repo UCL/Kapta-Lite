@@ -47,42 +47,66 @@ import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
 /************************************************************************************************
  *   Image Download Helper
  ************************************************************************************************/
+// Open image in a new browser tab (no download)
+const openImageInNewTab = async (imgElement) => {
+    try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = imgElement.naturalWidth || imgElement.width;
+        canvas.height = imgElement.naturalHeight || imgElement.height;
+        ctx.drawImage(imgElement, 0, 0);
+        canvas.toBlob((blob) => {
+            if (!blob) {
+                const newWin = window.open(imgElement.src, '_blank');
+                if (!newWin) window.location.href = imgElement.src;
+                return;
+            }
+            const url = URL.createObjectURL(blob);
+            const newWin = window.open(url, '_blank', 'noopener');
+            if (!newWin) {
+                // popup blocked: open in same tab
+                window.location.href = url;
+            }
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+        }, 'image/png');
+    } catch (err) {
+        console.error('Error opening image in new tab:', err);
+        const newWin = window.open(imgElement.src, '_blank');
+        if (!newWin) window.location.href = imgElement.src;
+    }
+};
+
+// Download image as PNG (used by long-press/context menu)
 const downloadImageAsPNG = async (imgElement, filename) => {
-	try {
-		// Create a canvas to convert the image to PNG
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d');
-		
-		// Set canvas size to match image
-		canvas.width = imgElement.naturalWidth || imgElement.width;
-		canvas.height = imgElement.naturalHeight || imgElement.height;
-		
-		// Draw the image on canvas
-		ctx.drawImage(imgElement, 0, 0);
-		
-		// Convert to PNG blob
-		canvas.toBlob((blob) => {
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			// Use the original filename, but ensure .png extension
-			const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
-			link.download = `${nameWithoutExt}.png`;
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			URL.revokeObjectURL(link.href);
-		}, 'image/png');
-	} catch (error) {
-		console.error('Error downloading image as PNG:', error);
-		// Fallback to direct download
-		const link = document.createElement('a');
-		link.href = imgElement.src;
-		const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
-		link.download = `${nameWithoutExt}.png`;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	}
+    try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = imgElement.naturalWidth || imgElement.width;
+        canvas.height = imgElement.naturalHeight || imgElement.height;
+        ctx.drawImage(imgElement, 0, 0);
+        canvas.toBlob((blob) => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+            link.href = url;
+            link.download = `${nameWithoutExt}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+        }, 'image/png');
+    } catch (error) {
+        console.error('Error downloading image as PNG:', error);
+        // fallback to original src download
+        const link = document.createElement('a');
+        link.href = imgElement.src;
+        const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
+        link.download = `${nameWithoutExt}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 };
 
 /************************************************************************************************
@@ -356,7 +380,11 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 												src={location.imageUrl}
 												alt="Geotagged image"
 												style={{ display: "block", maxWidth: "100%" }}
-												onContextMenu={async (e) => {
+                                                // onClick={(e) => {
+                                                //     e.stopPropagation();
+                                                //     openImageInNewTab(e.target);
+                                                // }}
+                                                onContextMenu={async (e) => {
 													// Handle right-click to ensure PNG download
 													e.preventDefault();
 													await downloadImageAsPNG(e.target, location.name || 'image');
@@ -535,7 +563,11 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 																e.preventDefault();
 																await downloadImageAsPNG(e.target, filename);
 															}}
-															onTouchStart={(e) => {
+                                                        // onClick={(e) => {
+                                                        //     e.stopPropagation();
+                                                        //     openImageInNewTab(e.target);
+                                                        // }}
+                                                        onTouchStart={(e) => {
 																// Handle long press on mobile devices
 																const img = e.target;
 																const longPressTimeout = setTimeout(() => {

@@ -94,7 +94,7 @@ module.exports = (env, argv) => {
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Simple.Private.Paid Crowdmapping.",
+						content: "Turn photos into maps. Connect",
 					},
 					"og:type": {
 						property: "og:type",
@@ -155,7 +155,7 @@ module.exports = (env, argv) => {
 				publicPath: "/",
 				name: "Captallite",
 				short_name: "Captallite",
-				description: "Simple.Private.Paid Crowdmapping.",
+				description: "Turn photos into maps. Connect.",
 				lang: "en-GB",
 				theme_color: "#2D2C2C",
 				background_color: "#2D2C2C",

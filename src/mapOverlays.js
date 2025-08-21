@@ -789,6 +789,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                         <div className="option-button-container">
                             <button
                                 className="btn"
+                                style={{ borderRadius: "20px", height: "45px" }}
                                 onClick={() => {
                                     window.open("https://form.typeform.com/to/dJ4XaduT", "_blank");
                                 }}
@@ -1162,7 +1163,7 @@ export function ShareModal({
             setUploadProgress(100); // Upload complete
 
             // Generate URL without passphrase in it
-            let generatedUrl = `https://firstversionmc.d2o6xx2zphytuq.amplifyapp.com/?import=${presignedUrl}`;
+            let generatedUrl = `https://staging.d2o6xx2zphytuq.amplifyapp.com/?import=${presignedUrl}`;
             
             setKaptaWaMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");
@@ -1200,7 +1201,7 @@ export function ShareModal({
                 
                 alertMessage = `Map link copied to clipboard! 
                             
-� IMPORTANT: Your map is private.
+� IMPORTANT: Your map is password protected.
 🔑 Password: ${password}
 
 (The map can only be accessed with this password)`;
@@ -1455,7 +1456,7 @@ export function ShareModal({
     };
     
     const handleHighResClick = () => {
-        setHighResButtonText("💳 Available soon");
+        setHighResButtonText("Available soon");
         setTimeout(() => {
             setHighResButtonText("Need High Resolution?");
         }, 3000);

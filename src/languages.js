@@ -72,13 +72,13 @@ i18next.use(initReactI18next).init({
 								// <br /><strong>Captallite</strong> is a platform for simple, private crowdsourcing that turns photos stored in the phone or WhatsApp into maps.<br />
 
 				aboutContent: `
-								<br /><strong>Captallite</strong> is a crowdsourcing platform to connect with people on the ground and instantly turn photos and WhatsApp chats into private maps. <br />
+								<br /><strong>Captallite</strong> is a crowdsourcing platform to connect with people on the ground and instantly turn photos into maps. <br />
 
 								<br /><strong>Captallite Business Mappers</strong> are people on the ground who earn money creating maps with Captallite. <br />
 								`,
 				why: "Why Captallite",
 				whyContent: `
-								<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many many people, especially by the crowds that have never participated in crowdsourcing.<br /><br />To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler (i.e. be embedded in people’s photos and chats, not in mapping apps).<br /><u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
+								<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many many people, especially by the crowds whose stories are left out in traditonal crowdsourcing.<br /><br />To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler, i.e. be embedded in people’s private and (WhatsApp) group photos, not in mapping apps.<br /><u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
 
 				caseStudies: " Case studies",
 				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
@@ -139,7 +139,7 @@ i18next.use(initReactI18next).init({
 				copyright: "Captallite by UCL",
 				supportOption: "Get support to improve your map",
 				installPrompt: "❗ Install Captallite using Google Chrome",
-				installPromptChrome: "👉 Install Captallite to your home screen",
+				installPromptChrome: "Install Captallite to your home screen",
 				installClickMessage:
 					"Captallite is now being added to your home screen. This might take a few seconds",
 				desktoporiosPrompt:

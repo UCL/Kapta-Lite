@@ -97,7 +97,7 @@ export default function BurgerMenu({
                                         >Tutorial for mappers
                                             
                                         </a></span>
-										<p>Learn how to instantly turn photos stored in your phone or WhatsApp into maps.</p>
+										<p>Learn how to instantly turn into maps the photos stored in your phone or in WhatsApp.</p>
 									</div>
 								
 								<br />
@@ -126,7 +126,7 @@ export default function BurgerMenu({
 												window.open("https://form.typeform.com/to/dJ4XaduT", "_blank");
 											}}
 										>
-											Try Premium
+											Request a Premium Demo
 										</button>
                        				 </div>
                                     </div>
