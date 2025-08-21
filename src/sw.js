@@ -30,7 +30,7 @@ registerRoute(
 // Cache JavaScript and CSS files
 registerRoute(
     ({ request }) => request.destination === 'script' || request.destination === 'style',
-    new StaleWhileRevalidate({
+    new NetworkFirst({
         cacheName: 'static-resources',
         plugins: [
             new CacheableResponsePlugin({
@@ -38,7 +38,7 @@ registerRoute(
             }),
         ],
     })
-);
+)
 
 // Cache images with cache-first strategy
 registerRoute(
@@ -100,20 +100,24 @@ self.addEventListener('activate', (event) => {
     // console.log('Service Worker: Activating...');
     // Take control of all clients immediately
     event.waitUntil(
-        Promise.all([
-            self.clients.claim(),
-            caches.keys().then((cacheNames) => {
-                return Promise.all(
-                    cacheNames.map((cacheName) => {
-                        // Clean up old caches if needed
-                        if (cacheName.includes('old-') || cacheName.includes('temp-')) {
-                            console.log('Service Worker: Clearing old cache', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            })
-        ])
+        (async () => {
+            await self.clients.claim();
+            // Clean up old caches if needed
+            const cacheNames = await caches.keys();
+            await Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName.includes('old-') || cacheName.includes('temp-')) {
+                        console.log('Service Worker: Clearing old cache', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+            // Force all clients to reload
+            const clientsList = await self.clients.matchAll({ type: 'window' });
+            for (const client of clientsList) {
+                client.postMessage({ type: 'RELOAD_PAGE' });
+            }
+        })()
     );
 });
 

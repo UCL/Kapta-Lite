@@ -90,10 +90,37 @@ function initServiceWorker(setFileToParse) {
                             installingWorker.onstatechange = () => {
                                 if (installingWorker.state === "installed") {
                                     if (navigator.serviceWorker.controller) {
-                                        // New update available, reload to activate
-                                        console.log("New content is available; reloading...");
+                                        // New update available, show message, then reload twice
+                                        console.log("New content is available; update will be applied...");
+                                        // Show message to user for 3 seconds
+                                        const updateMsg = document.createElement('div');
+                                        updateMsg.textContent = '🔄 Kapta is updating to the latest version. This might take a few seconds';
+                                        updateMsg.style.cssText = `
+                                            position: fixed;
+                                            top: 50px;
+                                            left: 50%;
+                                            transform: translateX(-50%);
+                                            background: #2196F3;
+                                            color: white;
+                                            padding: 16px 32px;
+                                            border-radius: 10px;
+                                            z-index: 10003;
+                                            font-size: 16px;
+                                            font-weight: bold;
+                                            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                                        `;
+                                                // alert(" Kapta is updating to the latest version...");
+
+                                        document.body.appendChild(updateMsg);
                                         installingWorker.postMessage({ type: 'SKIP_WAITING' });
-                                        window.location.reload();
+                                        setTimeout(() => {
+                                            window.location.reload();
+                                        }, 4000);
+                                        setTimeout(() => {
+                                            document.body.removeChild(updateMsg);
+                                            window.location.reload();
+                                        }, 8000);
+                                        
                                     } else {
                                         console.log("Content is cached for offline use.");
                                     }
@@ -339,7 +366,7 @@ function App() {
                             fontSize: '12px',
                             color: '#f9fbfcff',
                             fontStyle: 'italic'
-                        }}>beta</em>
+                        }}>1.0</em>
                         </span>
                 </div>
             )}
