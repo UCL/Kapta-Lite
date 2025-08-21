@@ -11,6 +11,67 @@ import "./styles/image-popup.css";
 import { isMobileOrTablet } from "./main.js";
 
 import L from "leaflet";
+
+// Dynamically set #map height for mobile browsers to ensure controls are visible
+function setMapHeight() {
+    const mapEl = document.getElementById('map');
+    if (mapEl) {
+        mapEl.style.height = window.innerHeight + 'px';
+    }
+}
+
+// Force Leaflet scale control positioning and height
+function forceLeafletControlPositioning() {
+    const leafletBottomLeft = document.querySelector('.leaflet-bottom.leaflet-left');
+    const leafletBottomRight = document.querySelector('.leaflet-bottom.leaflet-right');
+
+    if (leafletBottomLeft) {
+        leafletBottomLeft.style.position = 'fixed';
+        leafletBottomLeft.style.bottom = '-2px';
+        leafletBottomLeft.style.left = '5px';
+        leafletBottomLeft.style.height = '24px';
+        // leafletBottomLeft.style.zIndex = '9999';
+        leafletBottomLeft.style.pointerEvents = 'auto';
+    }
+    if (leafletBottomRight) {
+        leafletBottomRight.style.position = 'fixed';
+        leafletBottomRight.style.bottom = '-8px';
+        leafletBottomRight.style.right = '5px';
+        leafletBottomRight.style.height = '24px';
+        // leafletBottomRight.style.zIndex = '9999';
+        leafletBottomRight.style.pointerEvents = 'auto';
+    }
+
+    
+    // const scaleControl = document.querySelector('.leaflet-control-scale');
+    // if (scaleControl) {
+    //     scaleControl.style.position = 'fixed';
+    //     scaleControl.style.bottom = '80px';
+    //     scaleControl.style.left = '10px';
+    //     scaleControl.style.height = '24px';
+    //     scaleControl.style.zIndex = '9999';
+    //     scaleControl.style.pointerEvents = 'auto';
+    // }
+}
+
+window.addEventListener('resize', () => {
+    setMapHeight();
+    forceLeafletControlPositioning();
+});
+window.addEventListener('orientationchange', () => {
+    setMapHeight();
+    forceLeafletControlPositioning();
+});
+document.addEventListener('DOMContentLoaded', () => {
+    setMapHeight();
+    // Delay to ensure Leaflet controls are rendered
+    setTimeout(forceLeafletControlPositioning, 1000);
+});
+
+// Also force positioning after map loads
+window.addEventListener('load', () => {
+    setTimeout(forceLeafletControlPositioning, 2000);
+});
 import {
 	MapContainer,
 	TileLayer,
@@ -1135,6 +1196,9 @@ export function Map({
 				map.innerHTML += " | Mapbox | OSM Contributors";
 			}
 		}
+		
+		// Force Leaflet control positioning after attribution is set
+		setTimeout(forceLeafletControlPositioning, 500);
 	}, [activeTileLayer]);
 	
     // pulse effect on title update

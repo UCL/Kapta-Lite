@@ -17,7 +17,7 @@ const whatsappMapsUrl =
 const ethio2023 =
 	"https://uclexcites.blog/2023/09/03/wisdom-of-the-crowd-in-the-age-of-ai-water/";
 const GibraltarUrl =
-	"https://dashboards.kapta.earth/?dashboardid=9d9efa9e-5ca4-4cbb-9a5a-99ee9de11238";
+	"https://pinea.app.carto.com/map/9d9efa9e-5ca4-4cbb-9a5a-99ee9de11238";
 const firstwhatsappMapsUrl =
 	"https://www.ucl.ac.uk/geography/news/2024/dec/first-ever-whatsapp-map";
 const whatsappMapsUrlSpanish =
@@ -78,7 +78,7 @@ i18next.use(initReactI18next).init({
 								`,
 				why: "Why Captallite",
 				whyContent: `
-								<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many many people, especially by the crowds whose stories are left out in traditonal crowdsourcing.<br /><br />To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler, i.e. be embedded in people’s private and (WhatsApp) group photos, not in mapping apps.<br /><u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
+								<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many many people, especially by the crowds whose stories and data are left out in traditonal crowdsourcing.<br /><br />To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler, i.e. be embedded in what people use (e.g. photos galleries and WhatsApp).<br /><u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
 
 				caseStudies: " Case studies",
 				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
