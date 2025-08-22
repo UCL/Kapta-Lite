@@ -78,36 +78,41 @@ i18next.use(initReactI18next).init({
 								`,
 				why: "Why Captallite",
 				whyContent: `
-								<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many many people, especially by the crowds whose stories and data are left out in traditonal crowdsourcing.<br /><br />To achieve that, crowdsourcing needs to be paid (not volunteered), private-first (not open-first) and simpler, i.e. be embedded in what people use (e.g. photos galleries and WhatsApp).<br /><u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
-
-				caseStudies: " Case studies",
-				caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
+				<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, including the billions whose stories and data are left out in traditional crowdsourcing.<br /><br />
+				To achieve that, crowdsourcing needs to be embedded in the technology and the data that people already have (i.e. photos and chats). <br /><br />But simplifying crowdsourcing is not enough to popularise it. Cash and trust are also needed. Crowdsourcing needs to transition towards paid-first (not volunteered-first) and private-first (not open-first). <u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
+				caseStudies: " 10+ years trying",
+				caseStudiesContent: `<br />Captallite is the result of years of volunteered geographic
+				information (VGI) and extreme citizen science research in Europe and with communities living in some of the most challenging environments on Earth (see 🌍 <a href='${ecsanvismap}'>World Map of our case studies before Captallite (2010-2023)</a>. 
+				This research has transitioned from highly participatory processes, to trying to simplify the process by using WhatsApp (see <a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />), to trying to replace the process with cash payments to contributors, 
+				which is what Captallite is designed for to make crowdsourcing more inclusive and quickly scalable. These are some of our past pilot projects: 🇬🇧  <a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>, 
+				🇪🇹 <a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>, 🇪🇹 <a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water (2023)</a>, 🇳🇬 <a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>.`,
+				// caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
 						
-					<li>
-						<a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>
-					</li>
-					<li>
-						<a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />
-					</li>
-					<li>
-						<a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>
-					</li>
-					<li>
-						<a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water (2023)</a>
-					</li>
-					<li>
-						<a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>
-					</li>
-					<li>
-						<a href='${ecsanvismap}'>World Map of our case studies before Captallite (2010-2023)</a>
-					</li>
-					</ul>`,
+				// 	<li>
+				// 		<a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>
+				// 	</li>
+				// 	<li>
+				// 		<a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />
+				// 	</li>
+				// 	<li>
+				// 		<a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>
+				// 	</li>
+				// 	<li>
+				// 		<a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water (2023)</a>
+				// 	</li>
+				// 	<li>
+				// 		<a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>
+				// 	</li>
+				// 	<li>
+				// 		<a href='${ecsanvismap}'>World Map of our case studies before Captallite (2010-2023)</a>
+				// 	</li>
+				// 	</ul>`,
 				what: " Disclaimer",
 				whatContent:
 					"Captallite Web: A platform that brings people together to create and share WhatsApp Maps",
 
 				people: "People",
-				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
+				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab (Geography Dept.) and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
 					<br />Currently the core Captallite team consists of:<br>
 
 				`,

@@ -35,7 +35,7 @@
 
 #burger-menu {
     background-color: white;
-    width: 280px;
+    width: 320px;
     height: 100vh;
     position: fixed;
     top: 0;
@@ -73,7 +73,7 @@
 
     .bm__item {
         position: relative;
-        padding: 0.8rem 0.4rem;
+        padding: 0.4rem 0.4rem;
         background-color: white;
         z-index: 1;
 

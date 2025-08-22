@@ -67,13 +67,28 @@ export default function BurgerMenu({
 							dangerouslySetInnerHTML={{ __html: t("whyContent") }}
 						></div>
 					</div>
+					<div className="bm__item">
+						<div
+							className={`bm__item__summary ${openSection === "caseStudies" ? "bm__item__summary--active" : ""}`}
+							onClick={() => toggleSection("caseStudies")}
+						>
+							{chevronDown}
+							{t("caseStudies")}
+						</div>
+						<div
+							className={`bm__item__content ${
+								openSection === "caseStudies" ? "bm__item__content--open" : ""
+							}`}
+							dangerouslySetInnerHTML={{ __html: t("caseStudiesContent") }}
+						></div>
+					</div>
 					{/* New "How it works" tab */}
 					<div className="bm__item">
 						<div
 							className={`bm__item__summary ${openSection === "howitworks" ? "bm__item__summary--active" : ""}`}
 							onClick={() => toggleSection("howitworks")}
 						>
-							{chevronDown} How it works
+							{chevronDown} How Captallite works
 						</div>
 						<div
 							className={`bm__item__content ${
@@ -136,21 +151,7 @@ export default function BurgerMenu({
 							</ul>
 						</div>
 					</div>
-					<div className="bm__item">
-						<div
-							className={`bm__item__summary ${openSection === "caseStudies" ? "bm__item__summary--active" : ""}`}
-							onClick={() => toggleSection("caseStudies")}
-						>
-							{chevronDown}
-							{t("caseStudies")}
-						</div>
-						<div
-							className={`bm__item__content ${
-								openSection === "caseStudies" ? "bm__item__content--open" : ""
-							}`}
-							dangerouslySetInnerHTML={{ __html: t("caseStudiesContent") }}
-						></div>
-					</div>
+					
 					<div className="bm__item">
 						<div
 							className={`bm__item__summary ${openSection === "people" ? "bm__item__summary--active" : ""}`}
