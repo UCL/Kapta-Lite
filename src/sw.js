@@ -1,323 +1,264 @@
+/* sw.js — Workbox-powered Service Worker
+ * - Immediate activation: self.skipWaiting() + clientsClaim()
+ * - Page handles reload on `controllerchange` (do NOT force reload from SW)
+ * - Keeps your routes, share-target, background sync, and push handlers
+ */
+
 import { precacheAndRoute } from 'workbox-precaching/precacheAndRoute';
 import { registerRoute } from 'workbox-routing';
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate, NetworkOnly } from 'workbox-strategies';
+import { CacheFirst, NetworkFirst } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 import { clientsClaim } from 'workbox-core';
 
+// --- Take over as soon as installed ---
+self.skipWaiting();
 clientsClaim();
 
-// Precache app shell and static assets
+// --- Precache app shell and static assets ---
 precacheAndRoute(self.__WB_MANIFEST);
 
-// Cache API responses with network-first strategy for dynamic content
+// =========================
+// Caching routes / strategies
+// =========================
+
+// 1) API (exclude Mapbox): NetworkFirst (offline fallback to cache/JSON)
 registerRoute(
-    ({ url }) => url.pathname.startsWith('/api/') && !url.hostname.includes('mapbox'),
-    new NetworkFirst({
-        cacheName: 'api-cache',
-        plugins: [
-            new CacheableResponsePlugin({
-                statuses: [0, 200],
-            }),
-            new ExpirationPlugin({
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, // 1 day
-            }),
-        ],
-    })
+  ({ url }) => url.pathname.startsWith('/api/') && !url.hostname.includes('mapbox'),
+  new NetworkFirst({
+    cacheName: 'api-cache',
+    networkTimeoutSeconds: 5,
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
+      new ExpirationPlugin({ maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 }), // 1 day
+    ],
+  })
 );
 
-// Cache JavaScript and CSS files
+// 2) JS/CSS: NetworkFirst (you can switch to StaleWhileRevalidate if preferred)
 registerRoute(
-    ({ request }) => request.destination === 'script' || request.destination === 'style',
-    new NetworkFirst({
-        cacheName: 'static-resources',
-        plugins: [
-            new CacheableResponsePlugin({
-                statuses: [0, 200],
-            }),
-        ],
-    })
-)
-
-// Cache images with cache-first strategy
-registerRoute(
-    ({ request }) => request.destination === 'image',
-    new CacheFirst({
-        cacheName: 'images',
-        plugins: [
-            new CacheableResponsePlugin({
-                statuses: [0, 200],
-            }),
-            new ExpirationPlugin({
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-            }),
-        ],
-    })
+  ({ request }) => request.destination === 'script' || request.destination === 'style',
+  new NetworkFirst({
+    cacheName: 'static-resources',
+    plugins: [new CacheableResponsePlugin({ statuses: [0, 200] })],
+  })
 );
 
-// Handle Mapbox tiles with special consideration for offline use
+// 3) Images: CacheFirst
 registerRoute(
-    ({ url }) => url.hostname === 'api.mapbox.com',
-    new CacheFirst({
-        cacheName: 'mapbox-tiles',
-        plugins: [
-            new CacheableResponsePlugin({
-                statuses: [0, 200],
-            }),
-            new ExpirationPlugin({
-                maxEntries: 500,
-                maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
-            }),
-        ],
-    })
+  ({ request }) => request.destination === 'image',
+  new CacheFirst({
+    cacheName: 'images',
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
+      new ExpirationPlugin({ maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 }), // 30 days
+    ],
+  })
 );
 
-// Cache fonts
+// 4) Mapbox tiles: CacheFirst (bounded)
 registerRoute(
-    ({ request }) => request.destination === 'font',
-    new CacheFirst({
-        cacheName: 'fonts',
-        plugins: [
-            new CacheableResponsePlugin({
-                statuses: [0, 200],
-            }),
-            new ExpirationPlugin({
-                maxEntries: 30,
-                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-            }),
-        ],
-    })
+  ({ url }) => url.hostname === 'api.mapbox.com',
+  new CacheFirst({
+    cacheName: 'mapbox-tiles',
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
+      new ExpirationPlugin({ maxEntries: 500, maxAgeSeconds: 60 * 60 * 24 * 7 }), // 7 days
+    ],
+  })
 );
 
-self.addEventListener('install', (event) => {
-    // console.log('Service Worker: Installing...');
-    self.skipWaiting();
-});
+// 5) Fonts: CacheFirst
+registerRoute(
+  ({ request }) => request.destination === 'font',
+  new CacheFirst({
+    cacheName: 'fonts',
+    plugins: [
+      new CacheableResponsePlugin({ statuses: [0, 200] }),
+      new ExpirationPlugin({ maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 }), // 1 year
+    ],
+  })
+);
 
+// =========================
+// Lifecycle & messaging
+// =========================
+
+// Activate: light cache cleanup (do NOT touch Workbox precache caches)
 self.addEventListener('activate', (event) => {
-    // console.log('Service Worker: Activating...');
-    // Take control of all clients immediately
-    event.waitUntil(
-        (async () => {
-            await self.clients.claim();
-            // Clean up old caches if needed
-            const cacheNames = await caches.keys();
-            await Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName.includes('old-') || cacheName.includes('temp-')) {
-                        console.log('Service Worker: Clearing old cache', cacheName);
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-            // Force all clients to reload
-            const clientsList = await self.clients.matchAll({ type: 'window' });
-            for (const client of clientsList) {
-                client.postMessage({ type: 'RELOAD_PAGE' });
-            }
-        })()
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(
+      names.map((n) => {
+        if (n.startsWith('old-') || n.startsWith('temp-')) return caches.delete(n);
+        return undefined;
+      })
     );
+
+    // Optional: enable navigation preload if supported
+    if (self.registration.navigationPreload) {
+      try { await self.registration.navigationPreload.enable(); } catch {}
+    }
+  })());
 });
 
-// Listen for skip waiting messages
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
-});
-
-self.addEventListener('fetch', (event) => {
-    // Handle share-target requests
-    if (event.request.url.endsWith('/share-target') && event.request.method === "POST") {
-        const formDataPromise = event.request.formData();
-
-        event.respondWith(Response.redirect('./index.html?share-target', 303));
-
-        event.waitUntil(
-            (async function () {
-                // The page sends this message to tell the service worker it's ready to receive the file.
-                await nextMessage('share-ready');
-                const client = await self.clients.get(event.resultingClientId);
-                const data = await formDataPromise;
-                
-                // Check for files to handle
-                const file = data.get('file');
-                
-                // Get all image files
-                const imageFiles = [];
-                // Check for any images in the files array
-                for (const [key, value] of data.entries()) {
-                    if (value instanceof File && value.type.startsWith('image/')) {
-                        imageFiles.push(value);
-                    }
-                }
-                
-                if (imageFiles.length > 0) {
-                    // If we have images, send them to the client
-                    client.postMessage({ files: imageFiles, action: 'load-images' });
-                } else if (file) {
-                    // Otherwise, handle as before (ZIP file)
-                    client.postMessage({ file, action: 'load-map' });
-                }
-            })(),
-        );
-        return;
-    }
-
-    // Handle navigation requests (HTML pages) with offline fallback
-    if (event.request.mode === 'navigate') {
-        event.respondWith(
-            fetch(event.request).catch(() => {
-                // If network fails, serve the cached app shell
-                return caches.match('/index.html');
-            })
-        );
-        return;
-    }
-
-    // Handle API requests with offline fallback
-    if (event.request.url.includes('/api/') && !event.request.url.includes('mapbox')) {
-        event.respondWith(
-            fetch(event.request).catch(() => {
-                // Try to serve from cache if network fails
-                return caches.match(event.request).then(response => {
-                    if (response) {
-                        return response;
-                    }
-                    // Return a meaningful offline response for API calls
-                    return new Response(
-                        JSON.stringify({ 
-                            error: 'Offline', 
-                            message: 'This feature requires an internet connection.' 
-                        }),
-                        {
-                            status: 503,
-                            statusText: 'Service Unavailable',
-                            headers: { 'Content-Type': 'application/json' }
-                        }
-                    );
-                });
-            })
-        );
-        return;
-    }
-});
-
+// Single message handler:
+// - Resolve share-target handshake
+// - Handle SKIP_WAITING requests from the page
 const nextMessageResolveMap = new Map();
-
-/**
- * Wait on a message with a particular event.data value.
- *
- * @param dataVal The event.data value.
- */
-function nextMessage(dataVal) {
-    return new Promise((resolve) => {
-        if (!nextMessageResolveMap.has(dataVal)) {
-            nextMessageResolveMap.set(dataVal, []);
-        }
-        nextMessageResolveMap.get(dataVal).push(resolve);
-    });
-}
-
 self.addEventListener('message', (event) => {
-    const resolvers = nextMessageResolveMap.get(event.data);
-    if (!resolvers) return;
+  // Resolve waiters from nextMessage()
+  const resolvers = nextMessageResolveMap.get(event.data);
+  if (resolvers) {
     nextMessageResolveMap.delete(event.data);
     for (const resolve of resolvers) resolve();
+  }
+
+  // Handle explicit activation request
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
-// Handle background sync for queued actions
+// =========================
+// Share Target (POST) handling
+// =========================
+
+self.addEventListener('fetch', (event) => {
+  // Share Target: handle POST to /share-target
+  if (event.request.url.endsWith('/share-target') && event.request.method === 'POST') {
+    const formDataPromise = event.request.formData();
+
+    // Immediately respond with a redirect so the app opens
+    event.respondWith(Response.redirect('./index.html?share-target', 303));
+
+    event.waitUntil((async () => {
+      // Wait until the page says it's ready to receive the data
+      await nextMessage('share-ready');
+
+      // Determine target client window
+      let client = null;
+      if (event.resultingClientId) {
+        client = await self.clients.get(event.resultingClientId);
+      }
+      if (!client) {
+        const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+        client = all[0]; // best effort
+      }
+      if (!client) return;
+
+      const data = await formDataPromise;
+
+      // If any images were shared, send them all; otherwise send the file (ZIP)
+      const imageFiles = [];
+      for (const [, value] of data.entries()) {
+        if (value instanceof File && value.type.startsWith('image/')) imageFiles.push(value);
+      }
+
+      if (imageFiles.length > 0) {
+        client.postMessage({ action: 'load-images', files: imageFiles });
+      } else {
+        const file = data.get('file');
+        if (file) client.postMessage({ action: 'load-map', file });
+      }
+    })());
+
+    return; // important: stop here for the share-target request
+  }
+
+  // HTML navigation fallback: try network, then precached index.html
+  if (event.request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        // If navigation preload is available, prefer it
+        const preload = await event.preloadResponse;
+        if (preload) return preload;
+        return await fetch(event.request);
+      } catch {
+        // Offline -> app shell
+        return caches.match('/index.html');
+      }
+    })());
+    return;
+  }
+
+  // API requests (non-Mapbox) offline fallback (if not covered by Workbox route)
+  if (event.request.url.includes('/api/') && !event.request.url.includes('mapbox')) {
+    event.respondWith((async () => {
+      try {
+        return await fetch(event.request);
+      } catch {
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        return new Response(
+          JSON.stringify({ error: 'Offline', message: 'This feature requires an internet connection.' }),
+          { status: 503, statusText: 'Service Unavailable', headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    })());
+    return;
+  }
+});
+
+// Helper to await a specific next message from the page
+function nextMessage(dataVal) {
+  return new Promise((resolve) => {
+    if (!nextMessageResolveMap.has(dataVal)) nextMessageResolveMap.set(dataVal, []);
+    nextMessageResolveMap.get(dataVal).push(resolve);
+  });
+}
+
+// =========================
+// Background Sync (optional)
+// =========================
+
 self.addEventListener('sync', (event) => {
-    console.log('Service Worker: Background sync triggered', event.tag);
-    
-    if (event.tag === 'background-sync') {
-        event.waitUntil(doBackgroundSync());
-    }
+  if (event.tag === 'background-sync') {
+    event.waitUntil(doBackgroundSync());
+  }
 });
 
 async function doBackgroundSync() {
-    // Handle any queued uploads or API calls when back online
-    console.log('Service Worker: Performing background sync');
-    
-    try {
-        // Get queued items from IndexedDB or localStorage
-        const queuedItems = await getQueuedItems();
-        
-        for (const item of queuedItems) {
-            try {
-                await processQueuedItem(item);
-                await removeQueuedItem(item.id);
-            } catch (error) {
-                console.error('Service Worker: Failed to process queued item', error);
-            }
-        }
-    } catch (error) {
-        console.error('Service Worker: Background sync failed', error);
+  try {
+    const queuedItems = await getQueuedItems(); // implement with IndexedDB if needed
+    for (const item of queuedItems) {
+      try {
+        await processQueuedItem(item);
+        await removeQueuedItem(item.id);
+      } catch (err) {
+        console.error('SW: Failed to process queued item', err);
+      }
     }
+  } catch (err) {
+    console.error('SW: Background sync failed', err);
+  }
 }
 
-async function getQueuedItems() {
-    // Placeholder for getting queued items from storage
-    // This would typically use IndexedDB
-    return [];
-}
+async function getQueuedItems() { return []; }
+async function processQueuedItem(item) { /* no-op */ }
+async function removeQueuedItem(id) { /* no-op */ }
 
-async function processQueuedItem(item) {
-    // Placeholder for processing queued uploads or API calls
-    console.log('Service Worker: Processing queued item', item);
-}
+// =========================
+/* Push notifications (optional) */
+// =========================
 
-async function removeQueuedItem(id) {
-    // Placeholder for removing processed items from queue
-    console.log('Service Worker: Removing queued item', id);
-}
-
-// Listen for network status changes
-self.addEventListener('online', () => {
-    console.log('Service Worker: Network is back online');
-    // Trigger background sync when network is restored
-    self.registration.sync.register('background-sync');
-});
-
-// Handle push notifications (for future use)
 self.addEventListener('push', (event) => {
-    console.log('Service Worker: Push notification received');
-    
-    const options = {
-        body: event.data ? event.data.text() : 'New update available',
-        icon: '/icon-192x192.png',
-        badge: '/icon-72x72.png',
-        vibrate: [200, 100, 200],
-        actions: [
-            {
-                action: 'open',
-                title: 'Open App',
-                icon: '/icon-192x192.png'
-            },
-            {
-                action: 'close',
-                title: 'Close',
-                icon: '/icon-192x192.png'
-            }
-        ]
-    };
-    
-    event.waitUntil(
-        self.registration.showNotification('Kapta Lite', options)
-    );
+  const options = {
+    body: event.data ? event.data.text() : 'New update available',
+    icon: '/icon-192x192.png',
+    badge: '/icon-72x72.png',
+    vibrate: [200, 100, 200],
+    actions: [
+      { action: 'open', title: 'Open App', icon: '/icon-192x192.png' },
+      { action: 'close', title: 'Close', icon: '/icon-192x192.png' },
+    ],
+  };
+  event.waitUntil(self.registration.showNotification('Kapta Lite', options));
 });
 
-// Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
-    console.log('Service Worker: Notification clicked');
-    
-    event.notification.close();
-    
-    if (event.action === 'open') {
-        event.waitUntil(
-            clients.openWindow('/')
-        );
-    }
+  event.notification.close();
+  if (event.action === 'open') {
+    event.waitUntil(clients.openWindow('/'));
+  }
 });

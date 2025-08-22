@@ -746,7 +746,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             </p>
                              <button
                             className="btn"
-                            style={{ height: "45px", borderRadius: "15px" }}
+                            style={{ height: "45px", borderRadius: "15px", marginTop: "-30px" }}
                             onClick={() => {
                                 window.open(
                                     "https://form.typeform.com/to/EAUd0TVm",
@@ -762,7 +762,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                             </p>
                             <button
                                 className="btn"
-                                style={{ height: "45px", borderRadius: "15px" }}
+                                style={{ height: "45px", borderRadius: "15px", marginTop: "-30px" }}
                                 onClick={() => {
                                     window.open(
                                         "https://form.typeform.com/to/QomOwX9N",
@@ -770,7 +770,7 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                                     );
                                 }}
                             >
-                            Request Ground Data
+                            I need Ground Data
                             </button>
                             
                         </div>
@@ -1986,17 +1986,17 @@ const generateCSV = (dataset) => {
                     {showInfoContent && (
                         <div style={{ marginTop: "15px", padding: "12px", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
                             <div style={{ fontSize: "0.8rem", lineHeight: "1.4", color: "#555" }}>
-                                <p style={{ marginBottom: "6px" }}>Captallite is a privacy-focused tool for sharing WhatsApp Maps and Photos Maps. All maps that you share direcly to your network are password-protected by default with the following security features:</p>
+                                <p style={{ marginBottom: "6px" }}>Captallite is a privacy-focused tool. The maps that you share direcly to your network are password-protected by default with the following security features:</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "6px", marginBottom: "8px" }}>
                                     <li>Client-side encryption using AES-256. Not even the Captallite team can view your maps.</li>
-                                    <li>Passwords never stored on our servers.</li>
+                                    <li>Only the people that you share the map link AND the password can view your map.</li>
                                     {/* <li>Files automatically expire after 30 days</li> */}
                                     <li>No user registration or personal data collection.</li>
                                     <li>Choose a strong password (minimum 6 characters. 12 recommended) and share it separately from the map link for maximum security.</li>
 
                                     
                                 </ul>
-                                <p style={{ marginBottom: "4px" }}>💡 Captallite compress the images for faster upload/download. Options to upload higher resolution images is under development. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
+                                <p style={{ marginBottom: "4px" }}>💡 Captallite compresses the images for faster upload/download. Options to upload higher resolution images is under development. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
                                 <p style={{ marginBottom: "4px" }}>Download buttons</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information.</li>

@@ -68,104 +68,71 @@ function showBrowserRecommendationIfNeeded() {
 window.addEventListener("DOMContentLoaded", showBrowserRecommendationIfNeeded);
 
 function initServiceWorker(setFileToParse) {
-    if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker
-                .register("/sw.js")
-                .then((registration) => {
-                    console.info("SW registered: ", registration);
-                    
-                    // Check if there's already a waiting service worker
-                    if (registration.waiting) {
-                        console.log("New version available, activating...");
-                        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-                        window.location.reload();
-                        return;
-                    }
-                    
-                    // Listen for updates to the service worker
-                    registration.onupdatefound = () => {
-                        const installingWorker = registration.installing;
-                        if (installingWorker) {
-                            installingWorker.onstatechange = () => {
-                                if (installingWorker.state === "installed") {
-                                    if (navigator.serviceWorker.controller) {
-                                        // New update available, show message, then reload twice
-                                        console.log("New content is available; update will be applied...");
-                                        // Show message to user for 3 seconds
-                                        const updateMsg = document.createElement('div');
-                                        updateMsg.textContent = '🔄 Kapta is updating to the latest version. This might take a few seconds';
-                                        updateMsg.style.cssText = `
-                                            position: fixed;
-                                            top: 50px;
-                                            left: 50%;
-                                            transform: translateX(-50%);
-                                            background: #2196F3;
-                                            color: white;
-                                            padding: 16px 32px;
-                                            border-radius: 10px;
-                                            z-index: 10003;
-                                            font-size: 16px;
-                                            font-weight: bold;
-                                            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                                        `;
-                                                // alert(" Kapta is updating to the latest version...");
+  if (!('serviceWorker' in navigator)) return;
 
-                                        document.body.appendChild(updateMsg);
-                                        installingWorker.postMessage({ type: 'SKIP_WAITING' });
-                                        setTimeout(() => {
-                                            window.location.reload();
-                                        }, 4000);
-                                        setTimeout(() => {
-                                            document.body.removeChild(updateMsg);
-                                            window.location.reload();
-                                        }, 8000);
-                                        
-                                    } else {
-                                        console.log("Content is cached for offline use.");
-                                    }
-                                }
-                            };
-                        }
-                    };
-                })
-                .catch((registrationError) => {
-                    console.info("SW registration failed: ", registrationError);
-                });
-        });
+  window.addEventListener('load', async () => {
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      updateViaCache: 'none', // fetch a fresh sw.js each time
+    });
+    console.info('SW registered:', registration);
 
-        // if (!isMobileOrTablet() || isIOS()) {
-        //     window.addEventListener("load", function () {
-        //         const shownWorksBestOnAndroid = localStorage.getItem(
-        //             "shownWorksBestOnAndroid"
-        //         );
+    // ---- Reload exactly when a NEW controller takes over ----
+    let refreshed = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshed) return;
+      refreshed = true;
+      // optional: show your toast here
+      window.location.reload();
+    });
 
-        //         if (!shownWorksBestOnAndroid) {
-        //             alert(i18next.t("desktoporiosPrompt")); // using like this since can't use useTranslation outside a component
-        //             localStorage.setItem("shownWorksBestOnAndroid", "true");
-        //         }
-        //     });
-        // }
+    // If there is already a waiting SW (e.g., app was open during deploy)
+    if (registration.waiting) {
+      console.log('New version waiting → activating now…');
+      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
     }
 
-    navigator.serviceWorker.addEventListener("message", (event) => {
-            if (event.data.action === "load-map") {
-                return setFileToParse(event.data.file);
-            } else if (event.data.action === "load-images") {
-                return setImagesToParse(event.data.files);
-            }
-        });
-
-        // Check for controlling service worker and force update check
-        navigator.serviceWorker.ready.then((registration) => {
-            // Force an update check on page load
-            registration.update();
-        });
-
-        if (navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage("share-ready");
+    // When a new update is found, ask it to activate ASAP
+    registration.onupdatefound = () => {
+      const sw = registration.installing;
+      if (!sw) return;
+      sw.onstatechange = () => {
+        if (sw.state === 'installed' && navigator.serviceWorker.controller) {
+          console.log('New content installed → requesting activation…');
+          sw.postMessage({ type: 'SKIP_WAITING' });
+          // DO NOT reload here. Wait for controllerchange.
         }
+      };
+    };
+
+    // Proactive update checks
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') registration.update();
+    });
+
+    // Your existing share-target messaging (kept)
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      if (event.data?.action === 'load-map') {
+        return setFileToParse(event.data.file);
+      } else if (event.data?.action === 'load-images') {
+        return setImagesToParse(event.data.files);
+      } else if (event.data?.type === 'RELOAD_PAGE') {
+        // If you keep SW broadcast (see below), this makes it no-op safe
+        if (!refreshed) {
+          refreshed = true;
+          window.location.reload();
+        }
+      }
+    });
+
+    // Force a check on page load
+    (await navigator.serviceWorker.ready).update();
+
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage('share-ready');
+    }
+  });
 }
+
 
 function App() {
     const [fileToParse, setFileToParse] = useState(null);
