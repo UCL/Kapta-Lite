@@ -93,7 +93,8 @@ export const extractExifData = async (imageFile) => {
             // Include additional metadata for potential future use
             altitude: result.tags.GPSAltitude,
             make: result.tags.Make,
-            model: result.tags.Model
+            model: result.tags.Model,
+            gpsImgDirection: result.tags.GPSImgDirection
           });
         } else {
           console.log("No GPS data found in:", imageFile.name);
@@ -177,7 +178,7 @@ export const convertImageToMapData = (processedImages) => {
   // Process each image with location metadata
   // processedImages should already have the EXIF data extracted
   processedImages.forEach((imageData, index) => {
-    const { latitude, longitude, timestamp, file, make, model, altitude } = imageData;
+    const { latitude, longitude, timestamp, file, make, model, altitude, gpsImgDirection } = imageData;
     // Use simple ID generation instead of async generateImageId
     const id = generateSimpleId(`${latitude}_${longitude}_${timestamp}`);
     const imageUrl = createImageUrl(file);
@@ -217,6 +218,7 @@ export const convertImageToMapData = (processedImages) => {
       make: make || '',
       model: model || '',
       altitude: altitude || null,
+      gpsImgDirection: gpsImgDirection || null,
       senderId: sender.id,
       sender: sender.id,   // Include both for compatibility
       description: description,
@@ -237,7 +239,8 @@ export const convertImageToMapData = (processedImages) => {
         markerColour: "0", // Default color
         imgFilenames: [file.name],
         // Removed make and model properties
-        altitude: altitude ? String(altitude) : ''
+        altitude: altitude ? String(altitude) : '',
+        gpsImgDirection: gpsImgDirection ? String(gpsImgDirection) : ''
       },
       geometry: {
         type: "Point",
@@ -346,10 +349,10 @@ export function ImageParser({ files, onComplete, setLoadingMessage, onProcessing
               datetime: location.timestamp,
               observer: mapData.people[location.senderId]?.name || "Unknown",
               observations: "image_no_observation", // Set standardized observation text
-              markerColour: "0", // Default color
               imgFilenames: [location.name],
-              // Removed make and model properties
-              altitude: location.altitude ? String(location.altitude) : ""
+              // markerColour: "0", // Default color
+              altitude: location.altitude ? String(location.altitude) : "",
+              gpsImgDirection: location.gpsImgDirection ? String(location.gpsImgDirection) : "not recorded"
             },
             geometry: {
               type: "Point",

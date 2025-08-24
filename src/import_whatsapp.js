@@ -454,9 +454,10 @@ const processText = async (text, zipInput = null) => {
                 observations: "",
                 observer: senderToCapital[message.sender],
                 datetime: message.datetime,
-                markerColour: senders[message.sender],
+                // markerColour: senders[message.sender],
                 imgFilenames: [],
-				altitude:"notrecorded", // Default value for altitude
+				altitude:"not recorded", // Default value for altitude
+                gpsImgDirection: location.gpsImgDirection ? String(location.gpsImgDirection) : "not recorded"
             },
             geometry: message.location
                 ? {

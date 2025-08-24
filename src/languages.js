@@ -72,7 +72,7 @@ i18next.use(initReactI18next).init({
 								// <br /><strong>Captallite</strong> is a platform for simple, private crowdsourcing that turns photos stored in the phone or WhatsApp into maps.<br />
 
 				aboutContent: `
-								<br /><strong>Captallite</strong> is a crowdsourcing platform to connect with people on the ground and instantly turn photos into maps. <br />
+								<br /><strong>Captallite</strong> is a crowdsourcing platform to connect with people on the ground and instantly turn past and new photos into maps. <br />
 
 								<br /><strong>Captallite Business Mappers</strong> are people on the ground who earn money creating maps with Captallite. <br />
 								`,

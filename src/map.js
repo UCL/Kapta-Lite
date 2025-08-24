@@ -539,6 +539,8 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 									<strong>Coordinates:</strong><br />
 									lat {latlng.lat.toFixed(6)}<br />
 									lng {latlng.lng.toFixed(6)}
+									<br />
+									<strong>Direction:</strong> {location.gpsImgDirection ? `${location.gpsImgDirection}°` : "not recorded"}
 									{/* Delete button at bottom */}
 									<div className="popup-bottom-delete-container">
 										<button
@@ -726,6 +728,8 @@ function MapDataLayer({ data, onUpdateFeature, onDeleteFeature, onUpdateImageLoc
 									<strong>Coordinates:</strong><br />
 									lat {latlng.lat}<br />
 									lng {latlng.lng}
+									<br />
+									<strong>Direction:</strong> {feature.properties.gpsImgDirection ? `${feature.properties.gpsImgDirection}°` : "not recorded"}
 									{/* Delete button at bottom */}
 									<div className="popup-bottom-delete-container">
 										<button
@@ -1118,9 +1122,10 @@ export function Map({
                             datetime: location.timestamp,
                             observer: updatedData.data.people[location.senderId]?.name || "Unknown",
                             observations: location.description || location.address || "image_no_observation",
-                            markerColour: "0",
+                            // markerColour: "0",
                             imgFilenames: [location.name],
-                            altitude: location.altitude?.toString() || "0"
+                            altitude: location.altitude?.toString() || "0",
+                            gpsImgDirection: location.gpsImgDirection?.toString() || "not recorded"
                         },
                         geometry: {
                             type: "Point",
@@ -1287,9 +1292,10 @@ export function Map({
                             datetime: location.timestamp,
                             observer: observer,
                             observations: location.description || location.address || "image_no_observation",
-                            markerColour: "0",
+                            // markerColour: "0",
                             imgFilenames: [location.name],
-                            altitude: (location.altitude && location.altitude.toString) ? location.altitude.toString() : "0"
+                            altitude: (location.altitude && location.altitude.toString) ? location.altitude.toString() : "0",
+                            gpsImgDirection: location.gpsImgDirection?.toString() || "not recorded"
                         },
                         geometry: {
                             type: "Point",
@@ -1427,9 +1433,10 @@ export function Map({
                                             datetime: location.timestamp,
                                             observer: observer,
                                             observations: location.description || location.address || "image_no_observation",
-                                            markerColour: "0",
+                                            // markerColour: "0",
                                             imgFilenames: [location.name],
-                                            altitude: (location.altitude && location.altitude.toString) ? location.altitude.toString() : "0"
+                                            altitude: (location.altitude && location.altitude.toString) ? location.altitude.toString() : "0",
+                                            gpsImgDirection: location.gpsImgDirection?.toString() || "not recorded"
                                         },
                                         geometry: {
                                             type: "Point",
