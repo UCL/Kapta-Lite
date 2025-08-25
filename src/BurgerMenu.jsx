@@ -101,6 +101,22 @@ export default function BurgerMenu({
 									<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
 										<br />
 
+										<span style={{ fontSize: '0.95rem' }}>👉 
+
+										 <a
+										//  href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
+                                        //     target="_blank"
+                                        //     rel="noopener noreferrer"
+                                            href="#"
+                                            onClick={(e) => { e.preventDefault(); alert('The 2 min video will be available shortly'); }}
+                                        >Watch 2 min. demo video
+                                            
+                                        </a></span>
+										{/* <p>Learn how to instantly turn into maps the photos stored in your phone or in WhatsApp.</p> */}
+									</div>
+									<div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+										<br />
+
 										<span style={{ fontSize: '0.95rem' }}>📱 
 
 										 <a
@@ -108,7 +124,7 @@ export default function BurgerMenu({
                                         //     target="_blank"
                                         //     rel="noopener noreferrer"
                                             href="#"
-                                            onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly'); }}
+                                            onClick={(e) => { e.preventDefault(); alert('The tutorial will be available shortly'); }}
                                         >Tutorial for mappers
                                             
                                         </a></span>
@@ -125,7 +141,7 @@ export default function BurgerMenu({
                                         //     target="_blank"
                                         //     rel="noopener noreferrer"
                                             href="#"
-                                            onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly'); }}
+                                            onClick={(e) => { e.preventDefault(); alert('The tutorial will be available shortly'); }}
                                         >Tutorial for organisations
                                           
                                         </a></span>

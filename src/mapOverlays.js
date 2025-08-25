@@ -573,7 +573,10 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                             disabled={isUploading}
                         >
                             WhatsApp
-                        </button>                   
+                        </button>   
+                    
+                    <p style={{ textAlign: "center" }}>🔒 The photos and locations you add to the map stay private on your phone. No one else can see them. You decide if and with whom you share the data. Captallite works offline too.🔒</p>
+                
                         
                         {/* <button
                             className="btn"
@@ -627,7 +630,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                                     
                                 </>
                             )}
-                            <p style={{ textAlign: "center" }}>🔒 Whatever you upload here, stays in your device. No one can see it. <br></br><br></br>🤞 We've submitted a feature request to Meta-WhatsApp to enable location data in photos to make WhatsApp Maps creation easier. We're awaiting their response.</p>
+                            <p style={{ textAlign: "center" }}><br></br>🤞 We've submitted a feature request to Meta-WhatsApp to enable location data in photos to make WhatsApp Maps creation easier. We're awaiting their response.</p>
 
                             {/* Back button */}
                              <button 
@@ -676,7 +679,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                             >
                                 Select photos
                             </button>
-                            <p style={{ textAlign: "center" }}>📍Note that only the images that were taken with the "Location" ON in your device will be shown in the map. <br /><br />🔒 Whatever you upload here, stays in your device. No one can see it.</p>
+                            <p style={{ textAlign: "center" }}>📍Note that only the images that were taken with the "Location" ON in your device will be shown in the map. <br /><br /></p>
                             
                             {/* Back button */}
                             <button 
@@ -1996,7 +1999,7 @@ const generateCSV = (dataset) => {
 
                                     
                                 </ul>
-                                <p style={{ marginBottom: "4px" }}>💡 Captallite compresses the images for faster upload/download. Options to upload higher resolution images is under development. If you need the full resolution you can share the Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
+                                <p style={{ marginBottom: "4px" }}>💡 Captallite compresses the images for faster upload/download. Options to upload higher resolution images is under development. If you need the full resolution you can Download the data and share the zip file using e.g. messaging apps. Alternatively, you can improve the resolution of an image using AI tools like ChatGPT.</p>
                                 <p style={{ marginBottom: "4px" }}>Download buttons</p>
                                 <ul style={{ paddingLeft: "18px", marginTop: "5px", marginBottom: "8px" }}>
                                     <li>The CSV file contains the coordinates and other map information.</li>

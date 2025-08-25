@@ -83,8 +83,8 @@ i18next.use(initReactI18next).init({
 				caseStudies: " 10+ years trying",
 				caseStudiesContent: `<br />Captallite is the result of years of volunteered geographic
 				information (VGI) and extreme citizen science research in Europe and with communities living in some of the most challenging environments on Earth (see 🌍 <a href='${ecsanvismap}'>World Map of our case studies before Captallite (2010-2023)</a>. 
-				This research has transitioned from highly participatory processes, to trying to simplify the process by using WhatsApp (see <a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />), to trying to replace the process with cash payments to contributors, 
-				which is what Captallite is designed for to make crowdsourcing more inclusive and quickly scalable. These are some of our past pilot projects: 🇬🇧  <a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>, 
+				<br /><br />This research has transitioned from highly participatory processes, to trying to simplify the process by using WhatsApp (see <a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />), to trying to replace the process with cash payments to contributors, 
+				which is what Captallite is designed for to make crowdsourcing more inclusive and quickly scalable.<br /><br />These are some of our past pilot projects: 🇬🇧  <a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>, 
 				🇪🇹 <a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>, 🇪🇹 <a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water (2023)</a>, 🇳🇬 <a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>.`,
 				// caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
 						
