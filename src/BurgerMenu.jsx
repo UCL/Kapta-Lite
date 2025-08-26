@@ -104,11 +104,11 @@ export default function BurgerMenu({
 										<span style={{ fontSize: '0.95rem' }}>👉 
 
 										 <a
-										//  href="https://youtu.be/vaPHy8S-OpA?si=EXOxgQq1I6_eiR60"
-                                        //     target="_blank"
-                                        //     rel="noopener noreferrer"
-                                            href="#"
-                                            onClick={(e) => { e.preventDefault(); alert('The 2 min video will be available shortly'); }}
+										 href="https://youtu.be/zZby6NsF2LU"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            // href="#"
+                                            // onClick={(e) => { e.preventDefault(); alert('The 2 min video will be available shortly'); }}
                                         >Watch 2 min. demo video
                                             
                                         </a></span>

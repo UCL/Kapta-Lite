@@ -113,18 +113,10 @@ i18next.use(initReactI18next).init({
 
 				people: "People",
 				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab (Geography Dept.) and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
-					<br />Currently the core Captallite team consists of:<br>
 
 				`,
-				// 				peopleContent: `<br />Captallite is spining out from University College London (UCL), where it is being developed by the Extreme Citizen Science Lab and the Advanced Research Computing Centre, with support from external partners and contributors. <br>
-				// 	<br />Currently the core Captallite team consists of:<br>
-				// 	<br />
-				// 	<a href='${marcosUrl}'>Marcos Moreu</a><br>
-				// 	<br />
-				// 	<a href='${mukiUrl}'>Muki Haklay</a><br>
-				// 	<a href='${claireUrl}'>Claire Ellul</a><br>
-				// 	<a href='${jedUrl}'>Jed Stevenson</a><br>
-				// `,
+
+				
 				legalDisclaimer: `<br />The Captallite team has made every effort to develop an app that parses WhatsApp chats and Photos to create maps with the highest possible accuracy. However, we cannot accept responsibility for any errors, omissions, or inconsistencies that may occur. Please always make your own judgement about the accuracy of the maps and validate the information using other sources. While we take data privacy and security seriously, Captallite cannot be held responsible for any misuse of data shared via the app. If you encounter any issues or have feedback, please reach out.</a>`,
 
 				confirm: "Confirm",
