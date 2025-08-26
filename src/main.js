@@ -61,7 +61,7 @@ function showBrowserRecommendationIfNeeded() {
     const isEdge = /Edg/.test(ua);
 
     if (isMobile && !(isChrome || isEdge)) {
-        alert("Please open Captallite using Chrome or Edge browsers.");
+        alert("Captallite works best on Chrome or Edge browsers.");
     }
 }
 
@@ -71,6 +71,9 @@ function initServiceWorker(setFileToParse) {
   if (!('serviceWorker' in navigator)) return;
 
   window.addEventListener('load', async () => {
+        // If there is a controller already, this isn't the very first install
+        const hadControllerAtStart = !!navigator.serviceWorker.controller;
+
     const registration = await navigator.serviceWorker.register('/sw.js', {
       updateViaCache: 'none', // fetch a fresh sw.js each time
     });
@@ -79,7 +82,9 @@ function initServiceWorker(setFileToParse) {
     // ---- Reload exactly when a NEW controller takes over ----
     let refreshed = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshed) return;
+            // Avoid reload on very first install (no previous controller)
+            if (!hadControllerAtStart) return;
+            if (refreshed) return;
       refreshed = true;
       // optional: show your toast here
       window.location.reload();

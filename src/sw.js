@@ -168,6 +168,7 @@ self.addEventListener('fetch', (event) => {
 
   // HTML navigation fallback: try network, then precached index.html
   if (event.request.mode === 'navigate') {
+    // Respond within the handler to avoid cancelling the preload promise
     event.respondWith((async () => {
       try {
         // If navigation preload is available, prefer it
@@ -176,7 +177,9 @@ self.addEventListener('fetch', (event) => {
         return await fetch(event.request);
       } catch {
         // Offline -> app shell
-        return caches.match('/index.html');
+        const cached = await caches.match('/index.html');
+        if (cached) return cached;
+        return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
       }
     })());
     return;
