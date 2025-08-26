@@ -601,7 +601,7 @@ export function CreateModal({ isOpen, setIsOpen, isUploading, setIsUploading }) 
                         <div className="option-button-container">
                             <button
                                 className="btn"
-                                onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly'); }}
+                                onClick={(e) => { e.preventDefault(); alert('The Tutorial will be available shortly. Please check the demo video in "How it works tab"'); }}
 
                                 disabled={isUploading}
                             >

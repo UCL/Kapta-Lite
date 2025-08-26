@@ -80,7 +80,9 @@ module.exports = (env, argv) => {
 			new HtmlWebpackPlugin({
 				template: "./src/index.html",
 				title: "Captallite",
+				mobile: true,
 				favicon: "src/images/icons/favicon.png",
+				gaMeasurementId: process.env.GA_MEASUREMENT_ID || 'G-JEHLJFG92D',
 				meta: {
 					"Content-Type": {
 						"http-equiv": "content-type",

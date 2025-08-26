@@ -147,7 +147,7 @@ function App() {
         // Initialize GA and SW
         initServiceWorker(setFileToParse);
 
-        ReactGA.initialize("G-LEP1Y0FVCD");  //disable GA for dev
+        ReactGA.initialize("G-JEHLJFG92D");  //disable GA for dev
         
         // Initialize persistent observer name on app startup
         const { initializeObserverName } = require('./import_images.js');
