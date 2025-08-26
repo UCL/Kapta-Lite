@@ -102,12 +102,12 @@ module.exports = (env, argv) => {
 					},
 					"og:url": {
 						property: "og:url",
-						content: "https://kapta.earth/",
+						content: "https://captallite.com/",
 					},
 					"og:image": {
 						property: "og:image",
 						itemprop: "image",
-						content: "https://kapta.earth/og-icon.png",
+						content: "https://captallite.com/og-icon.png",
 					},
 					"og:image:type": {
 						property: "og:image:type",

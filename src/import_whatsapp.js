@@ -67,7 +67,7 @@ export function FileParser({ file, onComplete, ...dataDisplayProps }) {
 const updateMapdata = (data, groupName = null) => {
 	return {
 		...data,
-		slug: slugify(groupName || "Kapta"),
+		slug: slugify(groupName || "Captallite"),
 	};
 };
 

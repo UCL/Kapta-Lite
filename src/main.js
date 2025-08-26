@@ -14,7 +14,7 @@ import ReactGA from "react-ga4";
 import { UserProvider } from "./UserContext.jsx";
 import { LoginDialog, WelcomeBackDialog } from "./Login.jsx";
 import { ShareModal } from "./mapOverlays.js";
-import KaptaLogo from "./images/logo_corner.svg";
+import CaptalliteLogo from "./images/logo_corner.svg";
 
 export function isMobileOrTablet (){
     return (
@@ -61,7 +61,7 @@ function showBrowserRecommendationIfNeeded() {
     const isEdge = /Edg/.test(ua);
 
     if (isMobile && !(isChrome || isEdge)) {
-        alert("Please open Kapta using Chrome or Edge browsers.");
+        alert("Please open Captallite using Chrome or Edge browsers.");
     }
 }
 
@@ -301,7 +301,7 @@ function App() {
 
     return (
         <UserProvider>
-            {/* Kapta Logo and Brand */}
+            {/* Captallite Logo and Brand */}
             {showBrand && !isLoaderVisible && (
                 <div style={{
                     position: 'fixed',
@@ -316,8 +316,8 @@ function App() {
                     borderRadius: '8px'
                 }}>
                     <img 
-                        src={KaptaLogo} 
-                        alt="Kapta Logo" 
+                        src={CaptalliteLogo} 
+                        alt="Captallite Logo" 
                         style={{ 
                             height: '24px', 
                             width: '24px' 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import KaptaLogo from "./images/icons/favicon.svg";
+import CaptalliteLogo from "./images/icons/favicon.svg";
 import { isIOS, isMobileOrTablet } from "./main";
 import ReactGA from "react-ga4";
 
@@ -78,7 +78,7 @@ export default function InstallDialog() {
 
 	return (
 		<dialog id="install-dialog">
-			<img src={KaptaLogo}></img>
+			<img src={CaptalliteLogo}></img>
 			<div>{promptMessage}</div>
 			<button onClick={handleCloseClick}>{t("dismiss")}</button>
 			<button onClick={handleInstallClick}>{t("install")}</button>

@@ -20,7 +20,7 @@ const worldCapitals = [
 
 // Function to get or create a persistent observer name from localStorage
 const getPersistentObserver = () => {
-  const STORAGE_KEY = 'kapta_observer_name';
+  const STORAGE_KEY = 'captallite_observer_name';
   
   // Check if observer name already exists in localStorage
   let observerName = localStorage.getItem(STORAGE_KEY);

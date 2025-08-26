@@ -781,7 +781,6 @@ export function SearchModal({ isOpen, setIsOpen, isPremium, isRegisterMapper, se
                 ) : isPremium ? (
                     <>
                         <p style={{ textAlign: "center" }}>
-                            {/* You can task WhatsApp Business Mappers that you already know or you can "Connect" with WhatsApp Mappers — their number is in the pop-up. The free plan allows you to receive the maps and store them locally and visualize them in Kapta Lite. */}
                             <br />
                             The <strong>free version</strong> allows organisations to visualise and edit one or multiple maps and download the data for spatial analysis in QGIS, ArcGIS etc.
                             <br />
@@ -837,7 +836,7 @@ export function ShareModal({
     const [buttonText, _setButtonText] = useState(t("sharedata"));
     const setButtonText = translationKey => _setButtonText(t(translationKey));
     const [isButtonDisabled, setButtonDisabled] = useState(false);
-    const [kaptaWaMapUrl, setKaptaWaMapUrl] = useState(""); // Store the generated URL
+    const [captalliteMapUrl, setcaptalliteMapUrl] = useState(""); // Store the generated URL
     const [WhatsAppMapTags, setWhatsAppMapTags] = useState(""); // New state for map description
     const [showMapperIdField, setShowMapperIdField] = useState(false); // New state for showing Mapper ID field
     const [password, setPassword] = useState(""); // State for encryption password
@@ -875,7 +874,7 @@ export function ShareModal({
             setIsMapTooLarge(false);
             
             // Reset share-related states when modal closes
-            setKaptaWaMapUrl(""); // Reset the generated URL - this forces full process to run again
+            setcaptalliteMapUrl(""); // Reset the generated URL - this forces full process to run again
             setButtonText("sharedata"); // Reset button text
             setButtonDisabled(false); // Reset button disabled state
             setPassword(""); // Reset password - forces user to enter new password
@@ -915,13 +914,13 @@ export function ShareModal({
         setPasswordError("");
         
         // If the URL is already generated, handle re-click behavior
-        if (kaptaWaMapUrl) {
+        if (captalliteMapUrl) {
             if (navigator.canShare && navigator.share) {
                 navigator
                     .share({
                         title: "#MadeWithCaptallite",
                         text: `This is a private map created with Captallite. 🔐 The password to open it is: ${password}`,
-                        url: kaptaWaMapUrl,
+                        url: captalliteMapUrl,
                     })
                     .catch((error) => console.error("Sharing failed", error))
                     .finally(() => {
@@ -930,7 +929,7 @@ export function ShareModal({
                     });
             } else {
                 navigator.clipboard
-                    .writeText(kaptaWaMapUrl)
+                    .writeText(captalliteMapUrl)
                     .then(() => {
                         alert("Link copied to clipboard!");
                     })
@@ -1166,9 +1165,9 @@ export function ShareModal({
             setUploadProgress(100); // Upload complete
 
             // Generate URL without passphrase in it
-            let generatedUrl = `https://staging.d2o6xx2zphytuq.amplifyapp.com/?import=${presignedUrl}`;
+            let generatedUrl = `https://captallite.com/?import=${presignedUrl}`;
             
-            setKaptaWaMapUrl(generatedUrl); // Store the generated URL
+            setcaptalliteMapUrl(generatedUrl); // Store the generated URL
             setButtonText("shareDirectly");
             setButtonDisabled(false);
 

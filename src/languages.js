@@ -42,7 +42,7 @@ const amandaUrl =
 const jedUrl = "https://www.durham.ac.uk/staff/jed-stevenson/";
 const desUrl = "https://et.linkedin.com/in/dessalegn-tekle-02b848ba";
 
-const mailtoElem = `<a href="mailto:info@kapta.earth?subject=Kapta Mobile Feedback">info@kapta.earth</a>`;
+const mailtoElem = `<a href="mailto:info@xxx?subject=xxxx Mobile Feedback">info@xxxx</a>`;
 const whyReadMore = `https://uclexcites-blog.translate.goog/2024/06/26/whatsapp-maps-connecting-users-and-producers-of-ground-information/?_x_tr_sl=auto&_x_tr_tl=es&_x_tr_hl=en-US&_x_tr_pto=wapp`
 i18next.use(initReactI18next).init({
 	lng: savedLanguage,
@@ -81,11 +81,11 @@ i18next.use(initReactI18next).init({
 				<br />Decades of satellite imagery archives help us understand change from space.<br /><br />To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, including the billions whose stories and data are left out in traditional crowdsourcing.<br /><br />
 				To achieve that, crowdsourcing needs to be embedded in the technology and the data that people already have (i.e. photos and chats). <br /><br />But simplifying crowdsourcing is not enough to popularise it. Cash and trust are also needed. Crowdsourcing needs to transition towards paid-first (not volunteered-first) and private-first (not open-first). <u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u><br />`,
 				caseStudies: " 10+ years trying",
-				caseStudiesContent: `<br />Captallite is the result of years of volunteered geographic
-				information (VGI) and extreme citizen science research in Europe and with communities living in some of the most challenging environments on Earth (see 🌍 <a href='${ecsanvismap}'>World Map of our case studies before Captallite (2010-2023)</a>. 
-				<br /><br />This research has transitioned from highly participatory processes, to trying to simplify the process by using WhatsApp (see <a href='${firstwhatsappMapsUrl}'>Is this the first-ever WhatsApp Map? (2024)</a></strong><br />), to trying to replace the process with cash payments to contributors, 
-				which is what Captallite is designed for to make crowdsourcing more inclusive and quickly scalable.<br /><br />These are some of our past pilot projects: 🇬🇧  <a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK (2025)</a>, 
-				🇪🇹 <a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia (2024)</a>, 🇪🇹 <a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water (2023)</a>, 🇳🇬 <a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria (2021)</a>.`,
+				caseStudiesContent: `<br />Captallite builds on years of research in Volunteered Geographic Information (VGI) and Extreme Citizen Science across
+				 Europe and with communities living in some of the most challenging environments on Earth (see 🌍 <a href='${ecsanvismap}'>World Map of our past projects (2010-2023)</a>. 
+				<br /><br />Some of our work has evolved from highly participatory processes, to simplifying data collection via WhatsApp, and now with Captallite we aim to simplify things even further to popularise remunerated, private-first crowdsourcing.
+				<br /><br />Below are some articles and maps of our past pilot projects: <br />🇳🇬 (2021) <a href='${extremeCitizenUrl}'>Linking Messaging & Mapping for Farming in Nigeria.</a><br />🇪🇹 (2023) <a href='${ethio2023}'>Wisdom of the Crowd in the Age of AI: Water.</a>
+				<br />🇪🇹 (2024) <a href='${whatsappMapsUrl}'>WhatsApp Maps of Population & Water Infrastructure in rural Ethiopia.</a> <br />🇬🇧 (2025) <a href='${GibraltarUrl}'>Ten WhatsApp Maps of Places in Gibraltar, UK.</a>`,
 				// caseStudiesContent: `<ul style="padding-left: 1.2em; margin: 0;">
 						
 				// 	<li>

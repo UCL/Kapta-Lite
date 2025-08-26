@@ -1,5 +1,5 @@
 import { signUp, initiateAuth, respondToSMSChallenge } from "./auth.js";
-import KaptaLogo from "./images/icons/favicon.svg";
+import CaptalliteLogo from "./images/icons/favicon.svg";
 import { closeIcon, thumbsUpIcon } from "./icons.js";
 import { useUserStore } from "./UserContext.jsx";
 import React, { useEffect, useState } from "react";
@@ -138,7 +138,7 @@ export function LoginDialog({ isVisible, setIsVisible, setIsWelcomeVisible }) {
 	const [isSignupFormVisible, setIsSignupFormVisible] = useState(false);
 	const [isSmsInputVisible, setIsSmsInputVisible] = useState(false);
 	const [sessionToken, setSessionToken] = useState(null);
-	const [message, setMessage] = useState("Sign up to Kapta");
+	const [message, setMessage] = useState("Sign up to Captallite");
 	const [phoneNumber, setPhoneNumber] = useState(null);
 
 	if (!isVisible) return null;
@@ -160,11 +160,11 @@ export function LoginDialog({ isVisible, setIsVisible, setIsWelcomeVisible }) {
 
 	return (
 		<dialog id="login-dialog">
-			<h3>Log in to Kapta</h3>
+			<h3>Log in to Captallite</h3>
 			<img
 				className="logo"
-				src={KaptaLogo}
-				alt="Kapta Logo: a red square with a white pin in a message bubble"
+				src={CaptalliteLogo}
+				alt="Captallite Logo: a red square with a white pin in a message bubble"
 			></img>
 			{isLoginFormVisible && (
 				<LoginForm

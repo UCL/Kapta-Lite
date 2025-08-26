@@ -35,9 +35,8 @@ import {
 
 import { faGithub } from "@fortawesome/free-brands-svg-icons/faGithub";
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons/faWhatsapp';
-import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
-import KaptaMapper from "./images/logo_corner.svg"; // Import the image
-import WABusinessIcon from "./images/WABusinessIcon.png"; // Import the image
+import CaptalliteMarker from "./images/CaptalliteMarker.png"; // Import the image
+import CaptalliteMapper from "./images/logo_corner.svg"; // Import the image
 import KBusinessIcon from "./images/connect.png"; // Import the image
 import shareicon from "./images/shareicon.png"; // Import the image
 import createicon from "./images/createicon.png"; // Import the image
@@ -99,14 +98,7 @@ export const uploadIcn = (
 	<FontAwesomeIcon icon={faCloudArrowUp} className="btn-icon" />
 );
 export const WhatAppMapper = <FontAwesomeIcon icon={faWhatsapp} style={{ color: "#1fcbff" }}/>;
-// export const WhatAppMapMarker = <FontAwesomeIcon icon={faLocationDot} style={{ color: "#05ad29" }}/>;
-// export const WhatAppMapMarkerPosition = (
-// 	<img
-// 	  src={KaptaMarker}
-// 	  alt="Kapta Marker"
-// 	  style={{ width: "20px", height: "20px" }}
-// 	/>
-//   );
+
 export const GPSIcn = <FontAwesomeIcon icon={faLocationCrosshairs} style={{ color: "#3a3a3a" }}/>;
 export const basemapSatIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
 export const basemapGMapsIcon = <FontAwesomeIcon icon={faLayerGroup} style={{ color: "#3a3a3a" }}/>;
@@ -122,22 +114,16 @@ export const GPSPositionIcn = `
 `;
 export const WhatAppMapMarkerPosition = `
   <img
-    src="${KaptaMarker}"
-    alt="Kapta Marker"
+    src="${CaptalliteMarker}"
+    alt="Captallite Marker"
     style="width: 35px; height: 35px;"
   />
 `;
-// export const WhatAppMapMarkerPosition = icon({
-// 	prefix: "fa",
-// 	iconName: "location-dot",
-// }).html;
-
-// export const WhatAppMapperPosition = icon(faWhatsapp).html;
 
 export const WhatAppMapperPosition = `
   <img
-    src="${KaptaMapper}"
-    alt="Kapta Mapper"
+    src="${CaptalliteMapper}"
+    alt="Captallite Mapper"
     style="width: 30px; height: 30px;"
   />
 `;

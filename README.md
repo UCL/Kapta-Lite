@@ -26,7 +26,7 @@ Decades of satellite imagery archives help us understand change from space. To b
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/UCL/kapta-lite.git && cd kapta-lite`
+1. Clone the repository: `git clone https://github.com/UCL/captallite.git && cd captallite`
 2. Run `npm install` in the root directory
 3. Create config file (see below)
 4. Run `npm run build` to build the project

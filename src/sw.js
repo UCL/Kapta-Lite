@@ -253,7 +253,7 @@ self.addEventListener('push', (event) => {
       { action: 'close', title: 'Close', icon: '/icon-192x192.png' },
     ],
   };
-  event.waitUntil(self.registration.showNotification('Kapta Lite', options));
+  event.waitUntil(self.registration.showNotification('Captallite', options));
 });
 
 self.addEventListener('notificationclick', (event) => {

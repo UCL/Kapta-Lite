@@ -202,7 +202,7 @@ export function UploadDialog({
 						{/* opendata request - will also create a new task */}
 						{!task && showOpenDataForm && (
 							<form className="upload-form" onSubmit={handleODSubmit}>
-								<h3>Upload data to Kapta</h3>
+								<h3>Upload data to xxxxxx</h3>
 								<small>
 									{t("addMetadataTitle")} {addMetaIcn}
 								</small>
@@ -251,7 +251,7 @@ export function UploadDialog({
 						{/* if they have a campaign code */}
 						{task && !showOpenDataForm && (
 							<form className="upload-form" onSubmit={handleSubmit}>
-								<h4 className="grey">Upload data to Kapta</h4>
+								<h4 className="grey">Upload data to xxxxxx</h4>
 								<h2>Task Details</h2>
 								<h3 name="task-title" id="task-title">
 									<small>Title:</small> {task.title}

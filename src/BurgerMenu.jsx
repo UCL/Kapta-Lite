@@ -215,13 +215,11 @@ export default function BurgerMenu({
                         >
                             Contact us
                         </button>
-							{/* <p>
-							Contact us on WhatsApp at<br /><a href="https://wa.me/447473522912">+44 7473522912</a> or email us at<br /><a href="mailto:info@kapta.earth">info@kapta.earth</a>.
-							</p> */}
+
 						</div>
 						<br />
 						<a
-							href="https://github.com/UCL/Kapta-Lite"
+							href="https://github.com/UCL/captallite"
 							id="gh"
 							className="bm__item__"
 						> 

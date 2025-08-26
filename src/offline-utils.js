@@ -1,5 +1,5 @@
 /**
- * Offline utilities for Kapta Lite
+ * Offline utilities for Captallite
  * Provides functions for handling offline functionality and queue management
  */
 
@@ -24,7 +24,7 @@ export const queueAction = (action) => {
     
     // Store in localStorage for persistence
     try {
-        localStorage.setItem('kapta-offline-queue', JSON.stringify(offlineQueue));
+        localStorage.setItem('captallite-offline-queue', JSON.stringify(offlineQueue));
         // console.log('Offline: Queued action', action.type);
     } catch (error) {
         console.error('Offline: Failed to store queue', error);
@@ -66,7 +66,7 @@ export const processQueue = async () => {
     
     // Update localStorage
     try {
-        localStorage.setItem('kapta-offline-queue', JSON.stringify(offlineQueue));
+        localStorage.setItem('captallite-offline-queue', JSON.stringify(offlineQueue));
     } catch (error) {
         console.error('Offline: Failed to update queue storage', error);
     }
@@ -174,7 +174,7 @@ const processSyncData = async (data) => {
  */
 export const loadQueue = () => {
     try {
-        const stored = localStorage.getItem('kapta-offline-queue');
+        const stored = localStorage.getItem('captallite-offline-queue');
         if (stored) {
             const queue = JSON.parse(stored);
             offlineQueue.push(...queue);
@@ -191,7 +191,7 @@ export const loadQueue = () => {
 export const clearQueue = () => {
     offlineQueue.length = 0;
     try {
-        localStorage.removeItem('kapta-offline-queue');
+        localStorage.removeItem('captallite-offline-queue');
         console.log('Offline: Queue cleared');
     } catch (error) {
         console.error('Offline: Failed to clear queue storage', error);

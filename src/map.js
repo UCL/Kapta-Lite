@@ -103,7 +103,7 @@ import { MAPBOX_TOKEN } from "../globals.js";
 import { UploadDialog } from "./UploadDialog.jsx";
 import SuccessModal from "./SuccessModal.jsx";
 import { wamapperslocations } from "./wamapperslocations.js";
-import KaptaMarker from "./images/KaptaLiteMarker.png"; // Import the image
+import CaptalliteMarker from "./images/CaptalliteMarker.png"; // Import the image
 
 /************************************************************************************************
  *   Image Download Helper
@@ -173,9 +173,9 @@ const downloadImageAsPNG = async (imgElement, filename) => {
 /************************************************************************************************
  *   Basemaps (TileLayers)
  ************************************************************************************************/
+	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY21lc2o4eDVvMDJ5YTJpcjRnaDdyN2ZsdSJ9.bKpLqcwjZ6PnF55z9Q7GSQ"; //prod (with referer)
 
 function MapboxStreetsTileLayer() {
-	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY2xwOWY2d3FnMnJ6bDJqczR3OHV6c25hNyJ9.7vs1tik4VI8bI-4pBcBHVQ";
 	return (
 		<TileLayer
 			url={`https://api.mapbox.com/styles/v1/mapbox/streets-v12/tiles/{z}/{x}/{y}?access_token=${token}`}
@@ -192,7 +192,6 @@ function MapboxStreetsTileLayer() {
 
 
 function MapboxSatelliteTileLayer() {
-	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY2xwOWY2d3FnMnJ6bDJqczR3OHV6c25hNyJ9.7vs1tik4VI8bI-4pBcBHVQ";
 	return (
 		<TileLayer
 			url={`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v9/tiles/{z}/{x}/{y}?access_token=${token}`}
@@ -208,7 +207,6 @@ function MapboxSatelliteTileLayer() {
 }
 
 function MapboxStreetsDarkTileLayer() {
-	const token = MAPBOX_TOKEN || "pk.eyJ1IjoibWFyY29zbW9yZXV1Y2wiLCJhIjoiY2xwOWY2d3FnMnJ6bDJqczR3OHV6c25hNyJ9.7vs1tik4VI8bI-4pBcBHVQ";
     return (
         <TileLayer
             url={`https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/{z}/{x}/{y}?access_token=${token}`}
@@ -810,14 +808,14 @@ function WhatsAppMappersDataLayer({ data }) {
 		<>
   {wamapperslocations.features.map((feature, i) => {
     const latlng = [feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
-    const { name, Description, KaptaID} = feature.properties; 
+    const { name, Description, captalliteMaID} = feature.properties; 
     const whatsappUrl = `https://form.typeform.com/to/ADusU7Tj`;
 
     return (
       <Marker key={i} position={latlng} icon={WhatsAppMapperIcon}>
         <Popup offset={L.point(2, -15)} maxWidth={200} maxHeight={400}>
             <h3>{name}</h3>
-            <p>Get in touch and we will connect you with {KaptaID}</p>
+            <p>Get in touch and we will connect you with {captalliteMaID}</p>
             <button
         className="btn"
         style={{
@@ -832,7 +830,7 @@ function WhatsAppMappersDataLayer({ data }) {
             boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
         }}
         onClick={() => {
-            navigator.clipboard.writeText(KaptaID).then(() => {
+            navigator.clipboard.writeText(captalliteMaID).then(() => {
             alert("The Captallite Business Mapper ID has been copied to clipboard! Click OK and paste it when the form opens.");
             window.open(whatsappUrl, "_blank", "noopener,noreferrer");
             });
