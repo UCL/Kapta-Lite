@@ -1,17 +1,10 @@
 **What is Captallite**  
-Captallite is a platform for private, paid crowdmapping with Photos and WhatsApp.
+Captallite is a crowdsourcing platform to connect with people on the ground and instantly turn past and new photos into maps.
 
-**What is WhatsApp Maps**  
-WhatsApp Maps are private community maps made with WhatsApp.
-
-**What is Photos Maps**  
-Photos Maps are private maps made with geotagged photos that are in the phone's Photos gallery.
-
-**What are Captallite Business Mappers?**  
-People who make a business creating maps with Captallite.
+Captallite Business Mappers are people on the ground who earn money creating maps with Captallite.
 
 **Why Captallite**  
-Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, especially those at the margins. For that, crowdsourcing needs to be embedded in people’s chats and photos (not mapping apps), and become more private (less open) and paid (not volunteered). <u>A peer-reviewed publication explaining this will be available here soon.</u>
+Decades of satellite imagery archives help us understand change from space. To better understand change from the ground, we need to unlock the photos from the past that are in our phones, and incentivise the collection of new ones by many people, including the billions whose stories and data are left out in traditional crowdsourcing. To achieve that, crowdsourcing needs to be embedded in the technology and the data that people already have (i.e. photos and chats). <u>A peer-reviewed publication breaking down and justifying this statement will be available here soon.</u>
 
 **Captallite is a Progressive Web App** 👉 https://captallite.com
 
@@ -50,15 +43,7 @@ Captallite requires a configuration file to be created in the src directory. The
 
 # People
 
-Captallite is spinning out from University College London (UCL). Captallite is being developed by the UCL's Extreme Citizen Science Lab and the UCL's Advanced Research Computing Centre, with support from external partners and contributors. 
-
-- [Marcos Moreu](https://www.linkedin.com/in/marcosmoreubadia)
-- [Fabien Moustard](https://www.linkedin.com/in/fabien-moustard-996998227)
-- [Tom Couch](https://www.ucl.ac.uk/advanced-research-computing/people/tom-couch)
-- [Muki Haklay](https://www.ucl.ac.uk/geography/muki-haklay-facss)
-- [Claire Ellul](https://www.ucl.ac.uk/civil-environmental-geomatic-engineering/people/dr-claire-ellul)
-- [Jed Stevenson](https://www.durham.ac.uk/staff/jed-stevenson/)
-
+Captallite is spinning out from University College London (UCL). Currently, the core Captallite team is:  
 
 # Legal disclaimer
 

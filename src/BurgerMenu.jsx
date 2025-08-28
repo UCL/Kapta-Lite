@@ -104,12 +104,12 @@ export default function BurgerMenu({
 										<span style={{ fontSize: '0.95rem' }}>👉 
 
 										 <a
-										 href="https://youtu.be/zZby6NsF2LU"
+										 href="https://youtu.be/TOL5Cash3f8"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             // href="#"
                                             // onClick={(e) => { e.preventDefault(); alert('The 2 min video will be available shortly'); }}
-                                        >Watch 2 min. demo video
+                                        >Watch 3 min. demo video
                                             
                                         </a></span>
 										{/* <p>Learn how to instantly turn into maps the photos stored in your phone or in WhatsApp.</p> */}

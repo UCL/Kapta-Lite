@@ -96,7 +96,7 @@ module.exports = (env, argv) => {
 					},
 					"og:description": {
 						property: "og:description",
-						content: "Turn photos into maps. Connect",
+						content: "Turn photos into maps. Connect.",
 					},
 					"og:type": {
 						property: "og:type",

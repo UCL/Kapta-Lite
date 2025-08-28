@@ -1587,7 +1587,7 @@ const generateCSV = (dataset) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `Captallite_WhatsApp_Map_${dateTime}.csv`; // File name now includes date and time
+    link.download = `Captallite_Private_Map_${dateTime}.csv`; // File name now includes date and time
     link.click();
     URL.revokeObjectURL(url);
 };
